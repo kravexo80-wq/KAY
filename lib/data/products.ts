@@ -13,8 +13,21 @@ export const products: Product[] = [
     story:
       "The silhouette stays clean under strong light, allowing the cloth, fall, and finishing to do the work.",
     featured: true,
+    limitedEdition: false,
     tags: ["Launch Piece", "Evening Tailoring"],
     materials: ["Italian matte crepe", "Satin piping", "Soft shoulder structure"],
+    fabricNotes: [
+      "Dense matte crepe keeps the silhouette controlled under directional light.",
+      "Satin edging adds a restrained line of reflection along the placket and cuff.",
+    ],
+    careNotes: [
+      "Dry clean only to protect the finish and preserve the structure.",
+      "Steam from the interior to restore drape after storage or travel.",
+    ],
+    fitNotes: [
+      "Relaxed through the body with a clean shoulder line.",
+      "Take your regular size for the intended ceremonial proportion.",
+    ],
     sizes: ["S", "M", "L", "XL"],
     gallery: [
       {
@@ -39,6 +52,19 @@ export const products: Product[] = [
         tone: "bronze",
       },
     ],
+    viewer360: {
+      enabled: true,
+      label: "360 showroom view",
+      description:
+        "Reserved for a future interactive spin built from controlled studio frames.",
+      note: "Still angles are active for now while the layout remains ready for frame-sequence integration.",
+    },
+    shipping: {
+      leadTime: "Dispatches in 2-4 business days.",
+      delivery: "Complimentary insured delivery on launch orders.",
+      returns: "Returns accepted within 14 days on unworn pieces.",
+      presentation: "Delivered in a matte black presentation box with garment wrap.",
+    },
     specs: [
       { label: "Fit", value: "Relaxed tailored" },
       { label: "Length", value: "Full length" },
@@ -58,8 +84,21 @@ export const products: Product[] = [
     story:
       "Designed as a spotlight layer, it frames the silhouette instead of overpowering it.",
     featured: true,
+    limitedEdition: true,
     tags: ["Ceremony Edit", "Layered"],
     materials: ["Structured satin blend", "Metallic edge braid", "Silk-touch lining"],
+    fabricNotes: [
+      "A structured satin blend gives the outer layer ceremony-level presence without excess stiffness.",
+      "Reflective braid finishing is used sparingly so the edge catches light without becoming ornate.",
+    ],
+    careNotes: [
+      "Professional dry clean only due to metallic trim and layered construction.",
+      "Store on a broad hanger to keep the shoulder line crisp.",
+    ],
+    fitNotes: [
+      "Designed as an open ceremonial layer with generous movement.",
+      "Size according to shoulder preference and intended underlayer.",
+    ],
     sizes: ["M", "L", "XL"],
     gallery: [
       {
@@ -84,6 +123,19 @@ export const products: Product[] = [
         tone: "bronze",
       },
     ],
+    viewer360: {
+      enabled: true,
+      label: "360 drape study",
+      description:
+        "Prepared for a future 360 layer view showing trim, volume, and movement in a single module.",
+      note: "The current build uses stills but reserves the same footprint for richer drape presentation later.",
+    },
+    shipping: {
+      leadTime: "Dispatches in 3-5 business days.",
+      delivery: "Insured global delivery with signature confirmation.",
+      returns: "Returns accepted within 14 days on unworn ceremonial pieces.",
+      presentation: "Presented in a structured black box with protective garment sleeve.",
+    },
     specs: [
       { label: "Fit", value: "Open ceremonial drape" },
       { label: "Length", value: "Longline" },
@@ -103,8 +155,21 @@ export const products: Product[] = [
     story:
       "Each panel is intended to read as a soft reflection surface under low light.",
     featured: true,
+    limitedEdition: false,
     tags: ["Women's Capsule", "Fluid Cut"],
     materials: ["Japanese nida", "Silk-touch facing", "Fine cuff structure"],
+    fabricNotes: [
+      "Japanese nida provides fluid movement with a softly polished surface.",
+      "Silk-touch facings keep interior finish elevated without adding visual noise.",
+    ],
+    careNotes: [
+      "Dry clean only to maintain the finish and cuff structure.",
+      "Store buttoned lightly to preserve the front line.",
+    ],
+    fitNotes: [
+      "Fluid relaxed cut with full modest coverage and quiet volume.",
+      "Choose your usual size for intended ease or size down for a closer shoulder line.",
+    ],
     sizes: ["XS", "S", "M", "L"],
     gallery: [
       {
@@ -129,6 +194,19 @@ export const products: Product[] = [
         tone: "pearl",
       },
     ],
+    viewer360: {
+      enabled: true,
+      label: "360 silhouette view",
+      description:
+        "Planned for a full silhouette rotation focused on movement, fall, and cuff finishing.",
+      note: "The gallery already reserves a dedicated module for future frame-based viewing.",
+    },
+    shipping: {
+      leadTime: "Dispatches in 2-4 business days.",
+      delivery: "Complimentary insured shipping for launch-region orders.",
+      returns: "Returns accepted within 14 days on unworn pieces with original presentation.",
+      presentation: "Wrapped in soft black tissue with matte branded outer packaging.",
+    },
     specs: [
       { label: "Fit", value: "Fluid relaxed" },
       { label: "Length", value: "Full length" },
@@ -148,8 +226,21 @@ export const products: Product[] = [
     story:
       "It is built for premium product photography: shape-first, minimal, and sharply outlined.",
     featured: true,
+    limitedEdition: true,
     tags: ["Limited Capsule", "Architectural"],
     materials: ["Compact wool blend", "Matte satin inset", "Reinforced collar"],
+    fabricNotes: [
+      "Compact wool blend holds the column silhouette and reads sharply in low light.",
+      "Matte satin insets add tonal depth without breaking the restrained composition.",
+    ],
+    careNotes: [
+      "Dry clean only for collar structure and panel integrity.",
+      "Use a garment brush between wears to preserve the matte finish.",
+    ],
+    fitNotes: [
+      "Structured straight fit designed to read as a clean vertical line.",
+      "Take your standard size for the intended architectural shape.",
+    ],
     sizes: ["S", "M", "L", "XL"],
     gallery: [
       {
@@ -174,6 +265,19 @@ export const products: Product[] = [
         tone: "bronze",
       },
     ],
+    viewer360: {
+      enabled: true,
+      label: "360 structure view",
+      description:
+        "Designed for a future viewer focused on collar architecture, sleeve line, and panel transitions.",
+      note: "This product is already staged for richer 360 storytelling once real imagery is added.",
+    },
+    shipping: {
+      leadTime: "Dispatches in 3-5 business days.",
+      delivery: "Global insured delivery with signature confirmation.",
+      returns: "Returns accepted within 14 days on unworn pieces.",
+      presentation: "Boxed in a signature rigid case with interior garment support.",
+    },
     specs: [
       { label: "Fit", value: "Structured straight fit" },
       { label: "Length", value: "Ankle length" },
@@ -193,8 +297,21 @@ export const products: Product[] = [
     story:
       "Its lighter tone broadens the catalog without sacrificing the controlled, cinematic brand language.",
     featured: false,
+    limitedEdition: false,
     tags: ["Essential Edit", "Warm Neutral"],
     materials: ["Premium cotton blend", "Soft matte trim", "Breathable lining"],
+    fabricNotes: [
+      "Premium cotton blend gives daily ease while preserving a refined matte surface.",
+      "Soft trim detailing keeps the garment elevated without shifting into formalwear.",
+    ],
+    careNotes: [
+      "Machine wash cold on a gentle cycle or dry clean for best finish retention.",
+      "Hang dry and light steam to restore the line.",
+    ],
+    fitNotes: [
+      "Relaxed regular fit designed for daily movement and modest comfort.",
+      "Choose your normal size for intended ease through the body.",
+    ],
     sizes: ["S", "M", "L", "XL"],
     gallery: [
       {
@@ -219,6 +336,19 @@ export const products: Product[] = [
         tone: "stone",
       },
     ],
+    viewer360: {
+      enabled: true,
+      label: "360 daily edit view",
+      description:
+        "Prepared for an everyday fit rotation that highlights movement and fabric texture.",
+      note: "The placeholder module keeps the media rail future-ready for richer catalog tools.",
+    },
+    shipping: {
+      leadTime: "Dispatches in 2-3 business days.",
+      delivery: "Tracked delivery with launch-period complimentary shipping.",
+      returns: "Returns accepted within 14 days on unworn pieces.",
+      presentation: "Delivered in branded fold packaging with matte presentation sleeve.",
+    },
     specs: [
       { label: "Fit", value: "Relaxed regular fit" },
       { label: "Length", value: "Full length" },
@@ -238,8 +368,21 @@ export const products: Product[] = [
     story:
       "It is intended to photograph as a single reflective silhouette while remaining practical for repeat wear.",
     featured: false,
+    limitedEdition: false,
     tags: ["Occasion Set", "Layered Pairing"],
     materials: ["Silk-touch crepe", "Satin facing", "Featherweight lining"],
+    fabricNotes: [
+      "Silk-touch crepe allows the set to move as one silhouette with subtle reflection.",
+      "Featherweight lining keeps the layered build comfortable for occasion wear.",
+    ],
+    careNotes: [
+      "Dry clean only to preserve the layered pairing and satin facings.",
+      "Store the pieces together to maintain the intended set styling.",
+    ],
+    fitNotes: [
+      "Relaxed layered fit with an elongated overlayer and modest coverage.",
+      "Take your usual size for balanced drape across both pieces.",
+    ],
     sizes: ["XS", "S", "M", "L"],
     gallery: [
       {
@@ -264,6 +407,19 @@ export const products: Product[] = [
         tone: "bronze",
       },
     ],
+    viewer360: {
+      enabled: true,
+      label: "360 layered view",
+      description:
+        "Reserved for a future module that shows how the overlayer and underdress move together.",
+      note: "Still photography is active now while preserving the same premium viewer slot.",
+    },
+    shipping: {
+      leadTime: "Dispatches in 2-4 business days.",
+      delivery: "Tracked insured delivery with signature confirmation available.",
+      returns: "Returns accepted within 14 days on unworn pieces with all components included.",
+      presentation: "Presented in matte packaging with layered garment wrap for both pieces.",
+    },
     specs: [
       { label: "Fit", value: "Relaxed layered fit" },
       { label: "Pieces", value: "Two-piece set" },

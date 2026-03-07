@@ -2,30 +2,33 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { PageIntro } from "@/components/layout/page-intro";
+import { CatalogStatePanel } from "@/components/storefront/catalog-state-panel";
 import { ProductGallery } from "@/components/storefront/product-gallery";
-import { ProductGrid } from "@/components/storefront/product-grid";
-import { Button } from "@/components/ui/button";
-import { SectionHeading } from "@/components/ui/section-heading";
+import { ProductPurchasePanel } from "@/components/storefront/product-purchase-panel";
+import { ProductRecommendationsSection } from "@/components/storefront/product-recommendations-section";
 import {
+  getCollectionBySlug,
   getProductBySlug,
   getRelatedProducts,
-  products,
-} from "@/lib/data/products";
-import { formatPrice } from "@/lib/utils";
+} from "@/lib/supabase/catalog";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{
+    cartMessage?: string;
+    cartError?: string;
+  }>;
 };
 
-export function generateStaticParams() {
-  return products.map((product) => ({ slug: product.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const productResult = await getProductBySlug(slug);
+  const product = productResult.data;
 
   if (!product) {
     return {
@@ -41,131 +44,244 @@ export async function generateMetadata({
 
 export default async function ProductDetailPage({
   params,
+  searchParams,
 }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const { cartMessage, cartError } = await searchParams;
+  const productResult = await getProductBySlug(slug);
+  const product = productResult.data;
 
   if (!product) {
-    notFound();
+    if (productResult.status === "ready") {
+      notFound();
+    }
+
+    return (
+      <div className="space-y-8 pb-16 md:pb-24">
+        <PageIntro
+          eyebrow="Product"
+          title="The showroom piece is temporarily unavailable."
+          description="The product route is live, but the catalog data could not be loaded for this request."
+          note={
+            productResult.error ??
+            "Please retry once the Supabase catalog is configured and reachable."
+          }
+        />
+
+        <section className="section-frame">
+          <CatalogStatePanel
+            eyebrow="Product state"
+            title="This product could not be loaded right now."
+            description={
+              productResult.error ??
+              "If the product exists and is active, it will render here once the catalog connection is available."
+            }
+          />
+        </section>
+      </div>
+    );
   }
 
-  const relatedProducts = getRelatedProducts(product);
+  const [collectionResult, relatedProductsResult] = await Promise.all([
+    product.collectionSlug
+      ? getCollectionBySlug(product.collectionSlug)
+      : Promise.resolve({ data: null, error: null, status: "ready" as const }),
+    getRelatedProducts(product),
+  ]);
+
+  const collection = collectionResult.data;
+  const relatedProducts = relatedProductsResult.data;
 
   return (
-    <div className="space-y-12">
+    <div className="relative overflow-hidden space-y-16 pb-16 md:space-y-20 md:pb-24">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10">
+        <div className="absolute left-1/2 top-[10rem] h-[26rem] w-[50rem] -translate-x-1/2 bg-[radial-gradient(circle,rgba(190,169,124,0.11),transparent_70%)] blur-3xl" />
+        <div className="absolute right-[-8rem] top-[18rem] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.08),transparent_72%)] blur-3xl" />
+        <div className="absolute left-[-10rem] top-[54rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.05),transparent_72%)] blur-3xl" />
+      </div>
+
       <section className="section-frame pt-8 md:pt-12">
-        <div className="mb-6 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.22em] text-white/38">
+        <div className="mb-6 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.24em] text-white/38">
           <Link href="/shop" className="transition hover:text-white">
             Shop
           </Link>
           <span>/</span>
-          <span>{product.category}</span>
-          <span>/</span>
+          {collection ? (
+            <>
+              <Link
+                href={`/collections/${collection.slug}`}
+                className="transition hover:text-white"
+              >
+                {collection.name}
+              </Link>
+              <span>/</span>
+            </>
+          ) : null}
           <span className="text-white/62">{product.name}</span>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_420px]">
-          <ProductGallery productName={product.name} media={product.gallery} />
-
-          <aside className="space-y-4">
-            <div className="luxury-panel p-6 md:p-8">
-              <p className="eyebrow">{product.category}</p>
-              <h1 className="mt-4 text-5xl leading-none text-white md:text-6xl">
-                <span className="text-gradient">{product.name}</span>
-              </h1>
-              <p className="mt-4 text-sm uppercase tracking-[0.24em] text-white/72">
-                {formatPrice(product.price)}
-              </p>
-              <p className="mt-5 text-base leading-8 text-white/64">
-                {product.description}
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-2">
-                {product.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-white/10 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/50"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Button className="flex-1 min-w-40">Reserve piece</Button>
-                <Button variant="secondary" className="flex-1 min-w-40">
-                  Add to cart later
-                </Button>
-              </div>
-            </div>
-
-            <div className="luxury-muted-panel p-5">
-              <p className="eyebrow">Craft story</p>
-              <p className="mt-4 text-sm leading-7 text-white/58">
-                {product.story}
-              </p>
-              <div className="mt-5 space-y-2">
-                {product.materials.map((material) => (
-                  <div
-                    key={material}
-                    className="rounded-full border border-white/8 px-4 py-2 text-xs uppercase tracking-[0.22em] text-white/46"
-                  >
-                    {material}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="luxury-muted-panel p-5">
-              <p className="eyebrow">Product details</p>
-              <div className="mt-4 space-y-3 text-sm text-white/58">
-                {product.specs.map((spec) => (
-                  <div
-                    key={spec.label}
-                    className="flex items-center justify-between gap-4 rounded-[1.25rem] border border-white/8 bg-white/[0.03] px-4 py-3"
-                  >
-                    <span>{spec.label}</span>
-                    <span className="text-white/76">{spec.value}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5">
-                <p className="text-xs uppercase tracking-[0.24em] text-white/36">
-                  Available sizes
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {product.sizes.map((size) => (
-                    <span
-                      key={size}
-                      className="rounded-full border border-white/10 px-4 py-2 text-xs uppercase tracking-[0.22em] text-white/58"
-                    >
-                      {size}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </aside>
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.02fr)_440px]">
+          <ProductGallery
+            productName={product.name}
+            media={product.gallery}
+            viewer360={product.viewer360}
+          />
+          <ProductPurchasePanel
+            product={product}
+            collectionName={collection?.name}
+            productPath={`/products/${product.slug}`}
+            cartMessage={cartMessage}
+            cartError={cartError}
+          />
         </div>
       </section>
 
-      <section className="section-frame section-space space-y-8">
-        <SectionHeading
-          eyebrow="Related pieces"
-          title="More from the same collection world."
-          description="These placeholders show how related products can sit beneath the primary product story without diluting the main hero area."
-        />
+      <section className="section-frame grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid gap-6">
+          <div className="showroom-panel p-6 md:p-8">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
+              <div className="space-y-5">
+                <p className="eyebrow">Product story</p>
+                <h2 className="max-w-3xl text-4xl leading-[0.95] text-white md:text-6xl">
+                  Designed to hold presence under shadow, spotlight, and space.
+                </h2>
+                <p className="max-w-3xl text-base leading-8 text-white/62">
+                  {product.description}
+                </p>
+                <p className="max-w-3xl text-base leading-8 text-white/56">
+                  {product.story}
+                </p>
+              </div>
 
-        {relatedProducts.length > 0 ? (
-          <ProductGrid products={relatedProducts} />
-        ) : (
-          <div className="luxury-muted-panel p-6 text-sm leading-7 text-white/56">
-            Related products will appear here when the collection contains more
-            live pieces.
+              <div className="showroom-subpanel p-5">
+                <p className="eyebrow">Collection note</p>
+                <h3 className="mt-4 text-3xl leading-none text-white">
+                  {collection?.name ?? "Kravexo signature"}
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-white/56">
+                  {collection?.highlight ??
+                    "Presented inside the Kravexo dark showroom system for future editorial storytelling."}
+                </p>
+              </div>
+            </div>
           </div>
-        )}
+
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="showroom-subpanel p-5">
+              <p className="eyebrow">Fabric notes</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {product.materials.map((material) => (
+                  <span
+                    key={material}
+                    className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/46"
+                  >
+                    {material}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-5 space-y-3 text-sm leading-7 text-white/58">
+                {product.fabricNotes.map((note) => (
+                  <p key={note}>{note}</p>
+                ))}
+              </div>
+            </div>
+
+            <div className="showroom-subpanel p-5">
+              <p className="eyebrow">Fit and silhouette</p>
+              <div className="mt-5 space-y-3 text-sm leading-7 text-white/58">
+                {product.fitNotes.map((note) => (
+                  <p key={note}>{note}</p>
+                ))}
+              </div>
+            </div>
+
+            <div className="showroom-subpanel p-5">
+              <p className="eyebrow">Care guidance</p>
+              <div className="mt-5 space-y-3 text-sm leading-7 text-white/58">
+                {product.careNotes.map((note) => (
+                  <p key={note}>{note}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="showroom-subpanel p-5">
+            <p className="eyebrow">Shipping and returns</p>
+            <div className="mt-5 space-y-3 text-sm text-white/58">
+              <div className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-4">
+                <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+                  Lead time
+                </p>
+                <p className="mt-2 leading-7 text-white/72">
+                  {product.shipping.leadTime}
+                </p>
+              </div>
+              <div className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-4">
+                <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+                  Delivery
+                </p>
+                <p className="mt-2 leading-7 text-white/72">
+                  {product.shipping.delivery}
+                </p>
+              </div>
+              <div className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-4">
+                <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+                  Returns
+                </p>
+                <p className="mt-2 leading-7 text-white/72">
+                  {product.shipping.returns}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="showroom-subpanel p-5">
+            <p className="eyebrow">Product metadata</p>
+            <div className="mt-5 space-y-3 text-sm text-white/58">
+              <div className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-3">
+                <span>Collection</span>
+                <span className="text-white/76">
+                  {collection?.name ?? product.collectionSlug}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-3">
+                <span>Edition</span>
+                <span className="text-white/76">
+                  {product.limitedEdition ? "Limited release" : "Core showroom"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-3">
+                <span>Primary fabric</span>
+                <span className="text-right text-white/76">
+                  {product.materials[0]}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-3">
+                <span>Still angles</span>
+                <span className="text-white/76">{product.gallery.length}</span>
+              </div>
+              {product.specs.map((spec) => (
+                <div
+                  key={spec.label}
+                  className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-3"
+                >
+                  <span>{spec.label}</span>
+                  <span className="text-right text-white/76">{spec.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
+
+      <ProductRecommendationsSection
+        products={relatedProducts}
+        collectionName={collection?.name}
+        collectionHighlight={collection?.highlight}
+        emptyStateMessage={relatedProductsResult.error ?? undefined}
+      />
     </div>
   );
 }

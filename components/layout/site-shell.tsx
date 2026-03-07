@@ -3,12 +3,24 @@ import type { ReactNode } from "react";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import {
+  getCurrentProfile,
+  getCurrentUser,
+  getProfileDisplayName,
+} from "@/lib/supabase/auth";
+import { getCartItemCount } from "@/lib/supabase/cart";
 
 interface SiteShellProps {
   children: ReactNode;
 }
 
-export function SiteShell({ children }: SiteShellProps) {
+export async function SiteShell({ children }: SiteShellProps) {
+  const [user, profile, cartItemCount] = await Promise.all([
+    getCurrentUser(),
+    getCurrentProfile(),
+    getCartItemCount(),
+  ]);
+
   return (
     <div className="relative min-h-screen">
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
@@ -17,7 +29,12 @@ export function SiteShell({ children }: SiteShellProps) {
         <div className="absolute left-[-10rem] top-[32rem] h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.05),transparent_70%)] blur-3xl" />
       </div>
       <AnnouncementBar />
-      <Header />
+      <Header
+        accountLabel={getProfileDisplayName(profile, user?.email)}
+        cartItemCount={cartItemCount}
+        isAuthenticated={Boolean(user)}
+        isAdmin={profile?.role === "admin"}
+      />
       <main>{children}</main>
       <Footer />
     </div>

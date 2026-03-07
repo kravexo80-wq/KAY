@@ -34,3 +34,7 @@ export const collections: Collection[] = [
 ];
 
 export const featuredCollections = collections;
+
+export function getCollectionBySlug(slug: string) {
+  return collections.find((collection) => collection.slug === slug);
+}

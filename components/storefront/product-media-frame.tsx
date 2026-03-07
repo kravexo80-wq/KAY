@@ -6,6 +6,8 @@ interface ProductMediaFrameProps {
   media: ProductMedia;
   className?: string;
   showNote?: boolean;
+  chrome?: "full" | "minimal";
+  emphasis?: "default" | "hero" | "card";
 }
 
 const toneStyles: Record<
@@ -51,42 +53,66 @@ export function ProductMediaFrame({
   media,
   className,
   showNote = true,
+  chrome = "full",
+  emphasis = "default",
 }: ProductMediaFrameProps) {
   const tone = toneStyles[media.tone];
+  const isMinimal = chrome === "minimal";
 
   return (
     <div
       className={cn(
-        "group relative isolate overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.55)]",
+        "group relative isolate overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_34px_100px_rgba(0,0,0,0.58)]",
+        emphasis === "hero" &&
+          "shadow-[0_54px_150px_rgba(0,0,0,0.72),0_0_90px_rgba(190,169,124,0.12)]",
+        emphasis === "card" &&
+          "shadow-[0_30px_80px_rgba(0,0,0,0.5),0_0_40px_rgba(190,169,124,0.08)]",
         tone.shell,
         className,
       )}
     >
-      <div className={cn("absolute inset-0 opacity-90", tone.haze)} />
-      <div className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),transparent)]" />
-      <div className="absolute inset-x-[24%] top-[14%] bottom-[8%] rounded-[42%_42%_16%_16%/12%_12%_12%_12%] border border-white/10 shadow-[0_24px_50px_rgba(0,0,0,0.42)]">
+      <div className="showroom-glow-ring" />
+      <div
+        className={cn(
+          "absolute inset-0 opacity-90",
+          tone.haze,
+          emphasis === "hero" && "scale-110",
+        )}
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),transparent_22%,transparent_78%,rgba(255,255,255,0.03))]" />
+      <div className="absolute left-1/2 top-[12%] h-[38%] w-[62%] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.12),transparent_70%)] blur-[52px]" />
+      <div className="absolute inset-x-[12%] bottom-[4%] h-20 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.12),transparent_72%)] blur-[40px]" />
+      <div className="absolute inset-x-[24%] top-[14%] bottom-[8%] rounded-[42%_42%_16%_16%/12%_12%_12%_12%] border border-white/10 shadow-[0_28px_70px_rgba(0,0,0,0.48)]">
         <div className={cn("absolute inset-0 rounded-[inherit]", tone.garment)} />
         <div className="absolute left-1/2 top-[6%] h-8 w-8 -translate-x-1/2 rounded-full border border-white/16 bg-black/20" />
         <div className="absolute left-[45%] top-[16%] h-[56%] w-px bg-white/18" />
-        <div className="absolute left-[-6%] top-[20%] h-[34%] w-[34%] rotate-[-18deg] rounded-full border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(0,0,0,0.45))]" />
-        <div className="absolute right-[-6%] top-[20%] h-[34%] w-[34%] rotate-[18deg] rounded-full border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(0,0,0,0.45))]" />
+        <div className="absolute left-[-7%] top-[20%] h-[34%] w-[34%] rotate-[-18deg] rounded-full border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),rgba(0,0,0,0.45))]" />
+        <div className="absolute right-[-7%] top-[20%] h-[34%] w-[34%] rotate-[18deg] rounded-full border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),rgba(0,0,0,0.45))]" />
         <div className={cn("absolute inset-x-[18%] top-0 h-16 rounded-b-[2rem] blur-md", tone.trim)} />
+        <div className="absolute inset-y-[18%] left-[9%] w-px bg-[linear-gradient(180deg,transparent,rgba(255,255,255,0.18),transparent)]" />
+        <div className="absolute inset-y-[18%] right-[9%] w-px bg-[linear-gradient(180deg,transparent,rgba(255,255,255,0.14),transparent)]" />
+      </div>
+      <div className="absolute inset-x-[27%] bottom-[-3%] h-[18%] scale-y-[-1] opacity-28 blur-sm">
+        <div className={cn("h-full rounded-[42%_42%_16%_16%/12%_12%_12%_12%]", tone.garment)} />
       </div>
       <div className="absolute inset-x-[16%] bottom-[8%] h-20 rounded-full bg-[radial-gradient(circle,rgba(0,0,0,0.55),transparent_72%)] blur-xl" />
+      <div className="absolute inset-x-[12%] bottom-[7%] h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.22),transparent)]" />
 
-      <div className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/55">
-        {media.label}
-      </div>
+      {!isMinimal ? (
+        <div className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/55">
+          {media.label}
+        </div>
+      ) : null}
       <div className="absolute bottom-4 left-4 rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/60">
         {media.angle}
       </div>
-      {showNote ? (
+      {showNote && !isMinimal ? (
         <div className="absolute bottom-4 right-4 rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/48">
           {media.note}
         </div>
       ) : null}
       <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100">
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(255,255,255,0.03))]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(255,255,255,0.05))]" />
       </div>
     </div>
   );
