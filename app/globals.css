@@ -1,26 +1,134 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #040404;
+  --foreground: #f7f3ea;
+  --muted: #a99e88;
+  --muted-foreground: rgba(247, 243, 234, 0.62);
+  --card: rgba(255, 255, 255, 0.04);
+  --card-foreground: #f7f3ea;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.06);
+  --primary: #f4ebd7;
+  --primary-foreground: #080808;
+  --secondary: rgba(255, 255, 255, 0.06);
+  --secondary-foreground: #f8f4ea;
+  --accent: #bea97c;
+  --ring: rgba(244, 235, 215, 0.24);
+  --radius: 1.5rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-cormorant);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top, rgba(190, 169, 124, 0.16), transparent 18%),
+      radial-gradient(circle at 82% 20%, rgba(255, 255, 255, 0.08), transparent 14%),
+      linear-gradient(180deg, #050505 0%, #020202 48%, #050505 100%);
+    color: var(--foreground);
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 120px 120px;
+    mask-image: radial-gradient(circle at top, black 20%, transparent 78%);
+    opacity: 0.08;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-cormorant);
+    letter-spacing: -0.03em;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background: rgba(244, 235, 215, 0.14);
+    color: white;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .section-frame {
+    @apply mx-auto w-full max-w-[1400px] px-6 md:px-10;
+  }
+
+  .section-space {
+    @apply py-16 md:py-24;
+  }
+
+  .luxury-panel {
+    @apply rounded-[2rem] border border-white/10 bg-white/[0.04] shadow-[0_32px_120px_rgba(0,0,0,0.55)] backdrop-blur-xl;
+  }
+
+  .luxury-muted-panel {
+    @apply rounded-[1.75rem] border border-white/8 bg-black/40 shadow-[0_20px_70px_rgba(0,0,0,0.45)];
+  }
+
+  .eyebrow {
+    @apply text-[0.7rem] uppercase tracking-[0.4em] text-[color:var(--color-muted-foreground)];
+  }
+
+  .text-gradient {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.98),
+      rgba(242, 230, 202, 0.74)
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .hairline {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.24),
+      transparent
+    );
+  }
 }
