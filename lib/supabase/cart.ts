@@ -357,14 +357,15 @@ async function resolveVariantSelection(
     .select("id, sku, size, color, price_override, stock_quantity")
     .eq("product_id", product.id)
     .eq("size", size)
-    .eq("is_active", true);
+    .eq("is_active", true)
+    .order("position", { ascending: true })
+    .limit(1);
 
-  variantQuery = color
-    ? variantQuery.eq("color", color)
-    : variantQuery.is("color", null);
+  if (color) {
+    variantQuery = variantQuery.eq("color", color);
+  }
 
-  const { data: variantData, error: variantError } =
-    await variantQuery.maybeSingle();
+  const { data: variantData, error: variantError } = await variantQuery.maybeSingle();
   const variant = variantData as VariantSelectionSummary | null;
 
   throwOnError(variantError, "Failed to load product variant selection");
