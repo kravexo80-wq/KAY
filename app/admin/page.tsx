@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { PageIntro } from "@/components/layout/page-intro";
 import { Button } from "@/components/ui/button";
+import { localizeHref } from "@/lib/i18n/config";
+import { getRequestI18n } from "@/lib/i18n/request";
 import { getProfileDisplayName, requireAdmin } from "@/lib/supabase/auth";
 
 export const metadata: Metadata = {
@@ -10,29 +12,51 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminPage() {
-  const { user, profile } = await requireAdmin("/admin");
+  const [{ locale, direction, dictionary }, { user, profile }] = await Promise.all([
+    getRequestI18n(),
+    requireAdmin("/admin"),
+  ]);
+  const isRtl = direction === "rtl";
   const metrics = [
-    { label: "Access", value: "Granted" },
-    { label: "Role", value: "Admin" },
-    { label: "Profile", value: profile ? "Synced" : "Pending" },
-    { label: "Catalog", value: "Live" },
+    {
+      label: dictionary.admin.metrics.access,
+      value: dictionary.admin.metrics.granted,
+    },
+    {
+      label: dictionary.admin.metrics.role,
+      value: dictionary.admin.metrics.admin,
+    },
+    {
+      label: dictionary.admin.metrics.profile,
+      value: profile ? dictionary.admin.metrics.synced : dictionary.account.pending,
+    },
+    {
+      label: dictionary.admin.metrics.catalog,
+      value: dictionary.admin.metrics.live,
+    },
   ];
   const displayName = getProfileDisplayName(profile, user.email);
 
   return (
     <div className="space-y-8">
       <PageIntro
-        eyebrow="Admin Dashboard"
-        title="Operational access confirmed for the Kravexo admin surface."
-        description="This route is now protected by Supabase Auth and the profiles.role guard, so only authenticated administrators can reach it."
-        note="Catalog management, order oversight, and reporting can now build on top of a real admin access boundary."
+        eyebrow={dictionary.admin.eyebrow}
+        title={dictionary.admin.title}
+        description={dictionary.admin.description}
+        note={dictionary.admin.note}
+        noteLabel={dictionary.common.showroomNote}
+        isRtl={isRtl}
         actions={
           <>
             <Button asChild>
-              <Link href="/admin/products">Manage products</Link>
+              <Link href={localizeHref(locale, "/admin/products")}>
+                {dictionary.admin.manageProducts}
+              </Link>
             </Button>
             <Button asChild variant="secondary">
-              <Link href="/admin/orders">Review orders</Link>
+              <Link href={localizeHref(locale, "/admin/orders")}>
+                {dictionary.admin.reviewOrders}
+              </Link>
             </Button>
           </>
         }
@@ -41,7 +65,7 @@ export default async function AdminPage() {
       <section className="section-frame space-y-6">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {metrics.map((metric) => (
-            <div key={metric.label} className="luxury-muted-panel p-5">
+            <div key={metric.label} className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}>
               <p className="text-xs uppercase tracking-[0.24em] text-white/38">
                 {metric.label}
               </p>
@@ -53,39 +77,39 @@ export default async function AdminPage() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="luxury-panel p-6 md:p-8">
-            <p className="eyebrow">Admin identity</p>
+          <div className={`luxury-panel p-6 md:p-8 ${isRtl ? "text-right" : "text-left"}`}>
+            <p className="eyebrow">{dictionary.admin.identity}</p>
             <div className="mt-5 space-y-4 text-sm text-white/58">
               <div className="flex items-center justify-between gap-4 rounded-[1.4rem] border border-white/8 bg-white/[0.03] px-5 py-4">
-                <span>Administrator</span>
+                <span>{dictionary.admin.administrator}</span>
                 <span className="text-white/74">{displayName}</span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-[1.4rem] border border-white/8 bg-white/[0.03] px-5 py-4">
-                <span>Email address</span>
-                <span className="text-white/74">{user.email ?? "Unavailable"}</span>
+                <span>{dictionary.admin.email}</span>
+                <span className="text-white/74">{user.email ?? dictionary.account.pending}</span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-[1.4rem] border border-white/8 bg-white/[0.03] px-5 py-4">
-                <span>Profile role</span>
-                <span className="text-white/74">
-                  {profile?.role === "admin" ? "Administrator" : "Customer"}
-                </span>
+                <span>{dictionary.admin.profileRole}</span>
+                <span className="text-white/74">{dictionary.admin.administrator}</span>
               </div>
             </div>
           </div>
 
-          <div className="luxury-muted-panel p-5">
-            <p className="eyebrow">Current state</p>
+          <div className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}>
+            <p className="eyebrow">{dictionary.admin.currentState}</p>
             <p className="mt-3 text-sm leading-7 text-white/56">
-              Authentication, protected routing, live catalog reads, and role
-              checks are now active. Product management and order oversight now
-              continue in dedicated admin surfaces.
+              {dictionary.admin.currentStateBody}
             </p>
-            <div className="mt-5 flex flex-wrap gap-3">
+            <div className={`mt-5 flex flex-wrap gap-3 ${isRtl ? "justify-end" : ""}`}>
               <Button asChild variant="secondary">
-                <Link href="/admin/products">Open admin products</Link>
+                <Link href={localizeHref(locale, "/admin/products")}>
+                  {dictionary.admin.openProducts}
+                </Link>
               </Button>
               <Button asChild variant="secondary">
-                <Link href="/admin/orders">Open admin orders</Link>
+                <Link href={localizeHref(locale, "/admin/orders")}>
+                  {dictionary.admin.openOrders}
+                </Link>
               </Button>
             </div>
           </div>

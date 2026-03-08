@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { PageIntro } from "@/components/layout/page-intro";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { localizeHref } from "@/lib/i18n/config";
+import { getRequestI18n } from "@/lib/i18n/request";
 import { getCurrentUser, getSafeRedirectPath } from "@/lib/supabase/auth";
 import { signupAction } from "@/lib/supabase/auth-actions";
 
@@ -21,13 +23,15 @@ type SignupPageProps = {
 };
 
 export default async function SignupPage({ searchParams }: SignupPageProps) {
-  const user = await getCurrentUser();
-  const { error, message, next } = await searchParams;
+  const [{ locale, direction, dictionary }, user, resolvedSearchParams] =
+    await Promise.all([getRequestI18n(), getCurrentUser(), searchParams]);
+  const isRtl = direction === "rtl";
+  const { error, message, next } = resolvedSearchParams;
   const nextPath = getSafeRedirectPath(next, "/account");
   const loginHref =
     nextPath === "/account"
-      ? "/login"
-      : `/login?next=${encodeURIComponent(nextPath)}`;
+      ? localizeHref(locale, "/login")
+      : localizeHref(locale, `/login?next=${encodeURIComponent(nextPath)}`);
 
   if (user) {
     redirect(nextPath);
@@ -36,27 +40,29 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
   return (
     <div className="space-y-8">
       <PageIntro
-        eyebrow="Signup"
-        title="Create a Kravexo account for protected access."
-        description="Account creation now uses Supabase Auth and prepares the linked profile record used for protected customer and admin access."
-        note="The page keeps the same refined visual rhythm while the underlying signup flow is now real."
+        eyebrow={dictionary.auth.signup.eyebrow}
+        title={dictionary.auth.signup.title}
+        description={dictionary.auth.signup.description}
+        note={dictionary.auth.signup.note}
+        noteLabel={dictionary.common.showroomNote}
+        isRtl={isRtl}
       />
 
       <section className="section-frame">
         <form
           action={signupAction}
-          className="mx-auto max-w-xl luxury-panel space-y-5 p-6 md:p-8"
+          className={`mx-auto max-w-xl luxury-panel space-y-5 p-6 md:p-8 ${isRtl ? "text-right" : "text-left"}`}
         >
           {error ? (
             <div className="luxury-muted-panel p-4 text-sm leading-7 text-white/62">
-              <p className="eyebrow">Signup issue</p>
+              <p className="eyebrow">{dictionary.auth.signup.issueTitle}</p>
               <p className="mt-3">{error}</p>
             </div>
           ) : null}
 
           {message ? (
             <div className="showroom-subpanel p-4 text-sm leading-7 text-white/62">
-              <p className="eyebrow">Account update</p>
+              <p className="eyebrow">{dictionary.auth.signup.updateTitle}</p>
               <p className="mt-3">{message}</p>
             </div>
           ) : null}
@@ -65,50 +71,53 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
 
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.24em] text-white/38">
-              Full name
+              {dictionary.auth.signup.fullName}
             </p>
             <Input
               name="fullName"
-              placeholder="Full name"
+              placeholder={dictionary.auth.signup.fullName}
               autoComplete="name"
               required
+              className="text-start"
             />
           </div>
 
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.24em] text-white/38">
-              Email address
+              {dictionary.auth.signup.email}
             </p>
             <Input
               type="email"
               name="email"
-              placeholder="Email address"
+              placeholder={dictionary.auth.signup.email}
               autoComplete="email"
               required
+              className="text-start"
             />
           </div>
 
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.24em] text-white/38">
-              Password
+              {dictionary.auth.signup.password}
             </p>
             <Input
               type="password"
               name="password"
-              placeholder="Create password"
+              placeholder={dictionary.auth.signup.passwordPlaceholder}
               autoComplete="new-password"
               required
+              className="text-start"
             />
           </div>
 
           <Button type="submit" className="w-full">
-            Create account
+            {dictionary.auth.signup.submit}
           </Button>
 
           <p className="text-center text-sm text-white/46">
-            Already registered?{" "}
+            {dictionary.auth.signup.switchLead}{" "}
             <Link href={loginHref} className="text-white transition hover:text-primary">
-              Sign in
+              {dictionary.auth.signup.switchCta}
             </Link>
           </p>
         </form>

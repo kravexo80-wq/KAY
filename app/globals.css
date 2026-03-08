@@ -33,8 +33,8 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-accent: var(--accent);
   --color-ring: var(--ring);
-  --font-sans: var(--font-manrope);
-  --font-display: var(--font-cormorant);
+  --font-sans: var(--font-ui-sans, var(--font-manrope));
+  --font-display: var(--font-ui-display, var(--font-cormorant));
 }
 
 @layer base {
@@ -44,6 +44,11 @@
 
   html {
     @apply scroll-smooth;
+  }
+
+  html[dir="rtl"] {
+    --font-ui-sans: var(--font-ibm-plex-arabic);
+    --font-ui-display: var(--font-noto-kufi-arabic);
   }
 
   body {
@@ -87,8 +92,17 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-cormorant);
+    font-family: var(--font-display);
     letter-spacing: -0.03em;
+  }
+
+  html[dir="rtl"] h1,
+  html[dir="rtl"] h2,
+  html[dir="rtl"] h3,
+  html[dir="rtl"] h4,
+  html[dir="rtl"] h5,
+  html[dir="rtl"] h6 {
+    letter-spacing: 0;
   }
 
   a {
@@ -128,6 +142,10 @@
 
   .eyebrow {
     @apply text-[0.68rem] uppercase tracking-[0.42em] text-[color:var(--color-muted-foreground)];
+  }
+
+  html[dir="rtl"] .eyebrow {
+    letter-spacing: 0.18em;
   }
 
   .text-gradient {

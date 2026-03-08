@@ -7,6 +7,8 @@ import { CatalogStatePanel } from "@/components/storefront/catalog-state-panel";
 import { ProductGallery } from "@/components/storefront/product-gallery";
 import { ProductPurchasePanel } from "@/components/storefront/product-purchase-panel";
 import { ProductRecommendationsSection } from "@/components/storefront/product-recommendations-section";
+import { localizeHref } from "@/lib/i18n/config";
+import { getRequestI18n } from "@/lib/i18n/request";
 import {
   getCollectionBySlug,
   getProductBySlug,
@@ -48,7 +50,11 @@ export default async function ProductDetailPage({
 }: ProductPageProps) {
   const { slug } = await params;
   const { cartMessage, cartError } = await searchParams;
-  const productResult = await getProductBySlug(slug);
+  const [{ locale, direction, dictionary }, productResult] = await Promise.all([
+    getRequestI18n(),
+    getProductBySlug(slug),
+  ]);
+  const isRtl = direction === "rtl";
   const product = productResult.data;
 
   if (!product) {
@@ -59,23 +65,19 @@ export default async function ProductDetailPage({
     return (
       <div className="space-y-8 pb-16 md:pb-24">
         <PageIntro
-          eyebrow="Product"
-          title="The showroom piece is temporarily unavailable."
-          description="The product route is live, but the catalog data could not be loaded for this request."
-          note={
-            productResult.error ??
-            "Please retry once the Supabase catalog is configured and reachable."
-          }
+          eyebrow={dictionary.product.eyebrow}
+          title={dictionary.product.fallbackTitle}
+          description={dictionary.product.fallbackDescription}
+          note={productResult.error ?? dictionary.product.fallbackNote}
+          noteLabel={dictionary.common.showroomNote}
+          isRtl={isRtl}
         />
 
         <section className="section-frame">
           <CatalogStatePanel
-            eyebrow="Product state"
-            title="This product could not be loaded right now."
-            description={
-              productResult.error ??
-              "If the product exists and is active, it will render here once the catalog connection is available."
-            }
+            eyebrow={dictionary.product.stateEyebrow}
+            title={dictionary.product.stateTitle}
+            description={productResult.error ?? dictionary.product.stateDescription}
           />
         </section>
       </div>
@@ -101,15 +103,17 @@ export default async function ProductDetailPage({
       </div>
 
       <section className="section-frame pt-8 md:pt-12">
-        <div className="mb-6 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.24em] text-white/38">
-          <Link href="/shop" className="transition hover:text-white">
-            Shop
+        <div
+          className={`mb-6 flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.24em] text-white/38 ${isRtl ? "justify-end" : ""}`}
+        >
+          <Link href={localizeHref(locale, "/shop")} className="transition hover:text-white">
+            {dictionary.shop.eyebrow}
           </Link>
           <span>/</span>
           {collection ? (
             <>
               <Link
-                href={`/collections/${collection.slug}`}
+                href={localizeHref(locale, `/collections/${collection.slug}`)}
                 className="transition hover:text-white"
               >
                 {collection.name}
@@ -127,23 +131,27 @@ export default async function ProductDetailPage({
             viewer360={product.viewer360}
           />
           <ProductPurchasePanel
+            locale={locale}
+            copy={dictionary.product.purchase}
+            commonCopy={dictionary.common}
             product={product}
             collectionName={collection?.name}
-            productPath={`/products/${product.slug}`}
+            productPath={localizeHref(locale, `/products/${product.slug}`)}
             cartMessage={cartMessage}
             cartError={cartError}
+            isRtl={isRtl}
           />
         </div>
       </section>
 
       <section className="section-frame grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div className="grid gap-6">
-          <div className="showroom-panel p-6 md:p-8">
+          <div className={`showroom-panel p-6 md:p-8 ${isRtl ? "text-right" : "text-left"}`}>
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
               <div className="space-y-5">
-                <p className="eyebrow">Product story</p>
+                <p className="eyebrow">{dictionary.product.story}</p>
                 <h2 className="max-w-3xl text-4xl leading-[0.95] text-white md:text-6xl">
-                  Designed to hold presence under shadow, spotlight, and space.
+                  {dictionary.product.storyHeading}
                 </h2>
                 <p className="max-w-3xl text-base leading-8 text-white/62">
                   {product.description}
@@ -154,22 +162,21 @@ export default async function ProductDetailPage({
               </div>
 
               <div className="showroom-subpanel p-5">
-                <p className="eyebrow">Collection note</p>
+                <p className="eyebrow">{dictionary.product.collectionNote}</p>
                 <h3 className="mt-4 text-3xl leading-none text-white">
-                  {collection?.name ?? "Kravexo signature"}
+                  {collection?.name ?? dictionary.product.signatureCollection}
                 </h3>
                 <p className="mt-4 text-sm leading-7 text-white/56">
-                  {collection?.highlight ??
-                    "Presented inside the Kravexo dark showroom system for future editorial storytelling."}
+                  {collection?.highlight ?? dictionary.product.signatureDescription}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-            <div className="showroom-subpanel p-5">
-              <p className="eyebrow">Fabric notes</p>
-              <div className="mt-4 flex flex-wrap gap-2">
+            <div className={`showroom-subpanel p-5 ${isRtl ? "text-right" : "text-left"}`}>
+              <p className="eyebrow">{dictionary.product.fabricNotes}</p>
+              <div className={`mt-4 flex flex-wrap gap-2 ${isRtl ? "justify-end" : ""}`}>
                 {product.materials.map((material) => (
                   <span
                     key={material}
@@ -186,8 +193,8 @@ export default async function ProductDetailPage({
               </div>
             </div>
 
-            <div className="showroom-subpanel p-5">
-              <p className="eyebrow">Fit and silhouette</p>
+            <div className={`showroom-subpanel p-5 ${isRtl ? "text-right" : "text-left"}`}>
+              <p className="eyebrow">{dictionary.product.fit}</p>
               <div className="mt-5 space-y-3 text-sm leading-7 text-white/58">
                 {product.fitNotes.map((note) => (
                   <p key={note}>{note}</p>
@@ -195,8 +202,8 @@ export default async function ProductDetailPage({
               </div>
             </div>
 
-            <div className="showroom-subpanel p-5">
-              <p className="eyebrow">Care guidance</p>
+            <div className={`showroom-subpanel p-5 ${isRtl ? "text-right" : "text-left"}`}>
+              <p className="eyebrow">{dictionary.product.care}</p>
               <div className="mt-5 space-y-3 text-sm leading-7 text-white/58">
                 {product.careNotes.map((note) => (
                   <p key={note}>{note}</p>
@@ -207,12 +214,12 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="space-y-6">
-          <div className="showroom-subpanel p-5">
-            <p className="eyebrow">Shipping and returns</p>
+          <div className={`showroom-subpanel p-5 ${isRtl ? "text-right" : "text-left"}`}>
+            <p className="eyebrow">{dictionary.product.shipping}</p>
             <div className="mt-5 space-y-3 text-sm text-white/58">
               <div className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-4">
                 <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-                  Lead time
+                  {dictionary.common.leadTime}
                 </p>
                 <p className="mt-2 leading-7 text-white/72">
                   {product.shipping.leadTime}
@@ -220,7 +227,7 @@ export default async function ProductDetailPage({
               </div>
               <div className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-4">
                 <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-                  Delivery
+                  {dictionary.common.delivery}
                 </p>
                 <p className="mt-2 leading-7 text-white/72">
                   {product.shipping.delivery}
@@ -228,7 +235,7 @@ export default async function ProductDetailPage({
               </div>
               <div className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-4">
                 <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-                  Returns
+                  {dictionary.common.returns}
                 </p>
                 <p className="mt-2 leading-7 text-white/72">
                   {product.shipping.returns}
@@ -237,29 +244,31 @@ export default async function ProductDetailPage({
             </div>
           </div>
 
-          <div className="showroom-subpanel p-5">
-            <p className="eyebrow">Product metadata</p>
+          <div className={`showroom-subpanel p-5 ${isRtl ? "text-right" : "text-left"}`}>
+            <p className="eyebrow">{dictionary.product.metadata}</p>
             <div className="mt-5 space-y-3 text-sm text-white/58">
               <div className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-3">
-                <span>Collection</span>
+                <span>{dictionary.common.collection}</span>
                 <span className="text-white/76">
                   {collection?.name ?? product.collectionSlug}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-3">
-                <span>Edition</span>
+                <span>{dictionary.common.edition}</span>
                 <span className="text-white/76">
-                  {product.limitedEdition ? "Limited release" : "Core showroom"}
+                  {product.limitedEdition
+                    ? dictionary.common.limitedRelease
+                    : dictionary.common.coreShowroom}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-3">
-                <span>Primary fabric</span>
+                <span>{dictionary.common.primaryFabric}</span>
                 <span className="text-right text-white/76">
                   {product.materials[0]}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-3">
-                <span>Still angles</span>
+                <span>{dictionary.common.stillAngles}</span>
                 <span className="text-white/76">{product.gallery.length}</span>
               </div>
               {product.specs.map((spec) => (
@@ -277,10 +286,14 @@ export default async function ProductDetailPage({
       </section>
 
       <ProductRecommendationsSection
+        locale={locale}
+        copy={dictionary.product.recommendations}
+        commonCopy={dictionary.common}
         products={relatedProducts}
         collectionName={collection?.name}
         collectionHighlight={collection?.highlight}
         emptyStateMessage={relatedProductsResult.error ?? undefined}
+        isRtl={isRtl}
       />
     </div>
   );

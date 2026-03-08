@@ -4,17 +4,25 @@ import { ArrowRight } from "lucide-react";
 import { CatalogStatePanel } from "@/components/storefront/catalog-state-panel";
 import { ProductMediaFrame } from "@/components/storefront/product-media-frame";
 import { Button } from "@/components/ui/button";
+import { localizeHref, type Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
 interface HeroSectionProps {
+  locale: Locale;
+  copy: Dictionary["home"]["hero"];
   featuredProduct?: Product | null;
   statusMessage?: string | null;
+  isRtl?: boolean;
 }
 
 export function HeroSection({
+  locale,
+  copy,
   featuredProduct,
   statusMessage,
+  isRtl = false,
 }: HeroSectionProps) {
   if (!featuredProduct) {
     return (
@@ -27,49 +35,44 @@ export function HeroSection({
           </div>
 
           <div className="grid gap-12 xl:grid-cols-[minmax(0,0.94fr)_minmax(0,0.86fr)] xl:items-center">
-            <div className="relative z-10 space-y-10">
+            <div className={`relative z-10 space-y-10 ${isRtl ? "text-right" : "text-left"}`}>
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2">
                   <span className="h-2 w-2 rounded-full bg-[#f0dfb6] shadow-[0_0_20px_rgba(240,223,182,0.6)]" />
                   <p className="text-[0.68rem] uppercase tracking-[0.34em] text-white/54">
-                    Kravexo private showroom
+                    {copy.badge}
                   </p>
                 </div>
 
                 <div className="space-y-5">
                   <h1 className="max-w-5xl text-[clamp(3.7rem,7.6vw,7.8rem)] leading-[0.9] text-white">
-                    <span className="text-gradient">
-                      Modest silhouettes staged like luxury campaign pieces.
-                    </span>
+                    <span className="text-gradient">{copy.title}</span>
                   </h1>
                   <p className="max-w-2xl text-base leading-8 text-white/62 md:text-lg">
-                    A dark cinematic storefront for Arabic and Islamic clothing,
-                    built to spotlight fabric, cut, and finish with the restraint
-                    of premium product photography.
+                    {copy.description}
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className={`flex flex-wrap gap-3 ${isRtl ? "justify-end" : ""}`}>
                 <Button asChild size="lg">
-                  <Link href="/shop">
-                    Explore the showroom
-                    <ArrowRight className="h-4 w-4" />
+                  <Link href={localizeHref(locale, "/shop")}>
+                    {copy.primaryCta}
+                    <ArrowRight className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`} />
                   </Link>
                 </Button>
                 <Button asChild variant="secondary" size="lg">
-                  <Link href="/collections">Browse collections</Link>
+                  <Link href={localizeHref(locale, "/collections")}>
+                    {copy.secondaryCta}
+                  </Link>
                 </Button>
               </div>
             </div>
 
             <CatalogStatePanel
-              eyebrow="Featured product"
-              title="The showroom is ready for live catalog highlights."
-              description={
-                statusMessage ??
-                "No featured product is currently published. Mark a live product as featured in Supabase to restore the hero spotlight."
-              }
+              eyebrow={copy.fallback.eyebrow}
+              title={copy.fallback.title}
+              description={statusMessage ?? copy.fallback.description}
               className="min-h-[26rem] self-stretch"
             />
           </div>
@@ -92,42 +95,40 @@ export function HeroSection({
         </div>
 
         <div className="grid gap-12 xl:grid-cols-[minmax(0,0.94fr)_minmax(0,0.86fr)] xl:items-center">
-          <div className="relative z-10 space-y-10">
+          <div className={`relative z-10 space-y-10 ${isRtl ? "text-right" : "text-left"}`}>
             <div className="space-y-6">
               <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2">
                 <span className="h-2 w-2 rounded-full bg-[#f0dfb6] shadow-[0_0_20px_rgba(240,223,182,0.6)]" />
                 <p className="text-[0.68rem] uppercase tracking-[0.34em] text-white/54">
-                  Kravexo private showroom
+                  {copy.badge}
                 </p>
               </div>
 
               <div className="space-y-5">
                 <h1 className="max-w-5xl text-[clamp(3.7rem,7.6vw,7.8rem)] leading-[0.9] text-white">
-                  <span className="text-gradient">
-                    Modest silhouettes staged like luxury campaign pieces.
-                  </span>
+                  <span className="text-gradient">{copy.title}</span>
                 </h1>
                 <p className="max-w-2xl text-base leading-8 text-white/62 md:text-lg">
-                  A dark cinematic storefront for Arabic and Islamic clothing,
-                  built to spotlight fabric, cut, and finish with the restraint
-                  of premium product photography.
+                  {copy.description}
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className={`flex flex-wrap gap-3 ${isRtl ? "justify-end" : ""}`}>
               <Button asChild size="lg">
-                <Link href="/shop">
-                  Explore the showroom
-                  <ArrowRight className="h-4 w-4" />
+                <Link href={localizeHref(locale, "/shop")}>
+                  {copy.primaryCta}
+                  <ArrowRight className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`} />
                 </Link>
               </Button>
               <Button asChild variant="secondary" size="lg">
-                <Link href="/collections">Browse collections</Link>
+                <Link href={localizeHref(locale, "/collections")}>
+                  {copy.secondaryCta}
+                </Link>
               </Button>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className={`flex flex-wrap gap-2 ${isRtl ? "justify-end" : ""}`}>
               {featuredProduct.tags.slice(0, 2).map((tag) => (
                 <span
                   key={tag}
@@ -137,33 +138,33 @@ export function HeroSection({
                 </span>
               ))}
               <span className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-[0.68rem] uppercase tracking-[0.28em] text-white/48">
-                360-ready gallery architecture
+                {copy.tag360}
               </span>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
               <div className="showroom-subpanel px-4 py-5">
                 <p className="text-[0.66rem] uppercase tracking-[0.28em] text-white/34">
-                  Hero staging
+                  {copy.cards.stagingTitle}
                 </p>
                 <p className="mt-3 text-lg leading-7 text-white">
-                  Full-width campaign composition with controlled glow.
+                  {copy.cards.stagingBody}
                 </p>
               </div>
               <div className="showroom-subpanel px-4 py-5">
                 <p className="text-[0.66rem] uppercase tracking-[0.28em] text-white/34">
-                  Media system
+                  {copy.cards.mediaTitle}
                 </p>
                 <p className="mt-3 text-lg leading-7 text-white">
-                  Multi-angle cards prepared for real product imagery later.
+                  {copy.cards.mediaBody}
                 </p>
               </div>
               <div className="showroom-subpanel px-4 py-5">
                 <p className="text-[0.66rem] uppercase tracking-[0.28em] text-white/34">
-                  Commerce path
+                  {copy.cards.commerceTitle}
                 </p>
                 <p className="mt-3 text-lg leading-7 text-white">
-                  Ready for Supabase, Stripe, zoom, and richer motion.
+                  {copy.cards.commerceBody}
                 </p>
               </div>
             </div>
@@ -195,7 +196,7 @@ export function HeroSection({
             </div>
 
             <div className="showroom-subpanel absolute right-0 top-[6%] hidden w-60 p-5 lg:block xl:right-[2%]">
-              <p className="eyebrow">Featured piece</p>
+              <p className="eyebrow">{copy.featuredPiece}</p>
               <h2 className="mt-4 text-4xl leading-none text-white">
                 {featuredProduct.name}
               </h2>
@@ -206,11 +207,11 @@ export function HeroSection({
                 {featuredProduct.story}
               </p>
               <Link
-                href={`/products/${featuredProduct.slug}`}
+                href={localizeHref(locale, `/products/${featuredProduct.slug}`)}
                 className="mt-6 inline-flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.26em] text-white/62 transition hover:text-white"
               >
-                View product
-                <ArrowRight className="h-4 w-4" />
+                {copy.featuredPiece}
+                <ArrowRight className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`} />
               </Link>
             </div>
 

@@ -2,10 +2,19 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import type { Collection } from "@/types/collection";
+import { localizeHref, type Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
+
+interface CollectionCardLabels {
+  pieces: string;
+  viewCollection: string;
+}
 
 interface CollectionCardProps {
   collection: Collection;
+  locale?: Locale;
+  labels?: CollectionCardLabels;
+  isRtl?: boolean;
 }
 
 const collectionStyles = {
@@ -26,10 +35,20 @@ const collectionGlowStyles = {
   pearl: "bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_72%)]",
 };
 
-export function CollectionCard({ collection }: CollectionCardProps) {
+const defaultLabels: CollectionCardLabels = {
+  pieces: "pieces",
+  viewCollection: "View collection",
+};
+
+export function CollectionCard({
+  collection,
+  locale = "en",
+  labels = defaultLabels,
+  isRtl = false,
+}: CollectionCardProps) {
   return (
     <Link
-      href={`/collections/${collection.slug}`}
+      href={localizeHref(locale, `/collections/${collection.slug}`)}
       className={cn(
         "group relative isolate block min-h-[420px] overflow-hidden rounded-[2.25rem] border border-white/10 p-[1px] shadow-[0_34px_110px_rgba(0,0,0,0.46)] transition duration-500 hover:-translate-y-2 hover:shadow-[0_52px_150px_rgba(0,0,0,0.58),0_0_60px_rgba(190,169,124,0.08)]",
       )}
@@ -52,14 +71,14 @@ export function CollectionCard({ collection }: CollectionCardProps) {
           <div className="absolute inset-x-[18%] bottom-[17%] h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent)]" />
         </div>
 
-        <div className="relative flex items-start justify-between gap-4">
+        <div className={`relative flex items-start justify-between gap-4 ${isRtl ? "text-right" : "text-left"}`}>
           <p className="eyebrow">{collection.eyebrow}</p>
           <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/48">
-            {collection.productSlugs.length} pieces
+            {collection.productSlugs.length} {labels.pieces}
           </span>
         </div>
 
-        <div className="relative mt-16 space-y-5">
+        <div className={`relative mt-16 space-y-5 ${isRtl ? "text-right" : "text-left"}`}>
           <div className="space-y-3">
             <h3 className="max-w-xs text-4xl leading-none text-white md:text-[2.9rem]">
               {collection.name}
@@ -78,9 +97,14 @@ export function CollectionCard({ collection }: CollectionCardProps) {
 
         <div className="relative mt-10 flex items-center justify-between gap-4 border-t border-white/8 pt-5">
           <span className="text-[0.68rem] uppercase tracking-[0.28em] text-white/48 transition duration-300 group-hover:text-white/72">
-            View collection
+            {labels.viewCollection}
           </span>
-          <ArrowRight className="h-4 w-4 text-white/56 transition duration-300 group-hover:translate-x-1 group-hover:text-white" />
+          <ArrowRight
+            className={cn(
+              "h-4 w-4 text-white/56 transition duration-300 group-hover:text-white",
+              isRtl ? "group-hover:-translate-x-1 rotate-180" : "group-hover:translate-x-1",
+            )}
+          />
         </div>
       </div>
     </Link>

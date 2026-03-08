@@ -5,6 +5,7 @@ interface SectionHeadingProps {
   title: string;
   description: string;
   note?: string;
+  isRtl?: boolean;
   align?: "left" | "center";
   className?: string;
 }
@@ -14,6 +15,7 @@ export function SectionHeading({
   title,
   description,
   note,
+  isRtl = false,
   align = "left",
   className,
 }: SectionHeadingProps) {
@@ -22,6 +24,7 @@ export function SectionHeading({
       className={cn(
         "max-w-3xl space-y-5",
         align === "center" && "mx-auto text-center",
+        align !== "center" && isRtl && "text-right",
         className,
       )}
     >
@@ -29,6 +32,7 @@ export function SectionHeading({
         className={cn(
           "flex items-center gap-3",
           align === "center" && "justify-center",
+          align !== "center" && isRtl && "flex-row-reverse justify-start",
         )}
       >
         <span className="h-px w-10 bg-[linear-gradient(90deg,transparent,rgba(190,169,124,0.75),rgba(255,255,255,0.12))]" />
@@ -47,6 +51,7 @@ export function SectionHeading({
           className={cn(
             "showroom-subpanel max-w-xl px-4 py-3 text-sm leading-6 text-white/48",
             align === "center" && "mx-auto",
+            align !== "center" && isRtl && "text-right",
           )}
         >
           {note}

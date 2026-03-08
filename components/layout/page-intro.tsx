@@ -1,10 +1,13 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface PageIntroProps {
   eyebrow: string;
   title: string;
   description: string;
   note: string;
+  noteLabel?: string;
+  isRtl?: boolean;
   actions?: ReactNode;
 }
 
@@ -13,13 +16,15 @@ export function PageIntro({
   title,
   description,
   note,
+  noteLabel = "Showroom note",
+  isRtl = false,
   actions,
 }: PageIntroProps) {
   return (
     <section className="section-frame pt-8 md:pt-12">
       <div className="luxury-panel overflow-hidden px-6 py-8 md:px-10 md:py-10">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
-          <div className="space-y-6">
+          <div className={cn("space-y-6", isRtl && "text-right")}>
             <div className="space-y-4">
               <p className="eyebrow">{eyebrow}</p>
               <h1 className="max-w-3xl text-4xl leading-none text-white md:text-6xl">
@@ -32,8 +37,8 @@ export function PageIntro({
             {actions ? <div className="flex flex-wrap gap-3">{actions}</div> : null}
           </div>
 
-          <div className="luxury-muted-panel p-5">
-            <p className="eyebrow">Showroom note</p>
+          <div className={cn("luxury-muted-panel p-5", isRtl && "text-right")}>
+            <p className="eyebrow">{noteLabel}</p>
             <p className="mt-4 text-sm leading-7 text-white/58">{note}</p>
           </div>
         </div>

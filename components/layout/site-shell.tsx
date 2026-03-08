@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { getRequestI18n } from "@/lib/i18n/request";
 import {
   getCurrentProfile,
   getCurrentUser,
@@ -15,11 +16,15 @@ interface SiteShellProps {
 }
 
 export async function SiteShell({ children }: SiteShellProps) {
-  const [user, profile, cartItemCount] = await Promise.all([
-    getCurrentUser(),
-    getCurrentProfile(),
-    getCartItemCount(),
-  ]);
+  const [{ locale, direction, pathname, dictionary }, user, profile, cartItemCount] =
+    await Promise.all([
+      getRequestI18n(),
+      getCurrentUser(),
+      getCurrentProfile(),
+      getCartItemCount(),
+    ]);
+
+  const isRtl = direction === "rtl";
 
   return (
     <div className="relative min-h-screen">
@@ -28,15 +33,31 @@ export async function SiteShell({ children }: SiteShellProps) {
         <div className="absolute right-[-8rem] top-[18rem] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.08),transparent_68%)] blur-3xl" />
         <div className="absolute left-[-10rem] top-[32rem] h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.05),transparent_70%)] blur-3xl" />
       </div>
-      <AnnouncementBar />
+      <AnnouncementBar
+        label={dictionary.announcement.label}
+        message={dictionary.announcement.message}
+        secondary={dictionary.announcement.secondary}
+        isRtl={isRtl}
+      />
       <Header
+        locale={locale}
+        direction={direction}
+        currentPath={pathname}
+        copy={dictionary.header}
+        switchLabel={dictionary.language.switchLabel}
         accountLabel={getProfileDisplayName(profile, user?.email)}
         cartItemCount={cartItemCount}
         isAuthenticated={Boolean(user)}
         isAdmin={profile?.role === "admin"}
       />
       <main>{children}</main>
-      <Footer />
+      <Footer
+        locale={locale}
+        copy={dictionary.footer}
+        navigationCopy={dictionary.header.navigation}
+        commonCopy={dictionary.common}
+        isRtl={isRtl}
+      />
     </div>
   );
 }

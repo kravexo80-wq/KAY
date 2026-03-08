@@ -1,49 +1,71 @@
 import { ProductGrid } from "@/components/storefront/product-grid";
 import { SectionHeading } from "@/components/ui/section-heading";
+import type { Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import type { Product } from "@/types/product";
 
 interface ProductRecommendationsSectionProps {
+  locale: Locale;
+  copy: Dictionary["product"]["recommendations"];
+  commonCopy: Dictionary["common"];
   products: Product[];
   collectionName?: string;
   collectionHighlight?: string;
   emptyStateMessage?: string;
+  isRtl?: boolean;
 }
 
 export function ProductRecommendationsSection({
+  locale,
+  copy,
+  commonCopy,
   products,
   collectionName,
   collectionHighlight,
   emptyStateMessage,
+  isRtl = false,
 }: ProductRecommendationsSectionProps) {
+  const title = collectionName
+    ? locale === "ar"
+      ? `المزيد من عالم ${collectionName}.`
+      : `More from the ${collectionName} world.`
+    : copy.titleFallback;
+
   return (
     <section className="section-frame section-space space-y-10">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
         <SectionHeading
-          eyebrow="Curated continuation"
-          title={
-            collectionName
-              ? `More from the ${collectionName} world.`
-              : "Curated pieces that keep the same showroom mood."
-          }
-          description="These recommendations are presented as a continuation of the product story, not a generic upsell strip, so the page keeps its luxury editorial rhythm."
-          note="The existing product card system is reused here so related pieces stay visually consistent with the rest of the storefront."
+          eyebrow={copy.eyebrow}
+          title={title}
+          description={copy.description}
+          note={copy.note}
+          isRtl={isRtl}
         />
 
-        <div className="showroom-subpanel hidden p-5 lg:block">
-          <p className="eyebrow">Collection context</p>
+        <div className={`showroom-subpanel hidden p-5 lg:block ${isRtl ? "text-right" : "text-left"}`}>
+          <p className="eyebrow">{copy.contextTitle}</p>
           <p className="mt-4 text-sm leading-7 text-white/54">
-            {collectionHighlight ??
-              "Related pieces can expand into richer recommendation logic once live catalog and customer data are connected."}
+            {collectionHighlight ?? copy.contextFallback}
           </p>
         </div>
       </div>
 
       {products.length > 0 ? (
-        <ProductGrid products={products} />
+        <ProductGrid
+          products={products}
+          locale={locale}
+          labels={{
+            limitedRelease: commonCopy.limitedRelease,
+            angles: commonCopy.angles,
+            sizes: commonCopy.sizes,
+            material: commonCopy.material,
+            viewPiece: commonCopy.viewPiece,
+          }}
+          isRtl={isRtl}
+        />
       ) : (
-        <div className="showroom-subpanel p-6 text-sm leading-7 text-white/56">
-          {emptyStateMessage ??
-            "Related products will appear here as the collection expands."}
+        <div className={`showroom-subpanel p-6 text-sm leading-7 text-white/56 ${isRtl ? "text-right" : "text-left"}`}>
+          {emptyStateMessage ?? copy.empty}
         </div>
       )}
     </section>

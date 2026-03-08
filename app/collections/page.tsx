@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { PageIntro } from "@/components/layout/page-intro";
 import { CatalogStatePanel } from "@/components/storefront/catalog-state-panel";
 import { CollectionCard } from "@/components/storefront/collection-card";
+import { getRequestI18n } from "@/lib/i18n/request";
 import { getAllCollections } from "@/lib/supabase/catalog";
 
 export const metadata: Metadata = {
@@ -12,36 +13,50 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function CollectionsPage() {
-  const collectionsResult = await getAllCollections();
+  const [{ locale, direction, dictionary }, collectionsResult] = await Promise.all([
+    getRequestI18n(),
+    getAllCollections(),
+  ]);
+  const isRtl = direction === "rtl";
   const collections = collectionsResult.data;
 
   return (
     <div className="space-y-8">
       <PageIntro
-        eyebrow="Collections"
-        title="Curated edits with their own mood and silhouette logic."
-        description="Collections are treated as luxury chapters rather than simple catalog tags, giving each product family a distinct narrative space."
-        note="Each collection now supports its own slug route and reads from the live Supabase catalog while preserving the current editorial card system."
+        eyebrow={dictionary.collections.index.eyebrow}
+        title={dictionary.collections.index.title}
+        description={dictionary.collections.index.description}
+        note={dictionary.collections.index.note}
+        noteLabel={dictionary.common.showroomNote}
+        isRtl={isRtl}
       />
 
       <section className="section-frame">
         {collections.length > 0 ? (
           <div className="grid gap-6 lg:grid-cols-3">
             {collections.map((collection) => (
-              <CollectionCard key={collection.slug} collection={collection} />
+              <CollectionCard
+                key={collection.slug}
+                collection={collection}
+                locale={locale}
+                labels={{
+                  pieces: dictionary.common.pieces,
+                  viewCollection: dictionary.common.viewCollection,
+                }}
+                isRtl={isRtl}
+              />
             ))}
           </div>
         ) : (
           <CatalogStatePanel
-            eyebrow="Collection index"
+            eyebrow={dictionary.collections.index.stateEyebrow}
             title={
               collectionsResult.status === "ready"
-                ? "No public collections are available."
-                : "Collections are temporarily unavailable."
+                ? dictionary.collections.index.emptyTitle
+                : dictionary.collections.index.unavailableTitle
             }
             description={
-              collectionsResult.error ??
-              "Publish active collections in Supabase to populate this page."
+              collectionsResult.error ?? dictionary.collections.index.emptyDescription
             }
           />
         )}

@@ -5,11 +5,12 @@ import type { Database } from "@/types/database";
 
 import { getSupabasePublishableKey, getSupabaseUrl } from "./config";
 
-export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({
+export async function updateSession(
+  request: NextRequest,
+  response = NextResponse.next({
     request,
-  });
-
+  }),
+) {
   const supabase = createServerClient<Database>(
     getSupabaseUrl(),
     getSupabasePublishableKey(),
@@ -21,10 +22,6 @@ export async function updateSession(request: NextRequest) {
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => {
             request.cookies.set(name, value);
-          });
-
-          response = NextResponse.next({
-            request,
           });
 
           cookiesToSet.forEach(({ name, value, options }) => {
@@ -40,8 +37,8 @@ export async function updateSession(request: NextRequest) {
   return response;
 }
 
-export async function proxy(request: NextRequest) {
-  return updateSession(request);
+export async function proxy(request: NextRequest, response?: NextResponse) {
+  return updateSession(request, response);
 }
 
 export const config = {

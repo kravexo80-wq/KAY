@@ -1,15 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Search, ShoppingBag, UserRound } from "lucide-react";
 
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Button } from "@/components/ui/button";
 import { mainNavigation } from "@/lib/config/navigation";
+import {
+  localizeHref,
+  type Locale,
+  type LocaleDirection,
+} from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { logoutAction } from "@/lib/supabase/auth-actions";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
+  locale: Locale;
+  direction: LocaleDirection;
+  currentPath: string;
+  copy: Dictionary["header"];
+  switchLabel: string;
   accountLabel?: string;
   cartItemCount?: number;
   isAuthenticated?: boolean;
@@ -17,31 +28,39 @@ interface HeaderProps {
 }
 
 export function Header({
+  locale,
+  direction,
+  currentPath,
+  copy,
+  switchLabel,
   accountLabel = "Account",
   cartItemCount = 0,
   isAuthenticated = false,
   isAdmin = false,
 }: HeaderProps) {
-  const pathname = usePathname();
-  const accountHref = isAuthenticated ? "/account" : "/login";
+  const isRtl = direction === "rtl";
+  const accountHref = localizeHref(locale, isAuthenticated ? "/account" : "/login");
   const cartCountLabel = cartItemCount > 99 ? "99+" : `${cartItemCount}`;
   const cartAriaLabel =
-    cartItemCount > 0
-      ? `Open cart with ${cartItemCount} item${cartItemCount === 1 ? "" : "s"}`
-      : "Open cart";
+    cartItemCount > 0 ? `${copy.cartLabel} (${cartItemCount})` : copy.cartLabel;
 
   return (
     <header className="sticky top-3 z-40 px-4">
       <div className="section-frame">
         <div className="luxury-panel overflow-hidden rounded-full px-4 py-3 md:px-6">
-          <div className="flex items-center justify-between gap-4">
+          <div
+            className={cn(
+              "flex items-center justify-between gap-4",
+              isRtl && "flex-row-reverse",
+            )}
+          >
             <Link
-              href="/"
-              className="shrink-0 space-y-1 text-left"
+              href={localizeHref(locale, "/")}
+              className={cn("shrink-0 space-y-1", isRtl ? "text-right" : "text-left")}
               aria-label="Kravexo home"
             >
               <p className="text-xs uppercase tracking-[0.42em] text-white/45">
-                Luxury modest wear
+                {copy.tagline}
               </p>
               <p className="text-2xl uppercase tracking-[0.32em] text-white md:text-3xl">
                 Kravexo
@@ -50,34 +69,45 @@ export function Header({
 
             <nav className="hidden items-center gap-1 md:flex">
               {mainNavigation.map((item) => {
+                const href = localizeHref(locale, item.href);
                 const isActive =
-                  pathname === item.href || pathname.startsWith(`${item.href}/`);
+                  currentPath === href || currentPath.startsWith(`${href}/`);
 
                 return (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    href={href}
                     className={cn(
                       "rounded-full px-4 py-2 text-sm uppercase tracking-[0.22em] text-white/56 transition-all duration-300 hover:bg-white/[0.05] hover:text-white",
                       isActive && "bg-white/[0.06] text-white",
                     )}
                   >
-                    {item.title}
+                    {copy.navigation[item.key]}
                   </Link>
                 );
               })}
             </nav>
 
-            <div className="flex items-center gap-2">
+            <div
+              className={cn(
+                "flex items-center gap-2",
+                isRtl && "flex-row-reverse",
+              )}
+            >
+              <LanguageSwitcher
+                locale={locale}
+                currentPath={currentPath}
+                label={switchLabel}
+              />
               <Link
-                href="/shop"
+                href={localizeHref(locale, "/shop")}
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/75 transition hover:bg-white/[0.08] hover:text-white"
-                aria-label="Search collection"
+                aria-label={copy.navigation.shop}
               >
                 <Search className="h-4 w-4" />
               </Link>
               <Link
-                href="/cart"
+                href={localizeHref(locale, "/cart")}
                 className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/75 transition hover:bg-white/[0.08] hover:text-white"
                 aria-label={cartAriaLabel}
               >
@@ -95,7 +125,7 @@ export function Header({
                   size="sm"
                   className="hidden lg:inline-flex"
                 >
-                  <Link href="/admin">Admin</Link>
+                  <Link href={localizeHref(locale, "/admin")}>{copy.admin}</Link>
                 </Button>
               ) : null}
               {isAuthenticated ? (
@@ -106,11 +136,11 @@ export function Header({
                     size="sm"
                     className="hidden md:inline-flex"
                   >
-                    <Link href="/account">{accountLabel}</Link>
+                    <Link href={localizeHref(locale, "/account")}>{accountLabel}</Link>
                   </Button>
                   <form action={logoutAction} className="hidden md:block">
                     <Button type="submit" variant="secondary" size="sm">
-                      Logout
+                      {copy.logout}
                     </Button>
                   </form>
                 </>
@@ -122,17 +152,17 @@ export function Header({
                     size="sm"
                     className="hidden md:inline-flex"
                   >
-                    <Link href="/login">Login</Link>
+                    <Link href={localizeHref(locale, "/login")}>{copy.login}</Link>
                   </Button>
                   <Button asChild size="sm" className="hidden md:inline-flex">
-                    <Link href="/signup">Signup</Link>
+                    <Link href={localizeHref(locale, "/signup")}>{copy.signup}</Link>
                   </Button>
                 </>
               )}
               <Link
                 href={accountHref}
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/75 transition hover:bg-white/[0.08] hover:text-white"
-                aria-label={isAuthenticated ? "Open account" : "Open login"}
+                aria-label={isAuthenticated ? copy.account : copy.login}
               >
                 <UserRound className="h-4 w-4" />
               </Link>
@@ -140,44 +170,57 @@ export function Header({
           </div>
 
           <div className="mt-3 space-y-2 md:hidden">
-            <nav className="flex gap-2 overflow-x-auto pb-1">
+            <nav
+              className={cn(
+                "flex gap-2 overflow-x-auto pb-1",
+                isRtl && "flex-row-reverse",
+              )}
+            >
               {mainNavigation.map((item) => {
+                const href = localizeHref(locale, item.href);
                 const isActive =
-                  pathname === item.href || pathname.startsWith(`${item.href}/`);
+                  currentPath === href || currentPath.startsWith(`${href}/`);
 
                 return (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    href={href}
                     className={cn(
                       "shrink-0 rounded-full border border-white/10 px-4 py-2 text-xs uppercase tracking-[0.22em] text-white/60 transition-all duration-300",
                       isActive && "bg-white/[0.06] text-white",
                     )}
                   >
-                    {item.title}
+                    {copy.navigation[item.key]}
                   </Link>
                 );
               })}
             </nav>
 
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div
+              className={cn(
+                "flex gap-2 overflow-x-auto pb-1",
+                isRtl && "flex-row-reverse",
+              )}
+            >
               {isAdmin ? (
                 <Button asChild variant="secondary" size="sm">
-                  <Link href="/admin">Admin</Link>
+                  <Link href={localizeHref(locale, "/admin")}>{copy.admin}</Link>
                 </Button>
               ) : null}
               <Button asChild variant="secondary" size="sm">
-                <Link href={accountHref}>{isAuthenticated ? "Account" : "Login"}</Link>
+                <Link href={accountHref}>
+                  {isAuthenticated ? copy.account : copy.login}
+                </Link>
               </Button>
               {isAuthenticated ? (
                 <form action={logoutAction}>
                   <Button type="submit" variant="secondary" size="sm">
-                    Logout
+                    {copy.logout}
                   </Button>
                 </form>
               ) : (
                 <Button asChild size="sm">
-                  <Link href="/signup">Signup</Link>
+                  <Link href={localizeHref(locale, "/signup")}>{copy.signup}</Link>
                 </Button>
               )}
             </div>

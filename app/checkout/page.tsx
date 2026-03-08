@@ -7,6 +7,8 @@ import { CartFeedbackPanel } from "@/components/storefront/cart-feedback-panel";
 import { CheckoutLineItem } from "@/components/storefront/checkout-line-item";
 import { CheckoutSummaryPanel } from "@/components/storefront/checkout-summary-panel";
 import { Button } from "@/components/ui/button";
+import { localizeHref } from "@/lib/i18n/config";
+import { getRequestI18n } from "@/lib/i18n/request";
 import { getCheckoutPageData } from "@/lib/stripe/checkout";
 
 export const metadata: Metadata = {
@@ -21,19 +23,27 @@ type CheckoutPageProps = {
 
 export default async function CheckoutPage({ searchParams }: CheckoutPageProps) {
   const { error } = await searchParams;
-  const checkoutResult = await getCheckoutPageData();
+  const [{ locale, direction, dictionary }, checkoutResult] = await Promise.all([
+    getRequestI18n(),
+    getCheckoutPageData(),
+  ]);
+  const isRtl = direction === "rtl";
   const checkout = checkoutResult.data;
 
   return (
     <div className="space-y-8 pb-16 md:space-y-10 md:pb-24">
       <PageIntro
-        eyebrow="Checkout"
-        title="Complete your order through a secure Stripe session."
-        description="Your authenticated cart is converted into Stripe line items server-side, then finalized into a Kravexo order once payment succeeds."
-        note="Shipping and billing details are collected inside Stripe Checkout. The order record and item snapshots are synchronized back into Supabase after payment confirmation."
+        eyebrow={dictionary.checkout.eyebrow}
+        title={dictionary.checkout.title}
+        description={dictionary.checkout.description}
+        note={dictionary.checkout.note}
+        noteLabel={dictionary.common.showroomNote}
+        isRtl={isRtl}
         actions={
           <Button asChild variant="secondary">
-            <Link href="/cart">Back to cart</Link>
+            <Link href={localizeHref(locale, "/cart")}>
+              {dictionary.checkout.summary.backToCart}
+            </Link>
           </Button>
         }
       />
@@ -41,8 +51,8 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
       {(error || checkoutResult.error) && (
         <section className="section-frame">
           <CartFeedbackPanel
-            title="Checkout issue"
-            description={error ?? checkoutResult.error ?? "Checkout could not be prepared."}
+            title={dictionary.checkout.issueTitle}
+            description={error ?? checkoutResult.error ?? dictionary.checkout.errorTitle}
             tone="error"
           />
         </section>
@@ -51,11 +61,10 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
       {checkoutResult.status === "unconfigured" ? (
         <section className="section-frame">
           <CatalogStatePanel
-            eyebrow="Checkout state"
-            title="Stripe checkout is not configured yet."
+            eyebrow={dictionary.checkout.stateEyebrow}
+            title={dictionary.checkout.unconfiguredTitle}
             description={
-              checkoutResult.error ??
-              "Add the Stripe server credentials for this environment to enable checkout session creation and webhook syncing."
+              checkoutResult.error ?? dictionary.checkout.unconfiguredDescription
             }
           />
         </section>
@@ -64,12 +73,9 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
       {checkoutResult.status === "error" ? (
         <section className="section-frame">
           <CatalogStatePanel
-            eyebrow="Checkout state"
-            title="The checkout session could not be prepared."
-            description={
-              checkoutResult.error ??
-              "Review the cart and try again. Live stock and order validation run before Stripe is opened."
-            }
+            eyebrow={dictionary.checkout.stateEyebrow}
+            title={dictionary.checkout.errorTitle}
+            description={checkoutResult.error ?? dictionary.checkout.errorDescription}
           />
         </section>
       ) : null}
@@ -77,12 +83,14 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
       {checkoutResult.status === "empty" ? (
         <section className="section-frame">
           <CatalogStatePanel
-            eyebrow="Checkout state"
-            title="Your cart is empty."
-            description="Add a product variant from any product page before starting checkout."
+            eyebrow={dictionary.checkout.stateEyebrow}
+            title={dictionary.checkout.emptyTitle}
+            description={dictionary.checkout.emptyDescription}
             action={
               <Button asChild>
-                <Link href="/shop">Explore the collection</Link>
+                <Link href={localizeHref(locale, "/shop")}>
+                  {dictionary.common.exploreCollection}
+                </Link>
               </Button>
             }
           />
@@ -98,10 +106,13 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
           </div>
 
           <CheckoutSummaryPanel
+            locale={locale}
+            copy={dictionary.checkout.summary}
             itemCount={checkout.itemCount}
             subtotal={checkout.subtotal}
             shippingAmount={checkout.shippingAmount}
             total={checkout.total}
+            isRtl={isRtl}
           />
         </section>
       ) : null}

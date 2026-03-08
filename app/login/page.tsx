@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { PageIntro } from "@/components/layout/page-intro";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { localizeHref } from "@/lib/i18n/config";
+import { getRequestI18n } from "@/lib/i18n/request";
 import { getCurrentUser, getSafeRedirectPath } from "@/lib/supabase/auth";
 import { loginAction } from "@/lib/supabase/auth-actions";
 
@@ -21,13 +23,15 @@ type LoginPageProps = {
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const user = await getCurrentUser();
-  const { error, message, next } = await searchParams;
+  const [{ locale, direction, dictionary }, user, resolvedSearchParams] =
+    await Promise.all([getRequestI18n(), getCurrentUser(), searchParams]);
+  const isRtl = direction === "rtl";
+  const { error, message, next } = resolvedSearchParams;
   const nextPath = getSafeRedirectPath(next, "/account");
   const signupHref =
     nextPath === "/account"
-      ? "/signup"
-      : `/signup?next=${encodeURIComponent(nextPath)}`;
+      ? localizeHref(locale, "/signup")
+      : localizeHref(locale, `/signup?next=${encodeURIComponent(nextPath)}`);
 
   if (user) {
     redirect(nextPath);
@@ -36,27 +40,29 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <div className="space-y-8">
       <PageIntro
-        eyebrow="Login"
-        title="A private entry point into the Kravexo showroom."
-        description="Sign in with your Supabase-backed account to access protected profile pages, session-aware navigation, and future customer-only functionality."
-        note="The luxury visual language stays intact while the auth flow is now real."
+        eyebrow={dictionary.auth.login.eyebrow}
+        title={dictionary.auth.login.title}
+        description={dictionary.auth.login.description}
+        note={dictionary.auth.login.note}
+        noteLabel={dictionary.common.showroomNote}
+        isRtl={isRtl}
       />
 
       <section className="section-frame">
         <form
           action={loginAction}
-          className="mx-auto max-w-xl luxury-panel space-y-5 p-6 md:p-8"
+          className={`mx-auto max-w-xl luxury-panel space-y-5 p-6 md:p-8 ${isRtl ? "text-right" : "text-left"}`}
         >
           {error ? (
             <div className="luxury-muted-panel p-4 text-sm leading-7 text-white/62">
-              <p className="eyebrow">Sign-in issue</p>
+              <p className="eyebrow">{dictionary.auth.login.issueTitle}</p>
               <p className="mt-3">{error}</p>
             </div>
           ) : null}
 
           {message ? (
             <div className="showroom-subpanel p-4 text-sm leading-7 text-white/62">
-              <p className="eyebrow">Account update</p>
+              <p className="eyebrow">{dictionary.auth.login.updateTitle}</p>
               <p className="mt-3">{message}</p>
             </div>
           ) : null}
@@ -65,38 +71,40 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.24em] text-white/38">
-              Email address
+              {dictionary.auth.login.email}
             </p>
             <Input
               type="email"
               name="email"
-              placeholder="Email address"
+              placeholder={dictionary.auth.login.email}
               autoComplete="email"
               required
+              className="text-start"
             />
           </div>
 
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.24em] text-white/38">
-              Password
+              {dictionary.auth.login.password}
             </p>
             <Input
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder={dictionary.auth.login.password}
               autoComplete="current-password"
               required
+              className="text-start"
             />
           </div>
 
           <Button type="submit" className="w-full">
-            Sign in
+            {dictionary.auth.login.submit}
           </Button>
 
           <p className="text-center text-sm text-white/46">
-            New to Kravexo?{" "}
+            {dictionary.auth.login.switchLead}{" "}
             <Link href={signupHref} className="text-white transition hover:text-primary">
-              Create an account
+              {dictionary.auth.login.switchCta}
             </Link>
           </p>
         </form>

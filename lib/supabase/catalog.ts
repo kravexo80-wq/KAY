@@ -6,6 +6,10 @@ import type { Collection } from "@/types/collection";
 import type { Database, Json, Tables } from "@/types/database";
 import type { Product, ProductMedia, ProductSpec } from "@/types/product";
 
+import { getLocalizedCatalogField } from "@/lib/i18n/catalog";
+import { getRequestLocale } from "@/lib/i18n/request";
+import type { Locale } from "@/lib/i18n/config";
+
 import { hasSupabaseEnv } from "./config";
 import { createReadOnlySupabaseClient } from "./server";
 
@@ -241,20 +245,37 @@ function getAvailableSizes(variants: ProductVariantSummary[] | null) {
   return Array.from(uniqueSizes.values());
 }
 
-function mapProductRecordToProduct(record: ProductCatalogRecord): Product {
+function mapProductRecordToProduct(
+  record: ProductCatalogRecord,
+  locale: Locale,
+): Product {
   const gallery = [...(record.images ?? [])]
     .sort((left, right) => left.sort_order - right.sort_order)
     .map(mapProductImageToMedia);
 
   return {
     slug: record.slug,
-    name: record.name,
-    category: record.category?.name ?? "Uncategorized",
+    name: getLocalizedCatalogField(record as Record<string, unknown>, "name", locale),
+    category: record.category
+      ? getLocalizedCatalogField(
+          record.category as Record<string, unknown>,
+          "name",
+          locale,
+        )
+      : "Uncategorized",
     collectionSlug: record.collection?.slug ?? "",
     price: Number(record.base_price),
     compareAtPrice: record.compare_at_price ? Number(record.compare_at_price) : null,
-    shortDescription: record.short_description,
-    description: record.description,
+    shortDescription: getLocalizedCatalogField(
+      record as Record<string, unknown>,
+      "short_description",
+      locale,
+    ),
+    description: getLocalizedCatalogField(
+      record as Record<string, unknown>,
+      "description",
+      locale,
+    ),
     story: record.story,
     featured: record.is_featured,
     limitedEdition: record.limited_edition,
@@ -283,12 +304,17 @@ function mapProductRecordToProduct(record: ProductCatalogRecord): Product {
 
 function mapCollectionRecordToCollection(
   record: CollectionCatalogRecord,
+  locale: Locale,
 ): Collection {
   return {
     slug: record.slug,
-    name: record.name,
+    name: getLocalizedCatalogField(record as Record<string, unknown>, "name", locale),
     eyebrow: record.eyebrow,
-    description: record.description,
+    description: getLocalizedCatalogField(
+      record as Record<string, unknown>,
+      "description",
+      locale,
+    ),
     highlight: record.highlight,
     tone: record.tone,
     productSlugs: record.products?.map((product) => product.slug) ?? [],
@@ -313,6 +339,7 @@ async function getActiveCollectionRowBySlug(
 
 export async function getFeaturedProducts(limit = 3) {
   return runCatalogQuery("getFeaturedProducts", [] as Product[], async (client) => {
+    const locale = await getRequestLocale();
     const { data, error } = await client
       .from("products")
       .select(productCatalogSelect)
@@ -323,12 +350,15 @@ export async function getFeaturedProducts(limit = 3) {
 
     throwOnError(error, "Failed to load featured products");
 
-    return ((data ?? []) as ProductCatalogRecord[]).map(mapProductRecordToProduct);
+    return ((data ?? []) as ProductCatalogRecord[]).map((record) =>
+      mapProductRecordToProduct(record, locale),
+    );
   });
 }
 
 export async function getAllProducts() {
   return runCatalogQuery("getAllProducts", [] as Product[], async (client) => {
+    const locale = await getRequestLocale();
     const { data, error } = await client
       .from("products")
       .select(productCatalogSelect)
@@ -338,7 +368,9 @@ export async function getAllProducts() {
 
     throwOnError(error, "Failed to load products");
 
-    return ((data ?? []) as ProductCatalogRecord[]).map(mapProductRecordToProduct);
+    return ((data ?? []) as ProductCatalogRecord[]).map((record) =>
+      mapProductRecordToProduct(record, locale),
+    );
   });
 }
 
@@ -347,6 +379,7 @@ export async function getFeaturedCollections(limit = 3) {
     "getFeaturedCollections",
     [] as Collection[],
     async (client) => {
+      const locale = await getRequestLocale();
       const { data, error } = await client
         .from("collections")
         .select(collectionCatalogSelect)
@@ -358,7 +391,7 @@ export async function getFeaturedCollections(limit = 3) {
       throwOnError(error, "Failed to load featured collections");
 
       return ((data ?? []) as CollectionCatalogRecord[]).map(
-        mapCollectionRecordToCollection,
+        (record) => mapCollectionRecordToCollection(record, locale),
       );
     },
   );
@@ -366,6 +399,7 @@ export async function getFeaturedCollections(limit = 3) {
 
 export async function getAllCollections() {
   return runCatalogQuery("getAllCollections", [] as Collection[], async (client) => {
+    const locale = await getRequestLocale();
     const { data, error } = await client
       .from("collections")
       .select(collectionCatalogSelect)
@@ -375,7 +409,7 @@ export async function getAllCollections() {
     throwOnError(error, "Failed to load collections");
 
     return ((data ?? []) as CollectionCatalogRecord[]).map(
-      mapCollectionRecordToCollection,
+      (record) => mapCollectionRecordToCollection(record, locale),
     );
   });
 }
@@ -385,6 +419,7 @@ export async function getCollectionBySlug(slug: string) {
     `getCollectionBySlug:${slug}`,
     null as Collection | null,
     async (client) => {
+      const locale = await getRequestLocale();
       const { data, error } = await client
         .from("collections")
         .select(collectionCatalogSelect)
@@ -395,7 +430,7 @@ export async function getCollectionBySlug(slug: string) {
       throwOnError(error, "Failed to load collection");
 
       return data
-        ? mapCollectionRecordToCollection(data as CollectionCatalogRecord)
+        ? mapCollectionRecordToCollection(data as CollectionCatalogRecord, locale)
         : null;
     },
   );
@@ -406,6 +441,7 @@ export async function getProductsByCollectionSlug(collectionSlug: string) {
     `getProductsByCollectionSlug:${collectionSlug}`,
     [] as Product[],
     async (client) => {
+      const locale = await getRequestLocale();
       const collection = await getActiveCollectionRowBySlug(client, collectionSlug);
 
       if (!collection) {
@@ -422,7 +458,9 @@ export async function getProductsByCollectionSlug(collectionSlug: string) {
 
       throwOnError(error, "Failed to load collection products");
 
-      return ((data ?? []) as ProductCatalogRecord[]).map(mapProductRecordToProduct);
+      return ((data ?? []) as ProductCatalogRecord[]).map((record) =>
+        mapProductRecordToProduct(record, locale),
+      );
     },
   );
 }
@@ -432,6 +470,7 @@ export async function getProductBySlug(slug: string) {
     `getProductBySlug:${slug}`,
     null as Product | null,
     async (client) => {
+      const locale = await getRequestLocale();
       const { data, error } = await client
         .from("products")
         .select(productCatalogSelect)
@@ -441,7 +480,9 @@ export async function getProductBySlug(slug: string) {
 
       throwOnError(error, "Failed to load product");
 
-      return data ? mapProductRecordToProduct(data as ProductCatalogRecord) : null;
+      return data
+        ? mapProductRecordToProduct(data as ProductCatalogRecord, locale)
+        : null;
     },
   );
 }
@@ -458,6 +499,7 @@ export async function getRelatedProducts(
     `getRelatedProducts:${product.slug}`,
     [] as Product[],
     async (client) => {
+      const locale = await getRequestLocale();
       const collection = await getActiveCollectionRowBySlug(
         client,
         product.collectionSlug,
@@ -479,7 +521,9 @@ export async function getRelatedProducts(
 
       throwOnError(error, "Failed to load related products");
 
-      return ((data ?? []) as ProductCatalogRecord[]).map(mapProductRecordToProduct);
+      return ((data ?? []) as ProductCatalogRecord[]).map((record) =>
+        mapProductRecordToProduct(record, locale),
+      );
     },
   );
 }

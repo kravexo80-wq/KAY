@@ -1,33 +1,33 @@
 export const mainNavigation = [
-  { title: "Shop", href: "/shop" },
-  { title: "Collections", href: "/collections" },
-  { title: "About", href: "/about" },
-  { title: "Contact", href: "/contact" },
+  { key: "shop", href: "/shop" },
+  { key: "collections", href: "/collections" },
+  { key: "about", href: "/about" },
+  { key: "contact", href: "/contact" },
 ] as const;
 
 export const footerNavigation = [
   {
-    title: "Storefront",
+    key: "storefront",
     links: [
-      { title: "Shop", href: "/shop" },
-      { title: "Collections", href: "/collections" },
-      { title: "Cart", href: "/cart" },
+      { key: "shop", href: "/shop" },
+      { key: "collections", href: "/collections" },
+      { key: "cartLabel", href: "/cart" },
     ],
   },
   {
-    title: "Account",
+    key: "account",
     links: [
-      { title: "Login", href: "/login" },
-      { title: "Signup", href: "/signup" },
-      { title: "Account", href: "/account" },
+      { key: "login", href: "/login" },
+      { key: "signup", href: "/signup" },
+      { key: "account", href: "/account" },
     ],
   },
   {
-    title: "Brand",
+    key: "brand",
     links: [
-      { title: "About", href: "/about" },
-      { title: "Contact", href: "/contact" },
-      { title: "Admin", href: "/admin" },
+      { key: "about", href: "/about" },
+      { key: "contact", href: "/contact" },
+      { key: "admin", href: "/admin" },
     ],
   },
 ] as const;

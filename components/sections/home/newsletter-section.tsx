@@ -1,7 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
-export function NewsletterSection() {
+interface NewsletterSectionProps {
+  copy: Dictionary["home"]["newsletter"];
+  isRtl?: boolean;
+}
+
+export function NewsletterSection({
+  copy,
+  isRtl = false,
+}: NewsletterSectionProps) {
   return (
     <section className="section-frame section-space">
       <div className="showroom-panel px-6 py-8 md:px-10 md:py-10">
@@ -11,19 +20,16 @@ export function NewsletterSection() {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-center">
-          <div className="relative space-y-5">
-            <p className="eyebrow">Private list</p>
+          <div className={`relative space-y-5 ${isRtl ? "text-right" : "text-left"}`}>
+            <p className="eyebrow">{copy.eyebrow}</p>
             <h2 className="max-w-2xl text-4xl leading-none text-white md:text-6xl">
-              Reserve first access to drops, edits, and private showroom
-              releases.
+              {copy.title}
             </h2>
             <p className="max-w-xl text-base leading-7 text-white/62">
-              A premium opt-in surface prepared for future launch alerts,
-              tailored communication, and invite-led releases without breaking
-              the dark showroom tone.
+              {copy.description}
             </p>
-            <div className="flex flex-wrap gap-2">
-              {["Early access", "No noise", "Private drop alerts"].map((item) => (
+            <div className={`flex flex-wrap gap-2 ${isRtl ? "justify-end" : ""}`}>
+              {copy.tags.map((item: string) => (
                 <span
                   key={item}
                   className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-[0.68rem] uppercase tracking-[0.28em] text-white/46"
@@ -34,29 +40,29 @@ export function NewsletterSection() {
             </div>
           </div>
 
-          <form className="showroom-subpanel relative space-y-4 p-5 md:p-6">
+          <form className={`showroom-subpanel relative space-y-4 p-5 md:p-6 ${isRtl ? "text-right" : "text-left"}`}>
             <div>
-              <p className="eyebrow">Sign up</p>
+              <p className="eyebrow">{copy.formTitle}</p>
               <p className="mt-3 text-sm leading-7 text-white/54">
-                Simple now, ready for Supabase-backed CRM flows later.
+                {copy.formDescription}
               </p>
             </div>
             <Input
               type="email"
-              placeholder="Email address"
-              className="h-[3.35rem] rounded-[1.15rem] bg-white/[0.05] px-5"
+              placeholder={copy.emailPlaceholder}
+              className="h-[3.35rem] rounded-[1.15rem] bg-white/[0.05] px-5 text-start"
             />
             <div className="flex flex-col gap-3 sm:flex-row">
               <Input
-                placeholder="Preferred collection"
-                className="h-[3.35rem] rounded-[1.15rem] bg-white/[0.05] px-5"
+                placeholder={copy.interestPlaceholder}
+                className="h-[3.35rem] rounded-[1.15rem] bg-white/[0.05] px-5 text-start"
               />
               <Button type="submit" className="sm:min-w-44">
-                Join the list
+                {copy.submit}
               </Button>
             </div>
             <p className="text-xs uppercase tracking-[0.24em] text-white/34">
-              Campaign access, launch alerts, and collection previews
+              {copy.footer}
             </p>
           </form>
         </div>

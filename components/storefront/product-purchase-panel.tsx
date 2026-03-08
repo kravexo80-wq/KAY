@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Minus, Plus, ShoppingBag, Sparkles, Zap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { type Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import {
   addToCartAction,
   buyNowAction,
@@ -12,19 +14,27 @@ import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
 interface ProductPurchasePanelProps {
+  locale: Locale;
+  copy: Dictionary["product"]["purchase"];
+  commonCopy: Dictionary["common"];
   product: Product;
   collectionName?: string;
   productPath?: string;
   cartMessage?: string | null;
   cartError?: string | null;
+  isRtl?: boolean;
 }
 
 export function ProductPurchasePanel({
+  locale,
+  copy,
+  commonCopy,
   product,
   collectionName,
   productPath,
   cartMessage,
   cartError,
+  isRtl = false,
 }: ProductPurchasePanelProps) {
   const [selectedSize, setSelectedSize] = useState(product.sizes[0] ?? "");
   const [quantity, setQuantity] = useState(1);
@@ -42,12 +52,15 @@ export function ProductPurchasePanel({
 
   return (
     <aside className="space-y-4">
-      <form action={addToCartAction} className="showroom-panel p-6 md:p-7">
+      <form
+        action={addToCartAction}
+        className={`showroom-panel p-6 md:p-7 ${isRtl ? "text-right" : "text-left"}`}
+      >
         <input type="hidden" name="productSlug" value={product.slug} />
         <input
           type="hidden"
           name="productPath"
-          value={productPath ?? `/products/${product.slug}`}
+          value={productPath ?? `/${locale}/products/${product.slug}`}
         />
         <input type="hidden" name="size" value={selectedSize} />
         <input type="hidden" name="quantity" value={quantity} />
@@ -61,14 +74,14 @@ export function ProductPurchasePanel({
         <div className="relative space-y-7">
           {cartError ? (
             <div className="luxury-muted-panel p-4 text-sm leading-7 text-white/62">
-              <p className="eyebrow">Cart issue</p>
+              <p className="eyebrow">{copy.cartIssue}</p>
               <p className="mt-3">{cartError}</p>
             </div>
           ) : null}
 
           {cartMessage ? (
             <div className="showroom-subpanel p-4 text-sm leading-7 text-white/62">
-              <p className="eyebrow">Cart update</p>
+              <p className="eyebrow">{copy.cartUpdate}</p>
               <p className="mt-3">{cartMessage}</p>
             </div>
           ) : null}
@@ -84,7 +97,7 @@ export function ProductPurchasePanel({
             ) : null}
             {product.limitedEdition ? (
               <span className="rounded-full border border-[#b79d67]/30 bg-[#b79d67]/10 px-4 py-2 text-[0.68rem] uppercase tracking-[0.28em] text-[#f3e7c8]">
-                Limited release
+                {commonCopy.limitedRelease}
               </span>
             ) : null}
           </div>
@@ -119,10 +132,10 @@ export function ProductPurchasePanel({
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-4">
                 <p className="text-[0.72rem] uppercase tracking-[0.28em] text-white/42">
-                  Select size
+                  {copy.selectSize}
                 </p>
                 <p className="text-xs uppercase tracking-[0.24em] text-white/32">
-                  Live variant validation
+                  {copy.variantValidation}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -149,7 +162,7 @@ export function ProductPurchasePanel({
 
             <div className="space-y-3">
               <p className="text-[0.72rem] uppercase tracking-[0.28em] text-white/42">
-                Quantity
+                {copy.quantity}
               </p>
               <div className="showroom-subpanel flex items-center justify-between rounded-[1.4rem] px-3 py-3">
                 <button
@@ -162,7 +175,7 @@ export function ProductPurchasePanel({
                 </button>
                 <div className="text-center">
                   <p className="text-[0.65rem] uppercase tracking-[0.24em] text-white/30">
-                    Selected
+                    {copy.selected}
                   </p>
                   <p className="mt-1 text-2xl leading-none text-white">{quantity}</p>
                 </div>
@@ -186,7 +199,7 @@ export function ProductPurchasePanel({
               disabled={!isPurchasable}
             >
               <Zap className="h-4 w-4" />
-              Buy now
+              {copy.buyNow}
             </Button>
             <Button
               variant="secondary"
@@ -196,20 +209,20 @@ export function ProductPurchasePanel({
               disabled={!isPurchasable}
             >
               <ShoppingBag className="h-4 w-4" />
-              Add to cart
+              {copy.addToCart}
             </Button>
           </div>
 
           <p className="text-[0.68rem] uppercase tracking-[0.24em] text-white/32">
             {isPurchasable
-              ? "Cart, quantity, and stock validation are now live for authenticated accounts."
-              : "This product is not currently available for cart selection."}
+              ? copy.availableNote
+              : copy.unavailableNote}
           </p>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="showroom-subpanel px-4 py-4">
               <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-                Primary fabric
+                {commonCopy.primaryFabric}
               </p>
               <p className="mt-2 text-sm leading-7 text-white/72">
                 {primaryMaterial}
@@ -217,7 +230,7 @@ export function ProductPurchasePanel({
             </div>
             <div className="showroom-subpanel px-4 py-4">
               <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-                Fit profile
+                {copy.fitProfile}
               </p>
               <p className="mt-2 text-sm leading-7 text-white/72">{fitSpec}</p>
             </div>
@@ -228,7 +241,7 @@ export function ProductPurchasePanel({
               <Sparkles className="mt-0.5 h-4 w-4 text-[#f3e7c8]" />
               <div>
                 <p className="text-[0.68rem] uppercase tracking-[0.26em] text-white/42">
-                  Showroom note
+                  {commonCopy.showroomNote}
                 </p>
                 <p className="mt-2 text-sm leading-7 text-white/56">
                   {product.shipping.presentation}

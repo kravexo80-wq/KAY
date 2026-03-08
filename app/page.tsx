@@ -2,6 +2,7 @@ import { FeaturedCollectionsSection } from "@/components/sections/home/featured-
 import { FeaturedProductsSection } from "@/components/sections/home/featured-products-section";
 import { HeroSection } from "@/components/sections/home/hero-section";
 import { NewsletterSection } from "@/components/sections/home/newsletter-section";
+import { getRequestI18n } from "@/lib/i18n/request";
 import {
   getFeaturedCollections,
   getFeaturedProducts,
@@ -10,10 +11,13 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [featuredCollectionsResult, featuredProductsResult] = await Promise.all([
-    getFeaturedCollections(),
-    getFeaturedProducts(),
-  ]);
+  const [{ locale, direction, dictionary }, featuredCollectionsResult, featuredProductsResult] =
+    await Promise.all([
+      getRequestI18n(),
+      getFeaturedCollections(),
+      getFeaturedProducts(),
+    ]);
+  const isRtl = direction === "rtl";
 
   const featuredProduct = featuredProductsResult.data[0] ?? null;
 
@@ -25,18 +29,29 @@ export default async function Home() {
         <div className="absolute left-[-10rem] top-[96rem] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.04),transparent_72%)] blur-3xl" />
       </div>
       <HeroSection
+        locale={locale}
+        copy={dictionary.home.hero}
         featuredProduct={featuredProduct}
         statusMessage={featuredProductsResult.error}
+        isRtl={isRtl}
       />
       <FeaturedCollectionsSection
+        locale={locale}
+        copy={dictionary.home.featuredCollections}
+        commonCopy={dictionary.common}
         collections={featuredCollectionsResult.data}
         statusMessage={featuredCollectionsResult.error}
+        isRtl={isRtl}
       />
       <FeaturedProductsSection
+        locale={locale}
+        copy={dictionary.home.featuredProducts}
+        commonCopy={dictionary.common}
         products={featuredProductsResult.data}
         statusMessage={featuredProductsResult.error}
+        isRtl={isRtl}
       />
-      <NewsletterSection />
+      <NewsletterSection copy={dictionary.home.newsletter} isRtl={isRtl} />
     </div>
   );
 }

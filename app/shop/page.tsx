@@ -5,6 +5,8 @@ import { PageIntro } from "@/components/layout/page-intro";
 import { CatalogStatePanel } from "@/components/storefront/catalog-state-panel";
 import { ProductGrid } from "@/components/storefront/product-grid";
 import { Button } from "@/components/ui/button";
+import { localizeHref } from "@/lib/i18n/config";
+import { getRequestI18n } from "@/lib/i18n/request";
 import { getAllProducts } from "@/lib/supabase/catalog";
 
 export const metadata: Metadata = {
@@ -14,31 +16,41 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function ShopPage() {
-  const productsResult = await getAllProducts();
+  const [{ locale, direction, dictionary }, productsResult] = await Promise.all([
+    getRequestI18n(),
+    getAllProducts(),
+  ]);
+  const isRtl = direction === "rtl";
   const products = productsResult.data;
   const filterLabels = [
-    "All pieces",
+    dictionary.shop.allPieces,
     ...Array.from(new Set(products.map((product) => product.category))).slice(0, 5),
   ];
   const featuredDestination = products[0]
-    ? `/products/${products[0].slug}`
-    : "/collections";
+    ? localizeHref(locale, `/products/${products[0].slug}`)
+    : localizeHref(locale, "/collections");
 
   return (
     <div className="space-y-8">
       <PageIntro
-        eyebrow="Shop"
-        title="A catalog designed around display clarity."
-        description="The shop keeps the same premium showroom rhythm while now reading directly from the live Supabase catalog for active public products."
-        note="Filtering, sorting, inventory state, and richer merchandising can expand on top of this structure without changing the visual language."
+        eyebrow={dictionary.shop.eyebrow}
+        title={dictionary.shop.title}
+        description={dictionary.shop.description}
+        note={dictionary.shop.note}
+        noteLabel={dictionary.common.showroomNote}
+        isRtl={isRtl}
         actions={
           <>
             <Button asChild>
-              <Link href="/collections">Shop by collection</Link>
+              <Link href={localizeHref(locale, "/collections")}>
+                {dictionary.common.shopByCollection}
+              </Link>
             </Button>
             <Button asChild variant="secondary">
               <Link href={featuredDestination}>
-                {products[0] ? "Open featured product" : "Browse collections"}
+                {products[0]
+                  ? dictionary.common.openFeaturedProduct
+                  : dictionary.common.browseCollections}
               </Link>
             </Button>
           </>
@@ -47,7 +59,7 @@ export default async function ShopPage() {
 
       <section className="section-frame space-y-6">
         {filterLabels.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
+          <div className={`flex flex-wrap gap-2 ${isRtl ? "justify-end" : ""}`}>
             {filterLabels.map((label) => (
               <span
                 key={label}
@@ -60,22 +72,32 @@ export default async function ShopPage() {
         ) : null}
 
         {products.length > 0 ? (
-          <ProductGrid products={products} />
+          <ProductGrid
+            products={products}
+            locale={locale}
+            labels={{
+              limitedRelease: dictionary.common.limitedRelease,
+              angles: dictionary.common.angles,
+              sizes: dictionary.common.sizes,
+              material: dictionary.common.material,
+              viewPiece: dictionary.common.viewPiece,
+            }}
+            isRtl={isRtl}
+          />
         ) : (
           <CatalogStatePanel
-            eyebrow="Shop catalog"
+            eyebrow={dictionary.shop.catalogEyebrow}
             title={
               productsResult.status === "ready"
-                ? "No public products are live yet."
-                : "The public catalog is temporarily unavailable."
+                ? dictionary.shop.emptyTitle
+                : dictionary.shop.unavailableTitle
             }
-            description={
-              productsResult.error ??
-              "Once active products are published in Supabase, they will appear here automatically."
-            }
+            description={productsResult.error ?? dictionary.shop.emptyDescription}
             action={
               <Button asChild variant="secondary">
-                <Link href="/collections">Browse collections</Link>
+                <Link href={localizeHref(locale, "/collections")}>
+                  {dictionary.common.browseCollections}
+                </Link>
               </Button>
             }
           />

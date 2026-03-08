@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
+import {
+  Cormorant_Garamond,
+  IBM_Plex_Sans_Arabic,
+  Manrope,
+  Noto_Kufi_Arabic,
+} from "next/font/google";
 
 import { SiteShell } from "@/components/layout/site-shell";
 import { siteConfig } from "@/lib/config/site";
+import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request";
 
 import "./globals.css";
 
@@ -15,6 +21,18 @@ const sans = Manrope({
 const display = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const arabicSans = IBM_Plex_Sans_Arabic({
+  variable: "--font-ibm-plex-arabic",
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const arabicDisplay = Noto_Kufi_Arabic({
+  variable: "--font-noto-kufi-arabic",
+  subsets: ["arabic", "latin"],
   weight: ["400", "500", "600", "700"],
 });
 
@@ -50,15 +68,18 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getRequestLocale();
+  const direction = await getRequestDirection();
+
   return (
-    <html lang="en" className="dark">
+    <html lang={locale} dir={direction} className="dark">
       <body
-        className={`${sans.variable} ${display.variable} bg-background font-sans text-foreground antialiased`}
+        className={`${sans.variable} ${display.variable} ${arabicSans.variable} ${arabicDisplay.variable} bg-background font-sans text-foreground antialiased`}
       >
         <SiteShell>{children}</SiteShell>
       </body>
