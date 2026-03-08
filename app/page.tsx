@@ -3,6 +3,7 @@ import { FeaturedProductsSection } from "@/components/sections/home/featured-pro
 import { HeroSection } from "@/components/sections/home/hero-section";
 import { NewsletterSection } from "@/components/sections/home/newsletter-section";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { submitNewsletterAction } from "@/lib/site-actions";
 import {
   getFeaturedCollections,
   getFeaturedProducts,
@@ -10,16 +11,41 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
-  const [{ locale, direction, dictionary }, featuredCollectionsResult, featuredProductsResult] =
-    await Promise.all([
-      getRequestI18n(),
-      getFeaturedCollections(),
-      getFeaturedProducts(),
-    ]);
+type HomePageProps = {
+  searchParams: Promise<{
+    newsletter?: string;
+  }>;
+};
+
+export default async function Home({ searchParams }: HomePageProps) {
+  const [
+    { locale, direction, dictionary },
+    featuredCollectionsResult,
+    featuredProductsResult,
+    resolvedSearchParams,
+  ] = await Promise.all([
+    getRequestI18n(),
+    getFeaturedCollections(),
+    getFeaturedProducts(),
+    searchParams,
+  ]);
   const isRtl = direction === "rtl";
 
   const featuredProduct = featuredProductsResult.data[0] ?? null;
+  const newsletterNotice =
+    resolvedSearchParams.newsletter === "success"
+      ? {
+          tone: "success" as const,
+          title: dictionary.home.newsletter.successTitle,
+          message: dictionary.home.newsletter.successMessage,
+        }
+      : resolvedSearchParams.newsletter === "error"
+        ? {
+            tone: "error" as const,
+            title: dictionary.home.newsletter.errorTitle,
+            message: dictionary.home.newsletter.errorMessage,
+          }
+        : null;
 
   return (
     <div className="relative overflow-hidden pb-16 md:pb-24">
@@ -51,7 +77,12 @@ export default async function Home() {
         statusMessage={featuredProductsResult.error}
         isRtl={isRtl}
       />
-      <NewsletterSection copy={dictionary.home.newsletter} isRtl={isRtl} />
+      <NewsletterSection
+        copy={dictionary.home.newsletter}
+        action={submitNewsletterAction}
+        notice={newsletterNotice}
+        isRtl={isRtl}
+      />
     </div>
   );
 }

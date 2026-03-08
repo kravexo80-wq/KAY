@@ -33,9 +33,13 @@ type ProductImageRow = Pick<
   | "image_url"
   | "storage_path"
   | "alt_text"
+  | "alt_text_ar"
   | "label"
+  | "label_ar"
   | "angle"
+  | "angle_ar"
   | "note"
+  | "note_ar"
   | "tone"
   | "sort_order"
   | "is_primary"
@@ -69,14 +73,21 @@ type AdminProductEditorRow = Pick<
   | "name_ar"
   | "slug"
   | "short_description"
+  | "short_description_ar"
   | "description"
+  | "description_ar"
   | "story"
+  | "story_ar"
   | "base_price"
   | "compare_at_price"
   | "materials"
+  | "materials_ar"
   | "fabric_notes"
+  | "fabric_notes_ar"
   | "care_notes"
+  | "care_notes_ar"
   | "fit_notes"
+  | "fit_notes_ar"
   | "limited_edition"
   | "is_active"
   | "is_featured"
@@ -129,14 +140,21 @@ const adminProductEditorSelect = `
   name_ar,
   slug,
   short_description,
+  short_description_ar,
   description,
+  description_ar,
   story,
+  story_ar,
   base_price,
   compare_at_price,
   materials,
+  materials_ar,
   fabric_notes,
+  fabric_notes_ar,
   care_notes,
+  care_notes_ar,
   fit_notes,
+  fit_notes_ar,
   limited_edition,
   is_active,
   is_featured,
@@ -167,9 +185,13 @@ const adminProductEditorSelect = `
     image_url,
     storage_path,
     alt_text,
+    alt_text_ar,
     label,
+    label_ar,
     angle,
+    angle_ar,
     note,
+    note_ar,
     tone,
     sort_order,
     is_primary
@@ -200,9 +222,13 @@ export interface AdminProductImageFormValue {
   imageUrl: string;
   storagePath: string | null;
   altText: string;
+  altTextAr: string;
   label: string;
+  labelAr: string;
   angle: string;
+  angleAr: string;
   note: string;
+  noteAr: string;
   tone: ProductTone;
   sortOrder: number;
   isPrimary: boolean;
@@ -231,11 +257,15 @@ export interface AdminProductListItem {
 export interface AdminProductEditorData {
   id: string;
   name: string;
+  nameAr: string;
   displayName: string;
   slug: string;
   shortDescription: string;
+  shortDescriptionAr: string;
   description: string;
+  descriptionAr: string;
   story: string;
+  storyAr: string;
   price: number;
   compareAtPrice: number | null;
   categoryId: string;
@@ -243,9 +273,13 @@ export interface AdminProductEditorData {
   collectionId: string | null;
   collectionName: string | null;
   materials: string[];
+  materialsAr: string[];
   fabricNotes: string[];
+  fabricNotesAr: string[];
   careNotes: string[];
+  careNotesAr: string[];
   fitNotes: string[];
+  fitNotesAr: string[];
   limitedEdition: boolean;
   isActive: boolean;
   isFeatured: boolean;
@@ -296,9 +330,13 @@ function mapImageRow(row: ProductImageRow): AdminProductImageFormValue {
     imageUrl: row.image_url ?? "",
     storagePath: row.storage_path,
     altText: row.alt_text,
+    altTextAr: row.alt_text_ar ?? "",
     label: row.label,
+    labelAr: row.label_ar ?? "",
     angle: row.angle,
+    angleAr: row.angle_ar ?? "",
     note: row.note,
+    noteAr: row.note_ar ?? "",
     tone: row.tone,
     sortOrder: row.sort_order,
     isPrimary: row.is_primary,
@@ -362,6 +400,7 @@ function mapProductEditorData(
   return {
     id: row.id,
     name: row.name,
+    nameAr: row.name_ar ?? "",
     displayName: getLocalizedCatalogField(
       row as Record<string, unknown>,
       "name",
@@ -369,8 +408,11 @@ function mapProductEditorData(
     ),
     slug: row.slug,
     shortDescription: row.short_description,
+    shortDescriptionAr: row.short_description_ar ?? "",
     description: row.description,
+    descriptionAr: row.description_ar ?? "",
     story: row.story,
+    storyAr: row.story_ar ?? "",
     price: Number(row.base_price),
     compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : null,
     categoryId: row.category_id,
@@ -392,9 +434,13 @@ function mapProductEditorData(
         )
       : null,
     materials: row.materials ?? [],
+    materialsAr: row.materials_ar ?? [],
     fabricNotes: row.fabric_notes ?? [],
+    fabricNotesAr: row.fabric_notes_ar ?? [],
     careNotes: row.care_notes ?? [],
+    careNotesAr: row.care_notes_ar ?? [],
     fitNotes: row.fit_notes ?? [],
+    fitNotesAr: row.fit_notes_ar ?? [],
     limitedEdition: row.limited_edition,
     isActive: row.is_active,
     isFeatured: row.is_featured,

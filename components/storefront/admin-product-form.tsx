@@ -149,9 +149,13 @@ function createBlankImage(sortOrder: number): AdminProductImageFormValue {
     imageUrl: "",
     storagePath: null,
     altText: "",
+    altTextAr: "",
     label: "",
+    labelAr: "",
     angle: "",
+    angleAr: "",
     note: "",
+    noteAr: "",
     tone: "obsidian",
     sortOrder,
     isPrimary: false,
@@ -230,7 +234,77 @@ export function AdminProductForm({
   const cardCopy = getExtendedUiCopy(locale).adminProducts.card;
   const isRtl = locale === "ar";
   const placeholders = editorPlaceholders[locale];
+  const englishPlaceholders = editorPlaceholders.en;
+  const arabicPlaceholders = editorPlaceholders.ar;
   const localizedToneLabels = toneLabels[locale];
+  const bilingualCopy =
+    locale === "ar"
+      ? {
+          english: "الإنجليزية",
+          arabic: "العربية",
+          contentSection: "المحتوى الثنائي",
+          contentNote:
+            "حرر النص الإنجليزي والعربي معاً حتى يظهر المتجر بكامل محتواه عند تبديل اللغة.",
+          englishName: "اسم المنتج بالإنجليزية",
+          arabicName: "اسم المنتج بالعربية",
+          englishShort: "الوصف المختصر بالإنجليزية",
+          arabicShort: "الوصف المختصر بالعربية",
+          englishDescription: "الوصف الكامل بالإنجليزية",
+          arabicDescription: "الوصف الكامل بالعربية",
+          englishStory: "قصة المنتج بالإنجليزية",
+          arabicStory: "قصة المنتج بالعربية",
+          englishMaterials: "الخامات بالإنجليزية",
+          arabicMaterials: "الخامات بالعربية",
+          englishFabricNotes: "ملاحظات القماش بالإنجليزية",
+          arabicFabricNotes: "ملاحظات القماش بالعربية",
+          englishCareNotes: "ملاحظات العناية بالإنجليزية",
+          arabicCareNotes: "ملاحظات العناية بالعربية",
+          englishFitNotes: "ملاحظات المقاس بالإنجليزية",
+          arabicFitNotes: "ملاحظات المقاس بالعربية",
+          englishImageMeta: "بيانات الصورة بالإنجليزية",
+          arabicImageMeta: "بيانات الصورة بالعربية",
+          englishAlt: "النص البديل بالإنجليزية",
+          arabicAlt: "النص البديل بالعربية",
+          englishLabel: "وسم الصورة بالإنجليزية",
+          arabicLabel: "وسم الصورة بالعربية",
+          englishAngle: "زاوية الصورة بالإنجليزية",
+          arabicAngle: "زاوية الصورة بالعربية",
+          englishNote: "ملاحظة الصورة بالإنجليزية",
+          arabicNote: "ملاحظة الصورة بالعربية",
+        }
+      : {
+          english: "English",
+          arabic: "Arabic",
+          contentSection: "Bilingual content",
+          contentNote:
+            "Edit the English and Arabic storefront copy together so the live site stays complete in both languages.",
+          englishName: "Product name (English)",
+          arabicName: "Product name (Arabic)",
+          englishShort: "Short description (English)",
+          arabicShort: "Short description (Arabic)",
+          englishDescription: "Full description (English)",
+          arabicDescription: "Full description (Arabic)",
+          englishStory: "Brand story (English)",
+          arabicStory: "Brand story (Arabic)",
+          englishMaterials: "Materials (English)",
+          arabicMaterials: "Materials (Arabic)",
+          englishFabricNotes: "Fabric notes (English)",
+          arabicFabricNotes: "Fabric notes (Arabic)",
+          englishCareNotes: "Care notes (English)",
+          arabicCareNotes: "Care notes (Arabic)",
+          englishFitNotes: "Fit notes (English)",
+          arabicFitNotes: "Fit notes (Arabic)",
+          englishImageMeta: "Image metadata (English)",
+          arabicImageMeta: "Image metadata (Arabic)",
+          englishAlt: "Alt text (English)",
+          arabicAlt: "Alt text (Arabic)",
+          englishLabel: "Label (English)",
+          arabicLabel: "Label (Arabic)",
+          englishAngle: "Angle (English)",
+          arabicAngle: "Angle (Arabic)",
+          englishNote: "Image note (English)",
+          arabicNote: "Image note (Arabic)",
+        };
   const categoryOptions = options.categories;
   const collectionOptions = options.collections;
   const isCreateMode = mode === "create";
@@ -276,12 +350,21 @@ export function AdminProductForm({
         <div className="space-y-6">
           <section className="luxury-panel p-6 md:p-8">
             <SectionHeading title={copy.basicInfo} isRtl={isRtl} />
-            <div className="mt-6 grid gap-5 md:grid-cols-2">
-              <Field label={copy.productName} isRtl={isRtl}>
+            <div className="mt-6 grid gap-5 md:grid-cols-3">
+              <Field label={bilingualCopy.englishName} isRtl={isRtl}>
                 <Input
                   name="name"
                   defaultValue={product?.name ?? ""}
-                  placeholder={placeholders.productName}
+                  placeholder={englishPlaceholders.productName}
+                  dir="ltr"
+                />
+              </Field>
+              <Field label={bilingualCopy.arabicName} isRtl={isRtl}>
+                <Input
+                  name="name_ar"
+                  defaultValue={product?.nameAr ?? ""}
+                  placeholder={arabicPlaceholders.productName}
+                  dir="rtl"
                 />
               </Field>
               <Field
@@ -297,33 +380,78 @@ export function AdminProductForm({
               </Field>
             </div>
 
-            <div className="mt-5 space-y-5">
-              <Field label={copy.shortDescription} isRtl={isRtl}>
-                <Textarea
-                  name="short_description"
-                  defaultValue={product?.shortDescription ?? ""}
-                  className="min-h-28"
-                  placeholder={placeholders.shortDescription}
-                />
-              </Field>
-              <Field label={copy.fullDescription} isRtl={isRtl}>
-                <Textarea
-                  name="description"
-                  defaultValue={product?.description ?? ""}
-                  placeholder={placeholders.description}
-                />
-              </Field>
-              <Field
-                label={copy.brandStory}
-                hint={copy.brandStoryHint}
-                isRtl={isRtl}
-              >
-                <Textarea
-                  name="story"
-                  defaultValue={product?.story ?? ""}
-                  placeholder={placeholders.story}
-                />
-              </Field>
+            <div className="mt-6 showroom-subpanel p-5">
+              <p className="eyebrow">{bilingualCopy.contentSection}</p>
+              <p className="mt-3 text-sm leading-7 text-white/48">
+                {bilingualCopy.contentNote}
+              </p>
+            </div>
+
+            <div className="mt-5 grid gap-5">
+              <div className="grid gap-5 lg:grid-cols-2">
+                <Field label={bilingualCopy.englishShort} isRtl={isRtl}>
+                  <Textarea
+                    name="short_description"
+                    defaultValue={product?.shortDescription ?? ""}
+                    className="min-h-28"
+                    placeholder={englishPlaceholders.shortDescription}
+                    dir="ltr"
+                  />
+                </Field>
+                <Field label={bilingualCopy.arabicShort} isRtl={isRtl}>
+                  <Textarea
+                    name="short_description_ar"
+                    defaultValue={product?.shortDescriptionAr ?? ""}
+                    className="min-h-28"
+                    placeholder={arabicPlaceholders.shortDescription}
+                    dir="rtl"
+                  />
+                </Field>
+              </div>
+              <div className="grid gap-5 lg:grid-cols-2">
+                <Field label={bilingualCopy.englishDescription} isRtl={isRtl}>
+                  <Textarea
+                    name="description"
+                    defaultValue={product?.description ?? ""}
+                    placeholder={englishPlaceholders.description}
+                    dir="ltr"
+                  />
+                </Field>
+                <Field label={bilingualCopy.arabicDescription} isRtl={isRtl}>
+                  <Textarea
+                    name="description_ar"
+                    defaultValue={product?.descriptionAr ?? ""}
+                    placeholder={arabicPlaceholders.description}
+                    dir="rtl"
+                  />
+                </Field>
+              </div>
+              <div className="grid gap-5 lg:grid-cols-2">
+                <Field
+                  label={bilingualCopy.englishStory}
+                  hint={copy.brandStoryHint}
+                  isRtl={isRtl}
+                >
+                  <Textarea
+                    name="story"
+                    defaultValue={product?.story ?? ""}
+                    placeholder={englishPlaceholders.story}
+                    dir="ltr"
+                  />
+                </Field>
+                <Field
+                  label={bilingualCopy.arabicStory}
+                  hint={copy.brandStoryHint}
+                  isRtl={isRtl}
+                >
+                  <Textarea
+                    name="story_ar"
+                    defaultValue={product?.storyAr ?? ""}
+                    placeholder={arabicPlaceholders.story}
+                    dir="rtl"
+                  />
+                </Field>
+              </div>
             </div>
           </section>
 
@@ -405,42 +533,94 @@ export function AdminProductForm({
           <section className="luxury-panel p-6 md:p-8">
             <SectionHeading title={copy.notesAndDetails} isRtl={isRtl} />
             <div className="mt-6 grid gap-5">
-              <Field
-                label={copy.materials}
-                hint={copy.onePerLine}
-                isRtl={isRtl}
-              >
-                <Textarea
-                  name="materials"
-                  defaultValue={toLines(product?.materials ?? [])}
-                  className="min-h-28"
-                  placeholder={placeholders.materials}
-                />
-              </Field>
-              <Field label={copy.fabricNotes} hint={copy.notePerLine} isRtl={isRtl}>
-                <Textarea
-                  name="fabric_notes"
-                  defaultValue={toLines(product?.fabricNotes ?? [])}
-                  className="min-h-28"
-                  placeholder={placeholders.fabricNotes}
-                />
-              </Field>
-              <Field label={copy.careNotes} hint={copy.notePerLine} isRtl={isRtl}>
-                <Textarea
-                  name="care_notes"
-                  defaultValue={toLines(product?.careNotes ?? [])}
-                  className="min-h-28"
-                  placeholder={placeholders.careNotes}
-                />
-              </Field>
-              <Field label={copy.fitNotes} hint={copy.notePerLine} isRtl={isRtl}>
-                <Textarea
-                  name="fit_notes"
-                  defaultValue={toLines(product?.fitNotes ?? [])}
-                  className="min-h-28"
-                  placeholder={placeholders.fitNotes}
-                />
-              </Field>
+              <div className="grid gap-5 lg:grid-cols-2">
+                <Field
+                  label={bilingualCopy.englishMaterials}
+                  hint={copy.onePerLine}
+                  isRtl={isRtl}
+                >
+                  <Textarea
+                    name="materials"
+                    defaultValue={toLines(product?.materials ?? [])}
+                    className="min-h-28"
+                    placeholder={englishPlaceholders.materials}
+                    dir="ltr"
+                  />
+                </Field>
+                <Field
+                  label={bilingualCopy.arabicMaterials}
+                  hint={copy.onePerLine}
+                  isRtl={isRtl}
+                >
+                  <Textarea
+                    name="materials_ar"
+                    defaultValue={toLines(product?.materialsAr ?? [])}
+                    className="min-h-28"
+                    placeholder={arabicPlaceholders.materials}
+                    dir="rtl"
+                  />
+                </Field>
+              </div>
+              <div className="grid gap-5 lg:grid-cols-2">
+                <Field label={bilingualCopy.englishFabricNotes} hint={copy.notePerLine} isRtl={isRtl}>
+                  <Textarea
+                    name="fabric_notes"
+                    defaultValue={toLines(product?.fabricNotes ?? [])}
+                    className="min-h-28"
+                    placeholder={englishPlaceholders.fabricNotes}
+                    dir="ltr"
+                  />
+                </Field>
+                <Field label={bilingualCopy.arabicFabricNotes} hint={copy.notePerLine} isRtl={isRtl}>
+                  <Textarea
+                    name="fabric_notes_ar"
+                    defaultValue={toLines(product?.fabricNotesAr ?? [])}
+                    className="min-h-28"
+                    placeholder={arabicPlaceholders.fabricNotes}
+                    dir="rtl"
+                  />
+                </Field>
+              </div>
+              <div className="grid gap-5 lg:grid-cols-2">
+                <Field label={bilingualCopy.englishCareNotes} hint={copy.notePerLine} isRtl={isRtl}>
+                  <Textarea
+                    name="care_notes"
+                    defaultValue={toLines(product?.careNotes ?? [])}
+                    className="min-h-28"
+                    placeholder={englishPlaceholders.careNotes}
+                    dir="ltr"
+                  />
+                </Field>
+                <Field label={bilingualCopy.arabicCareNotes} hint={copy.notePerLine} isRtl={isRtl}>
+                  <Textarea
+                    name="care_notes_ar"
+                    defaultValue={toLines(product?.careNotesAr ?? [])}
+                    className="min-h-28"
+                    placeholder={arabicPlaceholders.careNotes}
+                    dir="rtl"
+                  />
+                </Field>
+              </div>
+              <div className="grid gap-5 lg:grid-cols-2">
+                <Field label={bilingualCopy.englishFitNotes} hint={copy.notePerLine} isRtl={isRtl}>
+                  <Textarea
+                    name="fit_notes"
+                    defaultValue={toLines(product?.fitNotes ?? [])}
+                    className="min-h-28"
+                    placeholder={englishPlaceholders.fitNotes}
+                    dir="ltr"
+                  />
+                </Field>
+                <Field label={bilingualCopy.arabicFitNotes} hint={copy.notePerLine} isRtl={isRtl}>
+                  <Textarea
+                    name="fit_notes_ar"
+                    defaultValue={toLines(product?.fitNotesAr ?? [])}
+                    className="min-h-28"
+                    placeholder={arabicPlaceholders.fitNotes}
+                    dir="rtl"
+                  />
+                </Field>
+              </div>
             </div>
           </section>
 
@@ -594,21 +774,48 @@ export function AdminProductForm({
                       <Input
                         name={`image_${index}_label`}
                         defaultValue={image.label}
-                        placeholder={placeholders.imageLabel}
+                        placeholder={englishPlaceholders.imageLabel}
+                        dir="ltr"
+                      />
+                    </Field>
+                    <Field label={bilingualCopy.arabicLabel} isRtl={isRtl}>
+                      <Input
+                        name={`image_${index}_label_ar`}
+                        defaultValue={image.labelAr}
+                        placeholder={arabicPlaceholders.imageLabel}
+                        dir="rtl"
                       />
                     </Field>
                     <Field label={copy.angle} isRtl={isRtl}>
                       <Input
                         name={`image_${index}_angle`}
                         defaultValue={image.angle}
-                        placeholder={placeholders.imageAngle}
+                        placeholder={englishPlaceholders.imageAngle}
+                        dir="ltr"
+                      />
+                    </Field>
+                    <Field label={bilingualCopy.arabicAngle} isRtl={isRtl}>
+                      <Input
+                        name={`image_${index}_angle_ar`}
+                        defaultValue={image.angleAr}
+                        placeholder={arabicPlaceholders.imageAngle}
+                        dir="rtl"
                       />
                     </Field>
                     <Field label={copy.altText} isRtl={isRtl}>
                       <Input
                         name={`image_${index}_alt_text`}
                         defaultValue={image.altText}
-                        placeholder={placeholders.altText}
+                        placeholder={englishPlaceholders.altText}
+                        dir="ltr"
+                      />
+                    </Field>
+                    <Field label={bilingualCopy.arabicAlt} isRtl={isRtl}>
+                      <Input
+                        name={`image_${index}_alt_text_ar`}
+                        defaultValue={image.altTextAr}
+                        placeholder={arabicPlaceholders.altText}
+                        dir="rtl"
                       />
                     </Field>
                     <Field label={copy.displayOrder} isRtl={isRtl}>
@@ -655,14 +862,26 @@ export function AdminProductForm({
                   ) : null}
 
                   <div className="mt-4">
-                    <Field label={copy.imageNote} isRtl={isRtl}>
-                      <Textarea
-                        name={`image_${index}_note`}
-                        defaultValue={image.note}
-                        className="min-h-24"
-                        placeholder={placeholders.imageNote}
-                      />
-                    </Field>
+                    <div className="grid gap-4 lg:grid-cols-2">
+                      <Field label={bilingualCopy.englishNote} isRtl={isRtl}>
+                        <Textarea
+                          name={`image_${index}_note`}
+                          defaultValue={image.note}
+                          className="min-h-24"
+                          placeholder={englishPlaceholders.imageNote}
+                          dir="ltr"
+                        />
+                      </Field>
+                      <Field label={bilingualCopy.arabicNote} isRtl={isRtl}>
+                        <Textarea
+                          name={`image_${index}_note_ar`}
+                          defaultValue={image.noteAr}
+                          className="min-h-24"
+                          placeholder={arabicPlaceholders.imageNote}
+                          dir="rtl"
+                        />
+                      </Field>
+                    </div>
                   </div>
 
                   <div className="mt-4 grid gap-4 md:grid-cols-2">

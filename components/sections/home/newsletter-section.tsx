@@ -4,11 +4,19 @@ import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 interface NewsletterSectionProps {
   copy: Dictionary["home"]["newsletter"];
+  action: (formData: FormData) => void | Promise<void>;
+  notice?: {
+    tone: "success" | "error";
+    title: string;
+    message: string;
+  } | null;
   isRtl?: boolean;
 }
 
 export function NewsletterSection({
   copy,
+  action,
+  notice = null,
   isRtl = false,
 }: NewsletterSectionProps) {
   return (
@@ -40,7 +48,22 @@ export function NewsletterSection({
             </div>
           </div>
 
-          <form className={`showroom-subpanel relative space-y-4 p-5 md:p-6 ${isRtl ? "text-right" : "text-left"}`}>
+          <form
+            action={action}
+            className={`showroom-subpanel relative space-y-4 p-5 md:p-6 ${isRtl ? "text-right" : "text-left"}`}
+          >
+            {notice ? (
+              <div
+                className={
+                  notice.tone === "error"
+                    ? "luxury-muted-panel p-4"
+                    : "rounded-[1.35rem] border border-[#b79d67]/18 bg-[#b79d67]/[0.08] p-4"
+                }
+              >
+                <p className="eyebrow">{notice.title}</p>
+                <p className="mt-3 text-sm leading-7 text-white/60">{notice.message}</p>
+              </div>
+            ) : null}
             <div>
               <p className="eyebrow">{copy.formTitle}</p>
               <p className="mt-3 text-sm leading-7 text-white/54">
@@ -49,11 +72,13 @@ export function NewsletterSection({
             </div>
             <Input
               type="email"
+              name="email"
               placeholder={copy.emailPlaceholder}
               className="h-[3.35rem] rounded-[1.15rem] bg-white/[0.05] px-5 text-start"
             />
             <div className="flex flex-col gap-3 sm:flex-row">
               <Input
+                name="interest"
                 placeholder={copy.interestPlaceholder}
                 className="h-[3.35rem] rounded-[1.15rem] bg-white/[0.05] px-5 text-start"
               />

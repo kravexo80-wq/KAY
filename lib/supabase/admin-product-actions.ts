@@ -50,9 +50,13 @@ interface ParsedImageRow {
   imageUrl: string;
   uploadFile: File | null;
   altText: string;
+  altTextAr: string | null;
   label: string;
+  labelAr: string | null;
   angle: string;
+  angleAr: string | null;
   note: string;
+  noteAr: string | null;
   tone: ProductTone;
   sortOrder: number;
   isPrimary: boolean;
@@ -60,18 +64,26 @@ interface ParsedImageRow {
 
 interface ParsedProductPayload {
   name: string;
+  nameAr: string | null;
   slug: string;
   shortDescription: string;
+  shortDescriptionAr: string | null;
   description: string;
+  descriptionAr: string | null;
   story: string;
+  storyAr: string | null;
   price: number;
   compareAtPrice: number | null;
   categoryId: string;
   collectionId: string | null;
   materials: string[];
+  materialsAr: string[];
   fabricNotes: string[];
+  fabricNotesAr: string[];
   careNotes: string[];
+  careNotesAr: string[];
   fitNotes: string[];
+  fitNotesAr: string[];
   limitedEdition: boolean;
   isActive: boolean;
   isFeatured: boolean;
@@ -330,9 +342,13 @@ function parseImageRows(formData: FormData) {
     const imageUrl = toNullableString(formData.get(`image_${index}_image_url`));
     const uploadEntry = formData.get(`image_${index}_file`);
     const label = toNullableString(formData.get(`image_${index}_label`));
+    const labelAr = toNullableString(formData.get(`image_${index}_label_ar`));
     const angle = toNullableString(formData.get(`image_${index}_angle`));
+    const angleAr = toNullableString(formData.get(`image_${index}_angle_ar`));
     const note = toNullableString(formData.get(`image_${index}_note`));
+    const noteAr = toNullableString(formData.get(`image_${index}_note_ar`));
     const altText = toNullableString(formData.get(`image_${index}_alt_text`));
+    const altTextAr = toNullableString(formData.get(`image_${index}_alt_text_ar`));
     const toneValue = toNullableString(formData.get(`image_${index}_tone`));
     const sortOrderRaw = formData.get(`image_${index}_sort_order`);
     const remove = parseBoolean(formData, `image_${index}_remove`);
@@ -342,9 +358,13 @@ function parseImageRows(formData: FormData) {
         imageUrl ||
         uploadFile ||
         label ||
+        labelAr ||
         angle ||
+        angleAr ||
         note ||
+        noteAr ||
         altText ||
+        altTextAr ||
         (typeof sortOrderRaw === "string" && sortOrderRaw.trim()),
     );
 
@@ -390,9 +410,13 @@ function parseImageRows(formData: FormData) {
       imageUrl: imageUrl ?? "",
       uploadFile,
       altText: altText ?? label,
+      altTextAr,
       label,
+      labelAr,
       angle: angle ?? "",
+      angleAr: angleAr ?? "",
       note: note ?? "",
+      noteAr: noteAr ?? "",
       tone,
       sortOrder,
       isPrimary: parseBoolean(formData, `image_${index}_is_primary`),
@@ -434,21 +458,29 @@ function parseProductPayload(formData: FormData): ParsedProductPayload {
 
   return {
     name,
+    nameAr: toNullableString(formData.get("name_ar")),
     slug: parseSlug(formData),
     shortDescription: toRequiredString(
       formData.get("short_description"),
       "Short description",
     ),
+    shortDescriptionAr: toNullableString(formData.get("short_description_ar")),
     description: toRequiredString(formData.get("description"), "Description"),
+    descriptionAr: toNullableString(formData.get("description_ar")),
     story: toNullableString(formData.get("story")) ?? "",
+    storyAr: toNullableString(formData.get("story_ar")),
     price,
     compareAtPrice,
     categoryId: toRequiredString(formData.get("category_id"), "Category"),
     collectionId: toNullableString(formData.get("collection_id")),
     materials: parseLineList(formData, "materials"),
+    materialsAr: parseLineList(formData, "materials_ar"),
     fabricNotes: parseLineList(formData, "fabric_notes"),
+    fabricNotesAr: parseLineList(formData, "fabric_notes_ar"),
     careNotes: parseLineList(formData, "care_notes"),
+    careNotesAr: parseLineList(formData, "care_notes_ar"),
     fitNotes: parseLineList(formData, "fit_notes"),
+    fitNotesAr: parseLineList(formData, "fit_notes_ar"),
     limitedEdition: parseBoolean(formData, "limited_edition"),
     isActive: parseBoolean(formData, "is_active"),
     isFeatured: parseBoolean(formData, "is_featured"),
@@ -580,16 +612,24 @@ function createProductInsertPayload(payload: ParsedProductPayload): ProductInser
     category_id: payload.categoryId,
     collection_id: payload.collectionId,
     name: payload.name,
+    name_ar: payload.nameAr,
     slug: payload.slug,
     short_description: payload.shortDescription,
+    short_description_ar: payload.shortDescriptionAr,
     description: payload.description,
+    description_ar: payload.descriptionAr,
     story: payload.story,
+    story_ar: payload.storyAr,
     base_price: payload.price,
     compare_at_price: payload.compareAtPrice,
     materials: payload.materials,
+    materials_ar: payload.materialsAr,
     fabric_notes: payload.fabricNotes,
+    fabric_notes_ar: payload.fabricNotesAr,
     care_notes: payload.careNotes,
+    care_notes_ar: payload.careNotesAr,
     fit_notes: payload.fitNotes,
+    fit_notes_ar: payload.fitNotesAr,
     limited_edition: payload.limitedEdition,
     is_active: payload.isActive,
     is_featured: payload.isFeatured,
@@ -698,9 +738,13 @@ async function syncProductImages(
         image_url: nextImageUrl,
         storage_path: nextStoragePath,
         alt_text: image.altText,
+        alt_text_ar: image.altTextAr,
         label: image.label,
+        label_ar: image.labelAr,
         angle: image.angle,
+        angle_ar: image.angleAr,
         note: image.note,
+        note_ar: image.noteAr,
         tone: image.tone,
         sort_order: image.sortOrder,
         is_primary: image.isPrimary,
