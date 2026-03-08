@@ -4,28 +4,56 @@ import Link from "next/link";
 import { Languages } from "lucide-react";
 
 import { switchHrefLocale, type Locale } from "@/lib/i18n/config";
+import { cn } from "@/lib/utils";
 
 interface LanguageSwitcherProps {
   locale: Locale;
   currentPath: string;
-  label: string;
 }
 
 export function LanguageSwitcher({
   locale,
   currentPath,
-  label,
 }: LanguageSwitcherProps) {
-  const targetLocale = locale === "en" ? "ar" : "en";
+  const options: Array<{
+    locale: Locale;
+    label: string;
+  }> = [
+    { locale: "en", label: "English" },
+    { locale: "ar", label: "العربية" },
+  ];
 
   return (
-    <Link
-      href={switchHrefLocale(currentPath, targetLocale)}
-      className="inline-flex h-10 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 text-[0.68rem] uppercase tracking-[0.24em] text-white/68 transition hover:bg-white/[0.08] hover:text-white"
-      aria-label={label}
+    <div
+      className="inline-flex h-10 items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1 text-white/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+      aria-label="Language switcher"
+      role="group"
     >
-      <Languages className="h-4 w-4" />
-      <span>{label}</span>
-    </Link>
+      <span className="flex h-8 w-8 items-center justify-center rounded-full text-white/48">
+        <Languages className="h-4 w-4" />
+      </span>
+      {options.map((option) => {
+        const isActive = option.locale === locale;
+
+        return (
+          <Link
+            key={option.locale}
+            href={switchHrefLocale(currentPath, option.locale)}
+            aria-current={isActive ? "page" : undefined}
+            className={cn(
+              "inline-flex h-8 items-center rounded-full px-3 text-[0.72rem] font-medium transition",
+              option.locale === "en"
+                ? "tracking-[0.16em] uppercase"
+                : "tracking-normal",
+              isActive
+                ? "bg-white/[0.09] text-white shadow-[0_0_24px_rgba(190,169,124,0.12)]"
+                : "text-white/58 hover:bg-white/[0.06] hover:text-white",
+            )}
+          >
+            {option.label}
+          </Link>
+        );
+      })}
+    </div>
   );
 }

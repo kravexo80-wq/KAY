@@ -31,18 +31,26 @@ const selectClassName =
   "h-12 w-full rounded-[1.2rem] border border-white/10 bg-white/[0.04] px-4 text-sm text-white outline-none transition focus:border-[#b79d67]/35";
 
 function Field({
+  isRtl = false,
   label,
   hint,
   children,
 }: {
+  isRtl?: boolean;
   label: string;
   hint?: string;
   children: ReactNode;
 }) {
   return (
-    <label className="block space-y-3">
+    <label className={`block space-y-3 ${isRtl ? "text-right" : "text-left"}`}>
       <div className="space-y-2">
-        <span className="text-[0.62rem] uppercase tracking-[0.24em] text-white/36">
+        <span
+          className={
+            isRtl
+              ? "text-sm font-medium tracking-[0.06em] text-white/58"
+              : "text-[0.68rem] uppercase tracking-[0.24em] text-white/36"
+          }
+        >
           {label}
         </span>
         {hint ? <p className="text-sm leading-6 text-white/44">{hint}</p> : null}
@@ -53,11 +61,13 @@ function Field({
 }
 
 function CheckboxField({
+  isRtl = false,
   name,
   label,
   hint,
   defaultChecked,
 }: {
+  isRtl?: boolean;
   name: string;
   label: string;
   hint: string;
@@ -65,7 +75,7 @@ function CheckboxField({
 }) {
   return (
     <label className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] p-4">
-      <div className="flex items-start gap-3">
+      <div className={`flex items-start gap-3 ${isRtl ? "flex-row-reverse text-right" : ""}`}>
         <input
           type="checkbox"
           name={name}
@@ -73,11 +83,46 @@ function CheckboxField({
           className="mt-1 h-4 w-4 rounded border-white/12 bg-transparent accent-[#b79d67]"
         />
         <div>
-          <p className="text-sm uppercase tracking-[0.22em] text-white/72">{label}</p>
+          <p
+            className={
+              isRtl
+                ? "text-base font-medium text-white/78"
+                : "text-sm uppercase tracking-[0.22em] text-white/72"
+            }
+          >
+            {label}
+          </p>
           <p className="mt-2 text-sm leading-7 text-white/48">{hint}</p>
         </div>
       </div>
     </label>
+  );
+}
+
+function SectionHeading({
+  title,
+  description,
+  isRtl = false,
+}: {
+  title: string;
+  description?: string;
+  isRtl?: boolean;
+}) {
+  return (
+    <div className={`space-y-3 ${isRtl ? "text-right" : "text-left"}`}>
+      <h2
+        className={
+          isRtl
+            ? "text-[1.8rem] leading-tight text-white md:text-[2.35rem]"
+            : "text-[1.55rem] leading-none text-white md:text-[2rem]"
+        }
+      >
+        {title}
+      </h2>
+      {description ? (
+        <p className="max-w-2xl text-sm leading-7 text-white/48">{description}</p>
+      ) : null}
+    </div>
   );
 }
 
@@ -183,6 +228,7 @@ export function AdminProductForm({
 }: AdminProductFormProps) {
   const copy = getExtendedUiCopy(locale).adminProducts.form;
   const cardCopy = getExtendedUiCopy(locale).adminProducts.card;
+  const isRtl = locale === "ar";
   const placeholders = editorPlaceholders[locale];
   const localizedToneLabels = toneLabels[locale];
   const categoryOptions = options.categories;
@@ -229,9 +275,9 @@ export function AdminProductForm({
 
         <div className="space-y-6">
           <section className="luxury-panel p-6 md:p-8">
-            <p className="eyebrow">{copy.basicInfo}</p>
+            <SectionHeading title={copy.basicInfo} isRtl={isRtl} />
             <div className="mt-6 grid gap-5 md:grid-cols-2">
-              <Field label={copy.productName}>
+              <Field label={copy.productName} isRtl={isRtl}>
                 <Input
                   name="name"
                   defaultValue={product?.name ?? ""}
@@ -241,6 +287,7 @@ export function AdminProductForm({
               <Field
                 label={copy.slug}
                 hint={copy.slugHint}
+                isRtl={isRtl}
               >
                 <Input
                   name="slug"
@@ -251,7 +298,7 @@ export function AdminProductForm({
             </div>
 
             <div className="mt-5 space-y-5">
-              <Field label={copy.shortDescription}>
+              <Field label={copy.shortDescription} isRtl={isRtl}>
                 <Textarea
                   name="short_description"
                   defaultValue={product?.shortDescription ?? ""}
@@ -259,7 +306,7 @@ export function AdminProductForm({
                   placeholder={placeholders.shortDescription}
                 />
               </Field>
-              <Field label={copy.fullDescription}>
+              <Field label={copy.fullDescription} isRtl={isRtl}>
                 <Textarea
                   name="description"
                   defaultValue={product?.description ?? ""}
@@ -269,6 +316,7 @@ export function AdminProductForm({
               <Field
                 label={copy.brandStory}
                 hint={copy.brandStoryHint}
+                isRtl={isRtl}
               >
                 <Textarea
                   name="story"
@@ -280,9 +328,9 @@ export function AdminProductForm({
           </section>
 
           <section className="showroom-panel p-6 md:p-8">
-            <p className="eyebrow">{copy.merchandising}</p>
+            <SectionHeading title={copy.merchandising} isRtl={isRtl} />
             <div className="mt-6 grid gap-5 md:grid-cols-2">
-              <Field label={copy.basePrice}>
+              <Field label={copy.basePrice} isRtl={isRtl}>
                 <Input
                   type="number"
                   step="0.01"
@@ -294,6 +342,7 @@ export function AdminProductForm({
               <Field
                 label={copy.compareAtPrice}
                 hint={copy.compareAtPriceHint}
+                isRtl={isRtl}
               >
                 <Input
                   type="number"
@@ -304,7 +353,7 @@ export function AdminProductForm({
                   placeholder={placeholders.optional}
                 />
               </Field>
-              <Field label={copy.category}>
+              <Field label={copy.category} isRtl={isRtl}>
                 <select
                   name="category_id"
                   defaultValue={product?.categoryId ?? categoryOptions[0]?.id ?? ""}
@@ -328,6 +377,7 @@ export function AdminProductForm({
               <Field
                 label={copy.collection}
                 hint={copy.collectionHint}
+                isRtl={isRtl}
               >
                 <select
                   name="collection_id"
@@ -353,11 +403,12 @@ export function AdminProductForm({
           </section>
 
           <section className="luxury-panel p-6 md:p-8">
-            <p className="eyebrow">{copy.notesAndDetails}</p>
+            <SectionHeading title={copy.notesAndDetails} isRtl={isRtl} />
             <div className="mt-6 grid gap-5">
               <Field
                 label={copy.materials}
                 hint={copy.onePerLine}
+                isRtl={isRtl}
               >
                 <Textarea
                   name="materials"
@@ -366,7 +417,7 @@ export function AdminProductForm({
                   placeholder={placeholders.materials}
                 />
               </Field>
-              <Field label={copy.fabricNotes} hint={copy.notePerLine}>
+              <Field label={copy.fabricNotes} hint={copy.notePerLine} isRtl={isRtl}>
                 <Textarea
                   name="fabric_notes"
                   defaultValue={toLines(product?.fabricNotes ?? [])}
@@ -374,7 +425,7 @@ export function AdminProductForm({
                   placeholder={placeholders.fabricNotes}
                 />
               </Field>
-              <Field label={copy.careNotes} hint={copy.notePerLine}>
+              <Field label={copy.careNotes} hint={copy.notePerLine} isRtl={isRtl}>
                 <Textarea
                   name="care_notes"
                   defaultValue={toLines(product?.careNotes ?? [])}
@@ -382,7 +433,7 @@ export function AdminProductForm({
                   placeholder={placeholders.careNotes}
                 />
               </Field>
-              <Field label={copy.fitNotes} hint={copy.notePerLine}>
+              <Field label={copy.fitNotes} hint={copy.notePerLine} isRtl={isRtl}>
                 <Textarea
                   name="fit_notes"
                   defaultValue={toLines(product?.fitNotes ?? [])}
@@ -397,7 +448,7 @@ export function AdminProductForm({
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="eyebrow">{copy.variants}</p>
-                <h2 className="mt-4 text-3xl leading-none text-white">
+                <h2 className={`mt-4 text-white ${isRtl ? "text-[1.9rem] leading-tight md:text-[2.45rem]" : "text-3xl leading-none"}`}>
                   {copy.variantsTitle}
                 </h2>
               </div>
@@ -420,6 +471,7 @@ export function AdminProductForm({
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                     <Field
                       label={`${placeholders.variantPrefix} ${index + 1} ${copy.variantSize}`}
+                      isRtl={isRtl}
                     >
                       <Input
                         name={`variant_${index}_size`}
@@ -427,21 +479,21 @@ export function AdminProductForm({
                         placeholder={placeholders.variantSize}
                       />
                     </Field>
-                    <Field label={copy.color}>
+                    <Field label={copy.color} isRtl={isRtl}>
                       <Input
                         name={`variant_${index}_color`}
                         defaultValue={variant.color ?? ""}
                         placeholder={placeholders.optional}
                       />
                     </Field>
-                    <Field label={copy.sku}>
+                    <Field label={copy.sku} isRtl={isRtl}>
                       <Input
                         name={`variant_${index}_sku`}
                         defaultValue={variant.sku}
                         placeholder={placeholders.sku}
                       />
                     </Field>
-                    <Field label={copy.stockQuantity}>
+                    <Field label={copy.stockQuantity} isRtl={isRtl}>
                       <Input
                         type="number"
                         min="0"
@@ -450,7 +502,7 @@ export function AdminProductForm({
                         defaultValue={variant.stockQuantity}
                       />
                     </Field>
-                    <Field label={copy.priceOverride}>
+                    <Field label={copy.priceOverride} isRtl={isRtl}>
                       <Input
                         type="number"
                         min="0"
@@ -467,6 +519,7 @@ export function AdminProductForm({
                       label={copy.variantActive}
                       hint={copy.variantActiveHint}
                       defaultChecked={variant.isActive}
+                      isRtl={isRtl}
                     />
                   </div>
                 </div>
@@ -478,7 +531,7 @@ export function AdminProductForm({
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="eyebrow">{copy.images}</p>
-                <h2 className="mt-4 text-3xl leading-none text-white">
+                <h2 className={`mt-4 text-white ${isRtl ? "text-[1.9rem] leading-tight md:text-[2.45rem]" : "text-3xl leading-none"}`}>
                   {copy.imagesTitle}
                 </h2>
               </div>
@@ -518,6 +571,7 @@ export function AdminProductForm({
                     <Field
                       label={`${placeholders.imagePrefix} ${index + 1} ${copy.upload}`}
                       hint={copy.uploadHint}
+                      isRtl={isRtl}
                     >
                       <input
                         type="file"
@@ -526,35 +580,38 @@ export function AdminProductForm({
                         className="block w-full rounded-[1.2rem] border border-dashed border-white/12 bg-white/[0.02] px-4 py-3 text-sm text-white/72 file:mr-4 file:rounded-full file:border file:border-white/10 file:bg-white/[0.06] file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-[0.2em] file:text-white/72 file:transition hover:border-white/18"
                       />
                     </Field>
-                    <Field label={`${placeholders.imagePrefix} ${index + 1} ${copy.imageUrl}`}>
+                    <Field
+                      label={`${placeholders.imagePrefix} ${index + 1} ${copy.imageUrl}`}
+                      isRtl={isRtl}
+                    >
                       <Input
                         name={`image_${index}_image_url`}
                         defaultValue={image.imageUrl}
                         placeholder={placeholders.imageUrl}
                       />
                     </Field>
-                    <Field label={copy.label}>
+                    <Field label={copy.label} isRtl={isRtl}>
                       <Input
                         name={`image_${index}_label`}
                         defaultValue={image.label}
                         placeholder={placeholders.imageLabel}
                       />
                     </Field>
-                    <Field label={copy.angle}>
+                    <Field label={copy.angle} isRtl={isRtl}>
                       <Input
                         name={`image_${index}_angle`}
                         defaultValue={image.angle}
                         placeholder={placeholders.imageAngle}
                       />
                     </Field>
-                    <Field label={copy.altText}>
+                    <Field label={copy.altText} isRtl={isRtl}>
                       <Input
                         name={`image_${index}_alt_text`}
                         defaultValue={image.altText}
                         placeholder={placeholders.altText}
                       />
                     </Field>
-                    <Field label={copy.displayOrder}>
+                    <Field label={copy.displayOrder} isRtl={isRtl}>
                       <Input
                         type="number"
                         min="0"
@@ -563,7 +620,7 @@ export function AdminProductForm({
                         defaultValue={image.sortOrder}
                       />
                     </Field>
-                    <Field label={copy.tone}>
+                    <Field label={copy.tone} isRtl={isRtl}>
                       <select
                         name={`image_${index}_tone`}
                         defaultValue={image.tone}
@@ -598,7 +655,7 @@ export function AdminProductForm({
                   ) : null}
 
                   <div className="mt-4">
-                    <Field label={copy.imageNote}>
+                    <Field label={copy.imageNote} isRtl={isRtl}>
                       <Textarea
                         name={`image_${index}_note`}
                         defaultValue={image.note}
@@ -614,12 +671,14 @@ export function AdminProductForm({
                       label={copy.primaryImage}
                       hint={copy.primaryImageHint}
                       defaultChecked={image.isPrimary}
+                      isRtl={isRtl}
                     />
                     {image.id ? (
                       <CheckboxField
                         name={`image_${index}_remove`}
                         label={copy.removeImage}
                         hint={copy.removeImageHint}
+                        isRtl={isRtl}
                       />
                     ) : (
                       <div className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] p-4">
@@ -640,7 +699,7 @@ export function AdminProductForm({
 
         <aside className="space-y-6">
           <section className="showroom-panel p-6 md:p-7">
-            <p className="eyebrow">{copy.publishingState}</p>
+            <SectionHeading title={copy.publishingState} isRtl={isRtl} />
             <div className="mt-5 flex flex-wrap gap-2">
               <AdminProductStateBadge
                 label={product?.isActive ? cardCopy.active : cardCopy.inactive}
@@ -663,18 +722,21 @@ export function AdminProductForm({
                 label={copy.productActive}
                 hint={copy.productActiveHint}
                 defaultChecked={product?.isActive ?? true}
+                isRtl={isRtl}
               />
               <CheckboxField
                 name="is_featured"
                 label={copy.featuredProduct}
                 hint={copy.featuredProductHint}
                 defaultChecked={product?.isFeatured ?? false}
+                isRtl={isRtl}
               />
               <CheckboxField
                 name="limited_edition"
                 label={copy.limitedEdition}
                 hint={copy.limitedEditionHint}
                 defaultChecked={product?.limitedEdition ?? false}
+                isRtl={isRtl}
               />
             </div>
 
@@ -689,7 +751,7 @@ export function AdminProductForm({
           </section>
 
           <section className="luxury-muted-panel p-5">
-            <p className="eyebrow">{copy.editorNote}</p>
+            <SectionHeading title={copy.editorNote} isRtl={isRtl} />
             <p className="mt-4 text-sm leading-7 text-white/56">
               {copy.editorBody}
             </p>
@@ -697,7 +759,7 @@ export function AdminProductForm({
 
           {!hasCategoryOptions ? (
             <section className="luxury-muted-panel p-5">
-              <p className="eyebrow">{copy.categoryRequired}</p>
+              <SectionHeading title={copy.categoryRequired} isRtl={isRtl} />
               <p className="mt-4 text-sm leading-7 text-white/56">
                 {copy.categoryRequiredBody}
               </p>
@@ -706,7 +768,7 @@ export function AdminProductForm({
 
           {showTimestamps ? (
             <section className="luxury-muted-panel p-5">
-              <p className="eyebrow">{copy.productRecord}</p>
+              <SectionHeading title={copy.productRecord} isRtl={isRtl} />
               <div className="mt-5 space-y-3 text-sm text-white/58">
                 <div className="flex items-center justify-between gap-4">
                   <span>{copy.created}</span>

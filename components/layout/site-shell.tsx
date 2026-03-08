@@ -44,7 +44,6 @@ export async function SiteShell({ children }: SiteShellProps) {
         direction={direction}
         currentPath={pathname}
         copy={dictionary.header}
-        switchLabel={dictionary.language.switchLabel}
         accountLabel={getProfileDisplayName(profile, user?.email)}
         cartItemCount={cartItemCount}
         isAuthenticated={Boolean(user)}

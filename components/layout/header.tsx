@@ -20,7 +20,6 @@ interface HeaderProps {
   direction: LocaleDirection;
   currentPath: string;
   copy: Dictionary["header"];
-  switchLabel: string;
   accountLabel?: string;
   cartItemCount?: number;
   isAuthenticated?: boolean;
@@ -32,7 +31,6 @@ export function Header({
   direction,
   currentPath,
   copy,
-  switchLabel,
   accountLabel = "Account",
   cartItemCount = 0,
   isAuthenticated = false,
@@ -97,7 +95,6 @@ export function Header({
               <LanguageSwitcher
                 locale={locale}
                 currentPath={currentPath}
-                label={switchLabel}
               />
               <Link
                 href={localizeHref(locale, "/shop")}
