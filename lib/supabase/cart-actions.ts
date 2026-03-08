@@ -2,6 +2,9 @@
 
 import { redirect } from "next/navigation";
 
+import { getLocaleFromPathname, localizeHref } from "@/lib/i18n/config";
+import { createCheckoutSession } from "@/lib/stripe/checkout";
+
 import { getSafeRedirectPath } from "./auth";
 import {
   addCartItem,
@@ -50,6 +53,15 @@ function getRequiredString(
   return typeof value === "string" ? value.trim() : fallback;
 }
 
+function resolveLocalizedPath(
+  sourcePath: string,
+  targetPath: string,
+) {
+  const locale = getLocaleFromPathname(sourcePath);
+
+  return locale ? localizeHref(locale, targetPath) : targetPath;
+}
+
 export async function addToCartAction(formData: FormData) {
   const productSlug = getRequiredString(formData, "productSlug");
   const size = getRequiredString(formData, "size");
@@ -93,6 +105,7 @@ export async function buyNowAction(formData: FormData) {
   );
   const quantity = parsePositiveInteger(formData.get("quantity"), 1);
   const color = getRequiredString(formData, "color") || null;
+  const checkoutPath = resolveLocalizedPath(productPath, "/checkout");
 
   if (!productSlug) {
     redirect(
@@ -118,12 +131,20 @@ export async function buyNowAction(formData: FormData) {
     );
   }
 
-  redirect(
-    buildRedirect("/cart", {
-      cartMessage:
-        result.message ?? "Your selection is in the cart and ready for review.",
-    }),
-  );
+  try {
+    const session = await createCheckoutSession();
+
+    redirect(session.url);
+  } catch (error) {
+    redirect(
+      buildRedirect(checkoutPath, {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Checkout could not be started right now.",
+      }),
+    );
+  }
 }
 
 export async function updateCartItemQuantityAction(formData: FormData) {
