@@ -108,7 +108,7 @@ export function ProductPurchasePanel({
                 <span className="text-gradient">{product.name}</span>
               </h1>
               <div className="rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-sm uppercase tracking-[0.26em] text-[#f3e7c8]">
-                {formatPrice(product.price)}
+                {formatPrice(product.price, locale)}
               </div>
             </div>
 

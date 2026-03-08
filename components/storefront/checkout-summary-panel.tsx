@@ -39,18 +39,18 @@ export function CheckoutSummaryPanel({
         </div>
         <div className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-4">
           <span>{copy.subtotal}</span>
-          <span className="text-white/76">{formatPrice(subtotal)}</span>
+          <span className="text-white/76">{formatPrice(subtotal, locale)}</span>
         </div>
         <div className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-white/8 bg-white/[0.03] px-4 py-4">
           <span>{copy.shipping}</span>
           <span className="text-white/76">
-            {shippingAmount > 0 ? formatPrice(shippingAmount) : copy.shippingFree}
+            {shippingAmount > 0 ? formatPrice(shippingAmount, locale) : copy.shippingFree}
           </span>
         </div>
         <div className="hairline" />
         <div className="flex items-center justify-between gap-4 text-base text-white">
           <span>{copy.total}</span>
-          <span>{formatPrice(total)}</span>
+          <span>{formatPrice(total, locale)}</span>
         </div>
       </div>
 

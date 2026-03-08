@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Minus, Plus, X } from "lucide-react";
 
 import type { CartDetailItem } from "@/lib/supabase/cart";
+import { localizeHref, type Locale } from "@/lib/i18n/config";
+import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
 import {
   removeCartItemAction,
   updateCartItemQuantityAction,
@@ -12,17 +14,21 @@ import { ProductMediaFrame } from "./product-media-frame";
 
 interface CartLineItemProps {
   item: CartDetailItem;
+  locale: Locale;
 }
 
-export function CartLineItem({ item }: CartLineItemProps) {
+export function CartLineItem({ item, locale }: CartLineItemProps) {
+  const copy = getExtendedUiCopy(locale).cartLineItem;
   const isAtStockLimit =
     item.stockQuantity > 0 && item.quantity >= item.stockQuantity;
   const stockMessage =
     item.stockQuantity < 1
-      ? "This selection is temporarily unavailable."
+      ? copy.unavailable
       : isAtStockLimit
-        ? `Maximum available stock reached (${item.stockQuantity}).`
-        : `${item.stockQuantity} piece${item.stockQuantity === 1 ? "" : "s"} available.`;
+        ? `${copy.maxReached} (${item.stockQuantity}).`
+        : locale === "ar"
+          ? `${item.stockQuantity} ${copy.available}.`
+          : `${item.stockQuantity} piece${item.stockQuantity === 1 ? "" : "s"} ${copy.available}.`;
 
   return (
     <article className="luxury-panel overflow-hidden p-4 md:p-5">
@@ -40,7 +46,7 @@ export function CartLineItem({ item }: CartLineItemProps) {
               {item.product.category}
             </span>
             <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[0.62rem] uppercase tracking-[0.24em] text-white/42">
-              Size {item.size}
+              {copy.size} {item.size}
             </span>
             {item.color ? (
               <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[0.62rem] uppercase tracking-[0.24em] text-white/42">
@@ -49,14 +55,14 @@ export function CartLineItem({ item }: CartLineItemProps) {
             ) : null}
             {item.product.limitedEdition ? (
               <span className="rounded-full border border-[#b79d67]/30 bg-[#b79d67]/10 px-3 py-1 text-[0.62rem] uppercase tracking-[0.24em] text-[#f3e7c8]">
-                Limited release
+                {copy.limitedRelease}
               </span>
             ) : null}
           </div>
 
           <div>
             <Link
-              href={`/products/${item.product.slug}`}
+              href={localizeHref(locale, `/products/${item.product.slug}`)}
               className="inline-block text-3xl leading-none text-white transition hover:text-[#f3e7c8] md:text-4xl"
             >
               {item.product.name}
@@ -71,13 +77,13 @@ export function CartLineItem({ item }: CartLineItemProps) {
               SKU {item.sku}
             </span>
             <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1">
-              Unit {formatPrice(item.unitPrice)}
+              {copy.unit} {formatPrice(item.unitPrice, locale)}
             </span>
           </div>
 
           <div className="showroom-subpanel px-4 py-4">
             <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-              Stock note
+              {copy.stockNote}
             </p>
             <p className="mt-2 text-sm leading-7 text-white/62">{stockMessage}</p>
           </div>
@@ -86,19 +92,19 @@ export function CartLineItem({ item }: CartLineItemProps) {
         <div className="space-y-4">
           <div className="showroom-subpanel p-4">
             <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-              Line total
+              {copy.lineTotal}
             </p>
             <p className="mt-3 text-3xl leading-none text-white">
-              {formatPrice(item.lineTotal)}
+              {formatPrice(item.lineTotal, locale)}
             </p>
             <p className="mt-3 text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-              Quantity {item.quantity}
+              {copy.quantity} {item.quantity}
             </p>
           </div>
 
           <div className="showroom-subpanel p-4">
             <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-              Quantity control
+              {copy.quantityControl}
             </p>
             <div className="mt-4 flex items-center justify-between gap-3">
               <form action={updateCartItemQuantityAction}>
@@ -108,7 +114,7 @@ export function CartLineItem({ item }: CartLineItemProps) {
                   type="submit"
                   disabled={item.quantity <= 1}
                   className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white/64 transition hover:border-white/18 hover:text-white disabled:pointer-events-none disabled:opacity-40"
-                  aria-label={`Decrease quantity for ${item.product.name}`}
+                  aria-label={`${copy.decrease} ${item.product.name}`}
                 >
                   <Minus className="h-4 w-4" />
                 </button>
@@ -116,7 +122,7 @@ export function CartLineItem({ item }: CartLineItemProps) {
 
               <div className="min-w-14 text-center">
                 <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/30">
-                  Selected
+                  {copy.selected}
                 </p>
                 <p className="mt-1 text-2xl leading-none text-white">
                   {item.quantity}
@@ -130,7 +136,7 @@ export function CartLineItem({ item }: CartLineItemProps) {
                   type="submit"
                   disabled={item.stockQuantity < 1 || isAtStockLimit}
                   className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white/64 transition hover:border-white/18 hover:text-white disabled:pointer-events-none disabled:opacity-40"
-                  aria-label={`Increase quantity for ${item.product.name}`}
+                  aria-label={`${copy.increase} ${item.product.name}`}
                 >
                   <Plus className="h-4 w-4" />
                 </button>
@@ -145,7 +151,7 @@ export function CartLineItem({ item }: CartLineItemProps) {
               className="flex w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-3 text-xs uppercase tracking-[0.22em] text-white/60 transition hover:border-white/18 hover:bg-white/[0.06] hover:text-white"
             >
               <X className="h-3.5 w-3.5" />
-              Remove piece
+              {copy.removePiece}
             </button>
           </form>
         </div>

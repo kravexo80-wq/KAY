@@ -2,15 +2,20 @@ import Link from "next/link";
 
 import type { OrderLineItem } from "@/lib/supabase/orders";
 
+import { localizeHref, type Locale } from "@/lib/i18n/config";
+import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
 import { formatPrice } from "@/lib/utils";
 
 interface OrderLineItemsPanelProps {
   items: OrderLineItem[];
+  locale: Locale;
 }
 
-function buildItemMeta(item: OrderLineItem) {
+function buildItemMeta(item: OrderLineItem, locale: Locale) {
+  const copy = getExtendedUiCopy(locale).cartLineItem;
+
   return [
-    item.size ? `Size ${item.size}` : null,
+    item.size ? `${copy.size} ${item.size}` : null,
     item.color ? item.color : null,
     item.sku ? `SKU ${item.sku}` : null,
   ]
@@ -18,24 +23,29 @@ function buildItemMeta(item: OrderLineItem) {
     .join(" | ");
 }
 
-export function OrderLineItemsPanel({ items }: OrderLineItemsPanelProps) {
+export function OrderLineItemsPanel({
+  items,
+  locale,
+}: OrderLineItemsPanelProps) {
+  const copy = getExtendedUiCopy(locale).orders;
+
   return (
     <section className="showroom-panel p-6 md:p-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="eyebrow">Line items</p>
+          <p className="eyebrow">{copy.lineItemsEyebrow}</p>
           <h2 className="mt-4 text-3xl leading-none text-white md:text-4xl">
-            Captured at checkout.
+            {copy.capturedAtCheckout}
           </h2>
         </div>
         <p className="text-sm text-white/46">
-          {items.length} line item{items.length === 1 ? "" : "s"}
+          {items.length} {copy.pieces}
         </p>
       </div>
 
       <div className="mt-6 space-y-4">
         {items.map((item) => {
-          const itemMeta = buildItemMeta(item);
+          const itemMeta = buildItemMeta(item, locale);
           const mediaStyle = item.imageUrl
             ? {
                 backgroundImage: `linear-gradient(180deg, rgba(8,8,9,0.05), rgba(8,8,9,0.72)), url(${item.imageUrl})`,
@@ -52,7 +62,7 @@ export function OrderLineItemsPanel({ items }: OrderLineItemsPanelProps) {
                 style={mediaStyle}
               >
                 <div className="absolute inset-x-4 bottom-4 rounded-full border border-white/10 bg-black/35 px-3 py-2 text-[0.62rem] uppercase tracking-[0.22em] text-white/62 backdrop-blur-sm">
-                  Showroom frame
+                  {copy.showroomFrame}
                 </div>
               </div>
 
@@ -67,7 +77,7 @@ export function OrderLineItemsPanel({ items }: OrderLineItemsPanelProps) {
                     ) : null}
                   </div>
                   <p className="text-lg text-white/84">
-                    {formatPrice(item.lineTotal)}
+                    {formatPrice(item.lineTotal, locale)}
                   </p>
                 </div>
                 {item.description ? (
@@ -76,13 +86,13 @@ export function OrderLineItemsPanel({ items }: OrderLineItemsPanelProps) {
                   </p>
                 ) : null}
                 <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-white/48">
-                  <span>Qty {item.quantity}</span>
-                  <span>Unit {formatPrice(item.unitPrice)}</span>
+                  <span>{copy.quantityShort} {item.quantity}</span>
+                  <span>{copy.unitShort} {formatPrice(item.unitPrice, locale)}</span>
                   <Link
-                    href={`/products/${item.productSlug}`}
+                    href={localizeHref(locale, `/products/${item.productSlug}`)}
                     className="text-white/64 transition hover:text-white"
                   >
-                    View product
+                    {copy.viewProduct}
                   </Link>
                 </div>
               </div>

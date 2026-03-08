@@ -101,7 +101,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
         <section className="section-frame grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
           <div className="space-y-4">
             {checkout.items.map((item) => (
-              <CheckoutLineItem key={item.id} item={item} />
+              <CheckoutLineItem key={item.id} item={item} locale={locale} />
             ))}
           </div>
 

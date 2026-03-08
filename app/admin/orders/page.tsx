@@ -5,6 +5,9 @@ import { PageIntro } from "@/components/layout/page-intro";
 import { CatalogStatePanel } from "@/components/storefront/catalog-state-panel";
 import { OrderListCard } from "@/components/storefront/order-list-card";
 import { Button } from "@/components/ui/button";
+import { localizeHref } from "@/lib/i18n/config";
+import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
+import { getRequestI18n } from "@/lib/i18n/request";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { getAllOrdersForAdmin } from "@/lib/supabase/orders";
 
@@ -14,7 +17,13 @@ export const metadata: Metadata = {
 
 export default async function AdminOrdersPage() {
   await requireAdmin("/admin/orders");
-  const orders = await getAllOrdersForAdmin();
+  const [{ locale, direction }, orders] = await Promise.all([
+    getRequestI18n(),
+    getAllOrdersForAdmin(),
+  ]);
+  const copy = getExtendedUiCopy(locale).orders;
+  const adminCopy = copy.adminList;
+  const isRtl = direction === "rtl";
   const pendingOrders = orders.filter((order) =>
     ["pending", "confirmed", "processing"].includes(order.status),
   ).length;
@@ -23,26 +32,31 @@ export default async function AdminOrdersPage() {
     (order) => order.inventoryAdjustedAt !== null,
   ).length;
   const metrics = [
-    { label: "Orders", value: `${orders.length}` },
-    { label: "Open", value: `${pendingOrders}` },
-    { label: "Paid", value: `${paidOrders}` },
-    { label: "Inventory settled", value: `${inventorySettled}` },
+    { label: adminCopy.orders, value: `${orders.length}` },
+    { label: adminCopy.open, value: `${pendingOrders}` },
+    { label: adminCopy.paid, value: `${paidOrders}` },
+    { label: adminCopy.inventorySettled, value: `${inventorySettled}` },
   ];
 
   return (
     <div className="space-y-8 pb-16 md:pb-24">
       <PageIntro
-        eyebrow="Admin orders"
-        title="Operational order oversight for the Kravexo showroom."
-        description="This admin-only surface lists every Supabase-backed order with live payment state, fulfillment state, and inventory-finalization visibility."
-        note="Status updates remain separate from payment records. Inventory deduction stays in the existing paid-order finalization flow so stock changes are not duplicated here."
+        eyebrow={adminCopy.eyebrow}
+        title={adminCopy.title}
+        description={adminCopy.description}
+        note={adminCopy.note}
+        isRtl={isRtl}
         actions={
           <>
             <Button asChild>
-              <Link href="/admin">Back to dashboard</Link>
+              <Link href={localizeHref(locale, "/admin")}>
+                {locale === "ar" ? "العودة إلى اللوحة" : "Back to dashboard"}
+              </Link>
             </Button>
             <Button asChild variant="secondary">
-              <Link href="/account/orders">Customer view</Link>
+              <Link href={localizeHref(locale, "/account/orders")}>
+                {locale === "ar" ? "عرض العميل" : "Customer view"}
+              </Link>
             </Button>
           </>
         }
@@ -68,17 +82,18 @@ export default async function AdminOrdersPage() {
               <OrderListCard
                 key={order.id}
                 order={order}
-                href={`/admin/orders/${order.id}`}
-                contextLabel="Admin order"
+                href={localizeHref(locale, `/admin/orders/${order.id}`)}
+                locale={locale}
+                contextLabel={copy.adminContext}
                 showCustomerEmail
               />
             ))}
           </div>
         ) : (
           <CatalogStatePanel
-            eyebrow="Admin orders"
-            title="No orders have been recorded yet."
-            description="Once a Stripe checkout completes successfully, the webhook-backed order records will appear here for operational review."
+            eyebrow={adminCopy.eyebrow}
+            title={adminCopy.emptyTitle}
+            description={adminCopy.emptyDescription}
           />
         )}
       </section>

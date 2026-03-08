@@ -10,6 +10,9 @@ import type {
 } from "@/types/database";
 import type { ProductMedia } from "@/types/product";
 
+import { getLocalizedCatalogField } from "@/lib/i18n/catalog";
+import { getRequestLocale } from "@/lib/i18n/request";
+
 import { getCurrentUser, requireAuth } from "./auth";
 import { hasSupabaseEnv } from "./config";
 import { createServerSupabaseClient } from "./server";
@@ -22,15 +25,30 @@ type CartInsert = TablesInsert<"carts">;
 type CartItemInsert = TablesInsert<"cart_items">;
 type CartItemUpdate = TablesUpdate<"cart_items">;
 
-type CartProductCategorySummary = Pick<Tables<"categories">, "name">;
+type CartProductCategorySummary = Pick<Tables<"categories">, "name" | "name_ar">;
 type CartProductImageSummary = Pick<
   Tables<"product_images">,
-  "id" | "label" | "angle" | "note" | "tone" | "sort_order" | "is_primary"
+  | "id"
+  | "label"
+  | "label_ar"
+  | "angle"
+  | "angle_ar"
+  | "note"
+  | "note_ar"
+  | "tone"
+  | "sort_order"
+  | "is_primary"
 >;
 
 type CartProductSummary = Pick<
   Tables<"products">,
-  "id" | "slug" | "name" | "short_description" | "limited_edition"
+  | "id"
+  | "slug"
+  | "name"
+  | "name_ar"
+  | "short_description"
+  | "short_description_ar"
+  | "limited_edition"
 > & {
   category: CartProductCategorySummary | null;
   images: CartProductImageSummary[] | null;
@@ -151,16 +169,22 @@ const cartItemDetailsSelect = `
       id,
       slug,
       name,
+      name_ar,
       short_description,
+      short_description_ar,
       limited_edition,
       category:categories (
-        name
+        name,
+        name_ar
       ),
       images:product_images (
         id,
         label,
+        label_ar,
         angle,
+        angle_ar,
         note,
+        note_ar,
         tone,
         sort_order,
         is_primary
@@ -197,17 +221,23 @@ function throwOnError(error: PostgrestError | null, label: string) {
   }
 }
 
-function createFallbackCartMedia(product: CartProductSummary): ProductMedia {
+function createFallbackCartMedia(
+  product: CartProductSummary,
+  locale: Awaited<ReturnType<typeof getRequestLocale>>,
+): ProductMedia {
   return {
     id: `${product.slug}-cart-placeholder`,
-    label: "Showroom frame",
-    angle: "Primary display",
-    note: "Awaiting studio imagery",
+    label: locale === "ar" ? "إطار المعرض" : "Showroom frame",
+    angle: locale === "ar" ? "العرض الرئيسي" : "Primary display",
+    note: locale === "ar" ? "بانتظار صور الاستوديو" : "Awaiting studio imagery",
     tone: "obsidian",
   };
 }
 
-function mapCartItemRecord(record: CartItemDetailRecord): CartDetailItem | null {
+function mapCartItemRecord(
+  record: CartItemDetailRecord,
+  locale: Awaited<ReturnType<typeof getRequestLocale>>,
+): CartDetailItem | null {
   if (!record.product_variant?.product) {
     return null;
   }
@@ -220,12 +250,24 @@ function mapCartItemRecord(record: CartItemDetailRecord): CartDetailItem | null 
     gallery[0]
       ? {
           id: gallery[0].id,
-          label: gallery[0].label,
-          angle: gallery[0].angle,
-          note: gallery[0].note,
+          label: getLocalizedCatalogField(
+            gallery[0] as Record<string, unknown>,
+            "label",
+            locale,
+          ),
+          angle: getLocalizedCatalogField(
+            gallery[0] as Record<string, unknown>,
+            "angle",
+            locale,
+          ),
+          note: getLocalizedCatalogField(
+            gallery[0] as Record<string, unknown>,
+            "note",
+            locale,
+          ),
           tone: gallery[0].tone,
         }
-      : createFallbackCartMedia(product);
+      : createFallbackCartMedia(product, locale);
 
   return {
     id: record.id,
@@ -239,9 +281,25 @@ function mapCartItemRecord(record: CartItemDetailRecord): CartDetailItem | null 
     stockQuantity: record.product_variant.stock_quantity,
     product: {
       slug: product.slug,
-      name: product.name,
-      category: product.category?.name ?? "Uncategorized",
-      shortDescription: product.short_description,
+      name: getLocalizedCatalogField(
+        product as Record<string, unknown>,
+        "name",
+        locale,
+      ),
+      category: product.category
+        ? getLocalizedCatalogField(
+            product.category as Record<string, unknown>,
+            "name",
+            locale,
+          )
+        : locale === "ar"
+          ? "غير مصنف"
+          : "Uncategorized",
+      shortDescription: getLocalizedCatalogField(
+        product as Record<string, unknown>,
+        "short_description",
+        locale,
+      ),
       limitedEdition: product.limited_edition,
       media,
     },
@@ -451,6 +509,7 @@ export async function getCartDetails(): Promise<CartQueryResult<CartDetails>> {
   }
 
   try {
+    const locale = await getRequestLocale();
     const supabase = await createServerSupabaseClient();
     const cart = await getActiveCartForUser(supabase, user.id);
 
@@ -467,7 +526,7 @@ export async function getCartDetails(): Promise<CartQueryResult<CartDetails>> {
     throwOnError(error, "Failed to load cart details");
 
     const items = ((data ?? []) as CartItemDetailRecord[])
-      .map(mapCartItemRecord)
+      .map((item) => mapCartItemRecord(item, locale))
       .filter((item): item is CartDetailItem => Boolean(item));
     const itemCount = items.reduce((total, item) => total + item.quantity, 0);
     const subtotal = items.reduce((total, item) => total + item.lineTotal, 0);

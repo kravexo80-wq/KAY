@@ -10,10 +10,13 @@ import type {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import type { Locale } from "@/lib/i18n/config";
+import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
 
 import { AdminProductStateBadge } from "./admin-product-state-badge";
 
 interface AdminProductFormProps {
+  locale: Locale;
   mode: "create" | "edit";
   options: AdminCatalogOptions;
   product?: AdminProductEditorData | null;
@@ -110,13 +113,78 @@ function createBlankImage(sortOrder: number): AdminProductImageFormValue {
   };
 }
 
+const editorPlaceholders = {
+  en: {
+    productName: "Signature Abaya",
+    slug: "signature-abaya",
+    shortDescription: "Tailored modestwear with a cinematic showroom finish.",
+    description: "Write the main storefront product description.",
+    story: "Optional narrative or craftsmanship note.",
+    optional: "Optional",
+    materials: "Premium crepe\nSilk lining",
+    fabricNotes: "Soft structured drape\nLow-sheen finish",
+    careNotes: "Dry clean recommended\nSteam lightly before wear",
+    fitNotes: "Relaxed silhouette\nDesigned for layered modest styling",
+    variantSize: "S / M / L",
+    sku: "KRV-ABY-BLK-M",
+    imageUrl: "https://... or leave blank when uploading",
+    imageLabel: "Front angle",
+    imageAngle: "Three-quarter",
+    altText: "Descriptive alternative text",
+    imageNote: "Optional showroom note for this angle.",
+    variantPrefix: "Variant",
+    imagePrefix: "Image",
+  },
+  ar: {
+    productName: "عباية التوقيع",
+    slug: "signature-abaya",
+    shortDescription: "قطعة محتشمة مصقولة بحضور بصري فخم داخل المعرض الداكن.",
+    description: "اكتب الوصف الرئيسي الذي سيظهر في واجهة المنتج.",
+    story: "سرد اختياري عن الحرفة أو قصة القطعة.",
+    optional: "اختياري",
+    materials: "كريب فاخر\nبطانة حريرية",
+    fabricNotes: "انسدال منظم وناعم\nلمعة هادئة منخفضة",
+    careNotes: "يفضل التنظيف الجاف\nتبخير خفيف قبل الارتداء",
+    fitNotes: "قصة مريحة\nمصممة للتنسيق المحتشم متعدد الطبقات",
+    variantSize: "ص / م / ك",
+    sku: "KRV-ABY-BLK-M",
+    imageUrl: "https://... أو اتركه فارغاً عند الرفع",
+    imageLabel: "الزاوية الأمامية",
+    imageAngle: "ثلاثة أرباع",
+    altText: "نص بديل وصفي للصورة",
+    imageNote: "ملاحظة اختيارية لعرض هذه الزاوية داخل المعرض.",
+    variantPrefix: "المتغير",
+    imagePrefix: "الصورة",
+  },
+} as const;
+
+const toneLabels = {
+  en: {
+    obsidian: "Obsidian",
+    stone: "Stone",
+    bronze: "Bronze",
+    pearl: "Pearl",
+  },
+  ar: {
+    obsidian: "أسود لامع",
+    stone: "حجري",
+    bronze: "برونزي",
+    pearl: "لؤلؤي",
+  },
+} as const;
+
 export function AdminProductForm({
+  locale,
   mode,
   options,
   product,
   action,
   notice,
 }: AdminProductFormProps) {
+  const copy = getExtendedUiCopy(locale).adminProducts.form;
+  const cardCopy = getExtendedUiCopy(locale).adminProducts.card;
+  const placeholders = editorPlaceholders[locale];
+  const localizedToneLabels = toneLabels[locale];
   const categoryOptions = options.categories;
   const collectionOptions = options.collections;
   const isCreateMode = mode === "create";
@@ -143,7 +211,7 @@ export function AdminProductForm({
         <section className="section-frame">
           <div className={notice.tone === "error" ? "luxury-muted-panel p-5" : "showroom-panel p-5"}>
             <p className="eyebrow">
-              {notice.tone === "error" ? "Save error" : "Saved"}
+              {notice.tone === "error" ? copy.saveError : copy.saved}
             </p>
             <p className="mt-4 text-sm leading-7 text-white/58">{notice.message}</p>
           </div>
@@ -161,60 +229,60 @@ export function AdminProductForm({
 
         <div className="space-y-6">
           <section className="luxury-panel p-6 md:p-8">
-            <p className="eyebrow">Basic info</p>
+            <p className="eyebrow">{copy.basicInfo}</p>
             <div className="mt-6 grid gap-5 md:grid-cols-2">
-              <Field label="Product name">
+              <Field label={copy.productName}>
                 <Input
                   name="name"
                   defaultValue={product?.name ?? ""}
-                  placeholder="Signature Abaya"
+                  placeholder={placeholders.productName}
                 />
               </Field>
               <Field
-                label="Slug"
-                hint="Leave blank to generate from the product name."
+                label={copy.slug}
+                hint={copy.slugHint}
               >
                 <Input
                   name="slug"
                   defaultValue={product?.slug ?? ""}
-                  placeholder="signature-abaya"
+                  placeholder={placeholders.slug}
                 />
               </Field>
             </div>
 
             <div className="mt-5 space-y-5">
-              <Field label="Short description">
+              <Field label={copy.shortDescription}>
                 <Textarea
                   name="short_description"
                   defaultValue={product?.shortDescription ?? ""}
                   className="min-h-28"
-                  placeholder="Tailored modestwear with a cinematic showroom finish."
+                  placeholder={placeholders.shortDescription}
                 />
               </Field>
-              <Field label="Full description">
+              <Field label={copy.fullDescription}>
                 <Textarea
                   name="description"
                   defaultValue={product?.description ?? ""}
-                  placeholder="Write the main storefront product description."
+                  placeholder={placeholders.description}
                 />
               </Field>
               <Field
-                label="Brand story"
-                hint="Optional editorial story block for the product detail page."
+                label={copy.brandStory}
+                hint={copy.brandStoryHint}
               >
                 <Textarea
                   name="story"
                   defaultValue={product?.story ?? ""}
-                  placeholder="Optional narrative or craftsmanship note."
+                  placeholder={placeholders.story}
                 />
               </Field>
             </div>
           </section>
 
           <section className="showroom-panel p-6 md:p-8">
-            <p className="eyebrow">Merchandising</p>
+            <p className="eyebrow">{copy.merchandising}</p>
             <div className="mt-6 grid gap-5 md:grid-cols-2">
-              <Field label="Base price">
+              <Field label={copy.basePrice}>
                 <Input
                   type="number"
                   step="0.01"
@@ -224,8 +292,8 @@ export function AdminProductForm({
                 />
               </Field>
               <Field
-                label="Compare-at price"
-                hint="Optional merchandising price shown above the live price."
+                label={copy.compareAtPrice}
+                hint={copy.compareAtPriceHint}
               >
                 <Input
                   type="number"
@@ -233,17 +301,17 @@ export function AdminProductForm({
                   min="0"
                   name="compare_at_price"
                   defaultValue={product?.compareAtPrice ?? ""}
-                  placeholder="Optional"
+                  placeholder={placeholders.optional}
                 />
               </Field>
-              <Field label="Category">
+              <Field label={copy.category}>
                 <select
                   name="category_id"
                   defaultValue={product?.categoryId ?? categoryOptions[0]?.id ?? ""}
                   className={selectClassName}
                 >
                   <option value="" className="bg-[#090909] text-white">
-                    Select category
+                    {copy.selectCategory}
                   </option>
                   {categoryOptions.map((category) => (
                     <option
@@ -252,14 +320,14 @@ export function AdminProductForm({
                       className="bg-[#090909] text-white"
                     >
                       {category.name}
-                      {category.isActive ? "" : " (inactive)"}
+                      {category.isActive ? "" : copy.inactiveSuffix}
                     </option>
                   ))}
                 </select>
               </Field>
               <Field
-                label="Collection"
-                hint="Optional editorial grouping for collection pages."
+                label={copy.collection}
+                hint={copy.collectionHint}
               >
                 <select
                   name="collection_id"
@@ -267,7 +335,7 @@ export function AdminProductForm({
                   className={selectClassName}
                 >
                   <option value="" className="bg-[#090909] text-white">
-                    No collection
+                    {copy.noCollection}
                   </option>
                   {collectionOptions.map((collection) => (
                     <option
@@ -276,7 +344,7 @@ export function AdminProductForm({
                       className="bg-[#090909] text-white"
                     >
                       {collection.name}
-                      {collection.isActive ? "" : " (inactive)"}
+                      {collection.isActive ? "" : copy.inactiveSuffix}
                     </option>
                   ))}
                 </select>
@@ -285,41 +353,41 @@ export function AdminProductForm({
           </section>
 
           <section className="luxury-panel p-6 md:p-8">
-            <p className="eyebrow">Notes and details</p>
+            <p className="eyebrow">{copy.notesAndDetails}</p>
             <div className="mt-6 grid gap-5">
               <Field
-                label="Materials"
-                hint="One item per line."
+                label={copy.materials}
+                hint={copy.onePerLine}
               >
                 <Textarea
                   name="materials"
                   defaultValue={toLines(product?.materials ?? [])}
                   className="min-h-28"
-                  placeholder={"Premium crepe\nSilk lining"}
+                  placeholder={placeholders.materials}
                 />
               </Field>
-              <Field label="Fabric notes" hint="One note per line.">
+              <Field label={copy.fabricNotes} hint={copy.notePerLine}>
                 <Textarea
                   name="fabric_notes"
                   defaultValue={toLines(product?.fabricNotes ?? [])}
                   className="min-h-28"
-                  placeholder={"Soft structured drape\nLow-sheen finish"}
+                  placeholder={placeholders.fabricNotes}
                 />
               </Field>
-              <Field label="Care notes" hint="One note per line.">
+              <Field label={copy.careNotes} hint={copy.notePerLine}>
                 <Textarea
                   name="care_notes"
                   defaultValue={toLines(product?.careNotes ?? [])}
                   className="min-h-28"
-                  placeholder={"Dry clean recommended\nSteam lightly before wear"}
+                  placeholder={placeholders.careNotes}
                 />
               </Field>
-              <Field label="Fit notes" hint="One note per line.">
+              <Field label={copy.fitNotes} hint={copy.notePerLine}>
                 <Textarea
                   name="fit_notes"
                   defaultValue={toLines(product?.fitNotes ?? [])}
                   className="min-h-28"
-                  placeholder={"Relaxed silhouette\nDesigned for layered modest styling"}
+                  placeholder={placeholders.fitNotes}
                 />
               </Field>
             </div>
@@ -328,13 +396,13 @@ export function AdminProductForm({
           <section className="showroom-panel p-6 md:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <p className="eyebrow">Variants</p>
+                <p className="eyebrow">{copy.variants}</p>
                 <h2 className="mt-4 text-3xl leading-none text-white">
-                  Sizes, stock, and pricing.
+                  {copy.variantsTitle}
                 </h2>
               </div>
               <p className="text-sm leading-7 text-white/46">
-                Deactivate existing variants instead of deleting them in this first pass.
+                {copy.variantsNote}
               </p>
             </div>
 
@@ -350,28 +418,30 @@ export function AdminProductForm({
                     value={variant.id ?? ""}
                   />
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-                    <Field label={`Variant ${index + 1} size`}>
+                    <Field
+                      label={`${placeholders.variantPrefix} ${index + 1} ${copy.variantSize}`}
+                    >
                       <Input
                         name={`variant_${index}_size`}
                         defaultValue={variant.size}
-                        placeholder="S / M / L"
+                        placeholder={placeholders.variantSize}
                       />
                     </Field>
-                    <Field label="Color">
+                    <Field label={copy.color}>
                       <Input
                         name={`variant_${index}_color`}
                         defaultValue={variant.color ?? ""}
-                        placeholder="Optional"
+                        placeholder={placeholders.optional}
                       />
                     </Field>
-                    <Field label="SKU">
+                    <Field label={copy.sku}>
                       <Input
                         name={`variant_${index}_sku`}
                         defaultValue={variant.sku}
-                        placeholder="KRV-ABY-BLK-M"
+                        placeholder={placeholders.sku}
                       />
                     </Field>
-                    <Field label="Stock quantity">
+                    <Field label={copy.stockQuantity}>
                       <Input
                         type="number"
                         min="0"
@@ -380,22 +450,22 @@ export function AdminProductForm({
                         defaultValue={variant.stockQuantity}
                       />
                     </Field>
-                    <Field label="Price override">
+                    <Field label={copy.priceOverride}>
                       <Input
                         type="number"
                         min="0"
                         step="0.01"
                         name={`variant_${index}_price_override`}
                         defaultValue={variant.priceOverride ?? ""}
-                        placeholder="Optional"
+                        placeholder={copy.optional}
                       />
                     </Field>
                   </div>
                   <div className="mt-4">
                     <CheckboxField
                       name={`variant_${index}_is_active`}
-                      label="Variant active"
-                      hint="Active variants are eligible for storefront purchase and stock calculations."
+                      label={copy.variantActive}
+                      hint={copy.variantActiveHint}
                       defaultChecked={variant.isActive}
                     />
                   </div>
@@ -407,13 +477,13 @@ export function AdminProductForm({
           <section className="luxury-panel p-6 md:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <p className="eyebrow">Images</p>
+                <p className="eyebrow">{copy.images}</p>
                 <h2 className="mt-4 text-3xl leading-none text-white">
-                  Uploads and URL-based gallery management.
+                  {copy.imagesTitle}
                 </h2>
               </div>
               <p className="text-sm leading-7 text-white/46">
-                Uploading to Supabase Storage now works alongside manual image URLs, so the storefront gallery can keep using the same product_images records.
+                {copy.imagesNote}
               </p>
             </div>
 
@@ -431,14 +501,14 @@ export function AdminProductForm({
                   <div className="mb-4 flex flex-wrap items-center gap-2">
                     {image.storagePath ? (
                       <AdminProductStateBadge
-                        label="Stored upload"
+                        label={copy.storedUpload}
                         active
                         tone="accent"
                       />
                     ) : null}
                     {image.imageUrl ? (
                       <AdminProductStateBadge
-                        label="Gallery ready"
+                        label={copy.galleryReady}
                         active
                         tone="success"
                       />
@@ -446,8 +516,8 @@ export function AdminProductForm({
                   </div>
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     <Field
-                      label={`Image ${index + 1} upload`}
-                      hint="Upload a new image file. If both are provided, the uploaded file overrides the manual URL."
+                      label={`${placeholders.imagePrefix} ${index + 1} ${copy.upload}`}
+                      hint={copy.uploadHint}
                     >
                       <input
                         type="file"
@@ -456,35 +526,35 @@ export function AdminProductForm({
                         className="block w-full rounded-[1.2rem] border border-dashed border-white/12 bg-white/[0.02] px-4 py-3 text-sm text-white/72 file:mr-4 file:rounded-full file:border file:border-white/10 file:bg-white/[0.06] file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-[0.2em] file:text-white/72 file:transition hover:border-white/18"
                       />
                     </Field>
-                    <Field label={`Image ${index + 1} URL`}>
+                    <Field label={`${placeholders.imagePrefix} ${index + 1} ${copy.imageUrl}`}>
                       <Input
                         name={`image_${index}_image_url`}
                         defaultValue={image.imageUrl}
-                        placeholder="https://... or leave blank when uploading"
+                        placeholder={placeholders.imageUrl}
                       />
                     </Field>
-                    <Field label="Label">
+                    <Field label={copy.label}>
                       <Input
                         name={`image_${index}_label`}
                         defaultValue={image.label}
-                        placeholder="Front angle"
+                        placeholder={placeholders.imageLabel}
                       />
                     </Field>
-                    <Field label="Angle">
+                    <Field label={copy.angle}>
                       <Input
                         name={`image_${index}_angle`}
                         defaultValue={image.angle}
-                        placeholder="Three-quarter"
+                        placeholder={placeholders.imageAngle}
                       />
                     </Field>
-                    <Field label="Alt text">
+                    <Field label={copy.altText}>
                       <Input
                         name={`image_${index}_alt_text`}
                         defaultValue={image.altText}
-                        placeholder="Descriptive alternative text"
+                        placeholder={placeholders.altText}
                       />
                     </Field>
-                    <Field label="Display order">
+                    <Field label={copy.displayOrder}>
                       <Input
                         type="number"
                         min="0"
@@ -493,7 +563,7 @@ export function AdminProductForm({
                         defaultValue={image.sortOrder}
                       />
                     </Field>
-                    <Field label="Tone">
+                    <Field label={copy.tone}>
                       <select
                         name={`image_${index}_tone`}
                         defaultValue={image.tone}
@@ -505,7 +575,11 @@ export function AdminProductForm({
                             value={tone}
                             className="bg-[#090909] text-white"
                           >
-                            {tone}
+                            {
+                              localizedToneLabels[
+                                tone as keyof typeof localizedToneLabels
+                              ]
+                            }
                           </option>
                         ))}
                       </select>
@@ -524,12 +598,12 @@ export function AdminProductForm({
                   ) : null}
 
                   <div className="mt-4">
-                    <Field label="Image note">
+                    <Field label={copy.imageNote}>
                       <Textarea
                         name={`image_${index}_note`}
                         defaultValue={image.note}
                         className="min-h-24"
-                        placeholder="Optional showroom note for this angle."
+                        placeholder={placeholders.imageNote}
                       />
                     </Field>
                   </div>
@@ -537,23 +611,23 @@ export function AdminProductForm({
                   <div className="mt-4 grid gap-4 md:grid-cols-2">
                     <CheckboxField
                       name={`image_${index}_is_primary`}
-                      label="Primary image"
-                      hint="This image becomes the lead frame for storefront cards and galleries."
+                      label={copy.primaryImage}
+                      hint={copy.primaryImageHint}
                       defaultChecked={image.isPrimary}
                     />
                     {image.id ? (
                       <CheckboxField
                         name={`image_${index}_remove`}
-                        label="Remove image"
-                        hint="Existing image rows can be removed directly from this editor."
+                        label={copy.removeImage}
+                        hint={copy.removeImageHint}
                       />
                     ) : (
                       <div className="rounded-[1.3rem] border border-white/8 bg-white/[0.03] p-4">
                         <p className="text-sm uppercase tracking-[0.22em] text-white/72">
-                          New image row
+                          {copy.newImageRow}
                         </p>
                         <p className="mt-2 text-sm leading-7 text-white/48">
-                          Leave every field blank to ignore this row.
+                          {copy.newImageHint}
                         </p>
                       </div>
                     )}
@@ -566,40 +640,40 @@ export function AdminProductForm({
 
         <aside className="space-y-6">
           <section className="showroom-panel p-6 md:p-7">
-            <p className="eyebrow">Publishing state</p>
+            <p className="eyebrow">{copy.publishingState}</p>
             <div className="mt-5 flex flex-wrap gap-2">
               <AdminProductStateBadge
-                label={product?.isActive ? "Active" : "Inactive"}
+                label={product?.isActive ? cardCopy.active : cardCopy.inactive}
                 active={product?.isActive ?? false}
                 tone="success"
               />
               <AdminProductStateBadge
-                label={product?.isFeatured ? "Featured" : "Standard"}
+                label={product?.isFeatured ? cardCopy.featured : cardCopy.standard}
                 active={product?.isFeatured ?? false}
                 tone="accent"
               />
               {product?.limitedEdition ? (
-                <AdminProductStateBadge label="Limited" active tone="accent" />
+                <AdminProductStateBadge label={cardCopy.limited} active tone="accent" />
               ) : null}
             </div>
 
             <div className="mt-5 space-y-4">
               <CheckboxField
                 name="is_active"
-                label="Product active"
-                hint="Inactive products remain editable but disappear from the public storefront."
+                label={copy.productActive}
+                hint={copy.productActiveHint}
                 defaultChecked={product?.isActive ?? true}
               />
               <CheckboxField
                 name="is_featured"
-                label="Featured product"
-                hint="Featured products can appear on the homepage and priority product lists."
+                label={copy.featuredProduct}
+                hint={copy.featuredProductHint}
                 defaultChecked={product?.isFeatured ?? false}
               />
               <CheckboxField
                 name="limited_edition"
-                label="Limited edition"
-                hint="Adds limited-edition merchandising state without changing checkout behavior."
+                label={copy.limitedEdition}
+                hint={copy.limitedEditionHint}
                 defaultChecked={product?.limitedEdition ?? false}
               />
             </div>
@@ -610,36 +684,36 @@ export function AdminProductForm({
               className="mt-6 w-full"
               disabled={!hasCategoryOptions}
             >
-              {isCreateMode ? "Create product" : "Save product"}
+              {isCreateMode ? copy.createProduct : copy.saveProduct}
             </Button>
           </section>
 
           <section className="luxury-muted-panel p-5">
-            <p className="eyebrow">Editor note</p>
+            <p className="eyebrow">{copy.editorNote}</p>
             <p className="mt-4 text-sm leading-7 text-white/56">
-              Slugs stay unique, variants are validated before save, and storefront/admin routes are revalidated after each product change.
+              {copy.editorBody}
             </p>
           </section>
 
           {!hasCategoryOptions ? (
             <section className="luxury-muted-panel p-5">
-              <p className="eyebrow">Category required</p>
+              <p className="eyebrow">{copy.categoryRequired}</p>
               <p className="mt-4 text-sm leading-7 text-white/56">
-                Add at least one category in Supabase before creating products. This first admin pass prioritizes product editing and assignment over dedicated category CRUD pages.
+                {copy.categoryRequiredBody}
               </p>
             </section>
           ) : null}
 
           {showTimestamps ? (
             <section className="luxury-muted-panel p-5">
-              <p className="eyebrow">Product record</p>
+              <p className="eyebrow">{copy.productRecord}</p>
               <div className="mt-5 space-y-3 text-sm text-white/58">
                 <div className="flex items-center justify-between gap-4">
-                  <span>Created</span>
+                  <span>{copy.created}</span>
                   <span className="text-white/74">{product?.createdAt}</span>
                 </div>
                 <div className="flex items-center justify-between gap-4">
-                  <span>Updated</span>
+                  <span>{copy.updated}</span>
                   <span className="text-right text-white/74">{product?.updatedAt}</span>
                 </div>
               </div>

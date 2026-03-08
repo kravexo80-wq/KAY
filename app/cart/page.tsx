@@ -169,7 +169,7 @@ export default async function CartPage({ searchParams }: CartPageProps) {
         <section className="section-frame grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
           <div className="space-y-4">
             {cart.items.map((item) => (
-              <CartLineItem key={item.id} item={item} />
+              <CartLineItem key={item.id} item={item} locale={locale} />
             ))}
           </div>
 

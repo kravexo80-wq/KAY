@@ -6,6 +6,12 @@ import { redirect } from "next/navigation";
 import type { Tables, TablesInsert, TablesUpdate } from "@/types/database";
 import type { ProductTone } from "@/types/product";
 
+import {
+  getLocaleFromPathname,
+  localizeHref,
+  type Locale,
+} from "@/lib/i18n/config";
+import { getRequestLocale } from "@/lib/i18n/request";
 import { getSafeRedirectPath, requireAdmin } from "./auth";
 import {
   isImageFileEntry,
@@ -72,6 +78,31 @@ interface ParsedProductPayload {
   variants: ParsedVariantRow[];
   images: ParsedImageRow[];
   removedImageIds: string[];
+}
+
+function resolveActionLocale(pathname?: string | null): Locale {
+  return pathname ? getLocaleFromPathname(pathname) ?? "en" : "en";
+}
+
+function toLocalizedAdminPath(locale: Locale, path: string) {
+  return localizeHref(locale, path);
+}
+
+function translateAdminProductMessage(locale: Locale, message: string) {
+  if (locale !== "ar") {
+    return message;
+  }
+
+  const directMap: Record<string, string> = {
+    "Product state update was invalid.": "تعذر تحديث حالة المنتج لأن البيانات غير صالحة.",
+    "Featured state update was invalid.": "تعذر تحديث حالة تمييز المنتج لأن البيانات غير صالحة.",
+    "Product could not be found.": "تعذر العثور على المنتج المطلوب.",
+    "Product creation failed.": "فشل إنشاء المنتج.",
+    "Product update failed.": "فشل تحديث المنتج.",
+    "Product reference is missing.": "مرجع المنتج مفقود.",
+  };
+
+  return directMap[message] ?? message;
 }
 
 const VALID_IMAGE_TONES = new Set<ProductTone>([
@@ -747,15 +778,27 @@ export async function toggleProductActiveAction(formData: FormData) {
   const productId = toNullableString(formData.get("product_id"));
   const nextActive = toNullableString(formData.get("next_active"));
   const returnTo = getSafeRedirectPath(formData.get("return_to"), "/admin/products");
+  const locale = resolveActionLocale(returnTo);
 
   if (!productId || (nextActive !== "true" && nextActive !== "false")) {
-    redirect(buildRedirectPath(returnTo, { error: "Product state update was invalid." }));
+    redirect(
+      buildRedirectPath(returnTo, {
+        error: translateAdminProductMessage(
+          locale,
+          "Product state update was invalid.",
+        ),
+      }),
+    );
   }
 
   const currentProduct = await getProductIdentity(productId);
 
   if (!currentProduct) {
-    redirect(buildRedirectPath(returnTo, { error: "Product could not be found." }));
+    redirect(
+      buildRedirectPath(returnTo, {
+        error: translateAdminProductMessage(locale, "Product could not be found."),
+      }),
+    );
   }
 
   const supabase = await createServerSupabaseClient();
@@ -785,17 +828,27 @@ export async function toggleProductFeaturedAction(formData: FormData) {
   const productId = toNullableString(formData.get("product_id"));
   const nextFeatured = toNullableString(formData.get("next_featured"));
   const returnTo = getSafeRedirectPath(formData.get("return_to"), "/admin/products");
+  const locale = resolveActionLocale(returnTo);
 
   if (!productId || (nextFeatured !== "true" && nextFeatured !== "false")) {
     redirect(
-      buildRedirectPath(returnTo, { error: "Featured state update was invalid." }),
+      buildRedirectPath(returnTo, {
+        error: translateAdminProductMessage(
+          locale,
+          "Featured state update was invalid.",
+        ),
+      }),
     );
   }
 
   const currentProduct = await getProductIdentity(productId);
 
   if (!currentProduct) {
-    redirect(buildRedirectPath(returnTo, { error: "Product could not be found." }));
+    redirect(
+      buildRedirectPath(returnTo, {
+        error: translateAdminProductMessage(locale, "Product could not be found."),
+      }),
+    );
   }
 
   const supabase = await createServerSupabaseClient();
@@ -821,6 +874,8 @@ export async function toggleProductFeaturedAction(formData: FormData) {
 
 export async function createProductAction(formData: FormData) {
   await requireAdmin("/admin/products/new");
+  const locale = await getRequestLocale();
+  const newProductPath = toLocalizedAdminPath(locale, "/admin/products/new");
 
   let createdProductId: string | null = null;
 
@@ -858,7 +913,7 @@ export async function createProductAction(formData: FormData) {
     });
 
     redirect(
-      buildRedirectPath(`/admin/products/${product.id}`, {
+      buildRedirectPath(toLocalizedAdminPath(locale, `/admin/products/${product.id}`), {
         created: "product",
       }),
     );
@@ -869,10 +924,12 @@ export async function createProductAction(formData: FormData) {
     }
 
     const message =
-      error instanceof Error ? error.message : "Product creation failed.";
+      error instanceof Error
+        ? translateAdminProductMessage(locale, error.message)
+        : translateAdminProductMessage(locale, "Product creation failed.");
 
     redirect(
-      buildRedirectPath("/admin/products/new", {
+      buildRedirectPath(newProductPath, {
         error: message,
       }),
     );
@@ -881,13 +938,14 @@ export async function createProductAction(formData: FormData) {
 
 export async function updateProductAction(formData: FormData) {
   await requireAdmin("/admin/products");
+  const locale = await getRequestLocale();
 
   const productId = toNullableString(formData.get("product_id"));
 
   if (!productId) {
     redirect(
-      buildRedirectPath("/admin/products", {
-        error: "Product reference is missing.",
+      buildRedirectPath(toLocalizedAdminPath(locale, "/admin/products"), {
+        error: translateAdminProductMessage(locale, "Product reference is missing."),
       }),
     );
   }
@@ -896,7 +954,7 @@ export async function updateProductAction(formData: FormData) {
     const currentProduct = await getProductIdentity(productId);
 
     if (!currentProduct) {
-      throw new Error("Product could not be found.");
+      throw new Error(translateAdminProductMessage(locale, "Product could not be found."));
     }
 
     const payload = parseProductPayload(formData);
@@ -939,16 +997,18 @@ export async function updateProductAction(formData: FormData) {
     });
 
     redirect(
-      buildRedirectPath(`/admin/products/${productId}`, {
+      buildRedirectPath(toLocalizedAdminPath(locale, `/admin/products/${productId}`), {
         updated: "product",
       }),
     );
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Product update failed.";
+      error instanceof Error
+        ? translateAdminProductMessage(locale, error.message)
+        : translateAdminProductMessage(locale, "Product update failed.");
 
     redirect(
-      buildRedirectPath(`/admin/products/${productId}`, {
+      buildRedirectPath(toLocalizedAdminPath(locale, `/admin/products/${productId}`), {
         error: message,
       }),
     );

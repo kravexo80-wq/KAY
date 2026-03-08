@@ -5,9 +5,12 @@ import { Expand, Rotate3D, Sparkles, X } from "lucide-react";
 
 import { ProductMediaFrame } from "@/components/storefront/product-media-frame";
 import { Button } from "@/components/ui/button";
+import type { Locale } from "@/lib/i18n/config";
+import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
 import type { ProductMedia, ProductViewer360 } from "@/types/product";
 
 interface ProductGalleryProps {
+  locale: Locale;
   productName: string;
   media: ProductMedia[];
   viewer360: ProductViewer360;
@@ -18,12 +21,16 @@ type ActiveSurface =
   | { kind: "viewer360" };
 
 function Viewer360Stage({
+  locale,
   productName,
   viewer360,
 }: {
+  locale: Locale;
   productName: string;
   viewer360: ProductViewer360;
 }) {
+  const copy = getExtendedUiCopy(locale).productGallery;
+
   return (
     <div className="relative aspect-[4/5] overflow-hidden rounded-[2.4rem] border border-white/10 bg-[linear-gradient(180deg,#090909_0%,#040404_100%)] shadow-[0_40px_120px_rgba(0,0,0,0.58)] md:aspect-[5/6]">
       <div className="absolute inset-0">
@@ -42,7 +49,7 @@ function Viewer360Stage({
           {viewer360.label}
         </p>
         <h3 className="mt-4 text-4xl leading-none text-white md:text-5xl">
-          Future interactive viewer for {productName}
+          {copy.futureViewerTitlePrefix} {productName}
         </h3>
         <p className="mt-4 max-w-lg text-sm leading-8 text-white/56 md:text-base">
           {viewer360.description}
@@ -56,10 +63,12 @@ function Viewer360Stage({
 }
 
 export function ProductGallery({
+  locale,
   productName,
   media,
   viewer360,
 }: ProductGalleryProps) {
+  const copy = getExtendedUiCopy(locale).productGallery;
   const fallbackMedia = media[0];
   const [activeSurface, setActiveSurface] = useState<ActiveSurface>({
     kind: "media",
@@ -70,7 +79,7 @@ export function ProductGallery({
   if (!fallbackMedia) {
     return (
       <div className="showroom-subpanel flex min-h-[36rem] items-center justify-center p-8 text-center text-sm leading-7 text-white/54">
-        Product media will appear here once gallery assets are connected.
+        {copy.unavailable}
       </div>
     );
   }
@@ -88,7 +97,11 @@ export function ProductGallery({
         <div className="showroom-panel p-4 md:p-5">
           <div className="relative">
             {isViewerMode ? (
-              <Viewer360Stage productName={productName} viewer360={viewer360} />
+              <Viewer360Stage
+                locale={locale}
+                productName={productName}
+                viewer360={viewer360}
+              />
             ) : (
               <ProductMediaFrame
                 media={activeMedia}
@@ -99,7 +112,7 @@ export function ProductGallery({
 
             <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
               <div className="rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/56">
-                {isViewerMode ? "360-ready module" : "Zoom-ready display"}
+                {isViewerMode ? copy.viewerReady : copy.zoomReady}
               </div>
               <div className="flex items-center gap-2">
                 {viewer360.enabled ? (
@@ -109,7 +122,7 @@ export function ProductGallery({
                     size="icon"
                     className="h-10 w-10"
                     onClick={() => setActiveSurface({ kind: "viewer360" })}
-                    aria-label={`View 360 placeholder for ${productName}`}
+                    aria-label={`${copy.view360} ${productName}`}
                   >
                     <Rotate3D className="h-4 w-4" />
                   </Button>
@@ -121,7 +134,7 @@ export function ProductGallery({
                     size="icon"
                     className="h-10 w-10"
                     onClick={() => setZoomed(true)}
-                    aria-label={`Expand ${productName} gallery image`}
+                    aria-label={`${copy.expand} ${productName}`}
                   >
                     <Expand className="h-4 w-4" />
                   </Button>
@@ -131,7 +144,7 @@ export function ProductGallery({
 
             <div className="absolute inset-x-4 bottom-4 flex flex-wrap items-end justify-between gap-3">
               <div className="rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/60">
-                {isViewerMode ? "Interactive module slot" : activeMedia.angle}
+                {isViewerMode ? copy.interactiveSlot : activeMedia.angle}
               </div>
               <div className="rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/48">
                 {isViewerMode ? viewer360.note : activeMedia.note}
@@ -189,7 +202,7 @@ export function ProductGallery({
             }`}
           >
             <div>
-              <p className="eyebrow">360 viewer</p>
+              <p className="eyebrow">{copy.viewerEyebrow}</p>
               <h3 className="mt-3 flex items-center gap-2 text-2xl leading-none text-white">
                 <Rotate3D className="h-5 w-5 text-[#f3e7c8]" />
                 {viewer360.label}
@@ -202,7 +215,7 @@ export function ProductGallery({
               <div className="hairline" />
               <div className="flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.26em] text-white/40">
                 <Sparkles className="h-4 w-4 text-white/38" />
-                Future frame sequence slot
+                {copy.futureFrameSlot}
               </div>
             </div>
           </button>
@@ -215,7 +228,7 @@ export function ProductGallery({
             type="button"
             onClick={() => setZoomed(false)}
             className="absolute right-6 top-6 flex h-12 w-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.04] text-white transition hover:bg-white/[0.08]"
-            aria-label="Close expanded gallery image"
+            aria-label={copy.closeExpanded}
           >
             <X className="h-5 w-5" />
           </button>

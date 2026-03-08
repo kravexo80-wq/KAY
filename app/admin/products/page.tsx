@@ -5,6 +5,9 @@ import { PageIntro } from "@/components/layout/page-intro";
 import { AdminProductListCard } from "@/components/storefront/admin-product-list-card";
 import { CatalogStatePanel } from "@/components/storefront/catalog-state-panel";
 import { Button } from "@/components/ui/button";
+import { localizeHref } from "@/lib/i18n/config";
+import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
+import { getRequestI18n } from "@/lib/i18n/request";
 import { getAdminProducts } from "@/lib/supabase/admin-products";
 import { requireAdmin } from "@/lib/supabase/auth";
 
@@ -23,26 +26,30 @@ export default async function AdminProductsPage({
   searchParams,
 }: AdminProductsPageProps) {
   await requireAdmin("/admin/products");
-  const [products, resolvedSearchParams] = await Promise.all([
-    getAdminProducts(),
-    searchParams,
-  ]);
+  const [{ locale, direction, dictionary }, products, resolvedSearchParams] =
+    await Promise.all([
+      getRequestI18n(),
+      getAdminProducts(),
+      searchParams,
+    ]);
+  const copy = getExtendedUiCopy(locale).adminProducts;
+  const isRtl = direction === "rtl";
   const activeCount = products.filter((product) => product.isActive).length;
   const featuredCount = products.filter((product) => product.isFeatured).length;
   const lowStockCount = products.filter(
     (product) => product.activeVariantCount > 0 && product.totalStock < 6,
   ).length;
   const metrics = [
-    { label: "Products", value: `${products.length}` },
-    { label: "Active", value: `${activeCount}` },
-    { label: "Featured", value: `${featuredCount}` },
-    { label: "Low stock", value: `${lowStockCount}` },
+    { label: copy.list.products, value: `${products.length}` },
+    { label: copy.list.active, value: `${activeCount}` },
+    { label: copy.list.featured, value: `${featuredCount}` },
+    { label: copy.list.lowStock, value: `${lowStockCount}` },
   ];
   const statusMessage =
     resolvedSearchParams.updated === "active"
-      ? "Product publishing state updated."
+      ? copy.list.activeUpdated
       : resolvedSearchParams.updated === "featured"
-        ? "Product featured state updated."
+        ? copy.list.featuredUpdated
         : resolvedSearchParams.error ?? null;
   const isError = Boolean(
     resolvedSearchParams.error &&
@@ -52,17 +59,22 @@ export default async function AdminProductsPage({
   return (
     <div className="space-y-8 pb-16 md:pb-24">
       <PageIntro
-        eyebrow="Admin products"
-        title="Catalog control for the Kravexo showroom."
-        description="This admin-only surface manages live products, publishing state, category and collection assignment, variants, stock quantities, and simple gallery URLs without touching code."
-        note="Products stay aligned with the existing Supabase catalog schema, and storefront pages are revalidated after changes so the public luxury UI stays intact."
+        eyebrow={copy.list.eyebrow}
+        title={copy.list.title}
+        description={copy.list.description}
+        note={copy.list.note}
+        isRtl={isRtl}
         actions={
           <>
             <Button asChild>
-              <Link href="/admin/products/new">Create product</Link>
+              <Link href={localizeHref(locale, "/admin/products/new")}>
+                {copy.form.createProduct}
+              </Link>
             </Button>
             <Button asChild variant="secondary">
-              <Link href="/admin">Admin dashboard</Link>
+              <Link href={localizeHref(locale, "/admin")}>
+                {dictionary.common.backToDashboard}
+              </Link>
             </Button>
           </>
         }
@@ -71,7 +83,9 @@ export default async function AdminProductsPage({
       {statusMessage ? (
         <section className="section-frame">
           <div className={isError ? "luxury-muted-panel p-5" : "showroom-panel p-5"}>
-            <p className="eyebrow">{isError ? "Update error" : "Update saved"}</p>
+            <p className="eyebrow">
+              {isError ? copy.list.updateError : copy.list.updateSaved}
+            </p>
             <p className="mt-4 text-sm leading-7 text-white/58">{statusMessage}</p>
           </div>
         </section>
@@ -94,17 +108,19 @@ export default async function AdminProductsPage({
         {products.length > 0 ? (
           <div className="grid gap-4">
             {products.map((product) => (
-              <AdminProductListCard key={product.id} product={product} />
+              <AdminProductListCard key={product.id} product={product} locale={locale} />
             ))}
           </div>
         ) : (
           <CatalogStatePanel
-            eyebrow="Admin products"
-            title="No products exist in the catalog yet."
-            description="Create the first Kravexo product here, then add variants, stock, images, and publishing state from the dedicated editor."
+            eyebrow={copy.list.eyebrow}
+            title={copy.list.emptyTitle}
+            description={copy.list.emptyDescription}
             action={
               <Button asChild>
-                <Link href="/admin/products/new">Create the first product</Link>
+                <Link href={localizeHref(locale, "/admin/products/new")}>
+                  {copy.form.createProduct}
+                </Link>
               </Button>
             }
           />

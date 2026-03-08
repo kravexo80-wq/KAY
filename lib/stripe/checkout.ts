@@ -4,6 +4,8 @@ import type Stripe from "stripe";
 
 import type { Tables } from "@/types/database";
 
+import { getLocalizedCatalogField } from "@/lib/i18n/catalog";
+import { getRequestLocale } from "@/lib/i18n/request";
 import { requireAuth } from "@/lib/supabase/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -26,15 +28,24 @@ type CheckoutProductImageRecord = Pick<
   | "image_url"
   | "storage_path"
   | "label"
+  | "label_ar"
   | "angle"
+  | "angle_ar"
   | "sort_order"
   | "is_primary"
 >;
 type CheckoutProductRecord = Pick<
   Tables<"products">,
-  "id" | "slug" | "name" | "short_description" | "base_price" | "is_active"
+  | "id"
+  | "slug"
+  | "name"
+  | "name_ar"
+  | "short_description"
+  | "short_description_ar"
+  | "base_price"
+  | "is_active"
 > & {
-  category: Pick<Tables<"categories">, "name"> | null;
+  category: Pick<Tables<"categories">, "name" | "name_ar"> | null;
   images: CheckoutProductImageRecord[] | null;
 };
 type CheckoutVariantRecord = Pick<
@@ -127,18 +138,23 @@ const checkoutItemsSelect = `
       id,
       slug,
       name,
+      name_ar,
       short_description,
+      short_description_ar,
       base_price,
       is_active,
       category:categories (
-        name
+        name,
+        name_ar
       ),
       images:product_images (
         id,
         image_url,
         storage_path,
         label,
+        label_ar,
         angle,
+        angle_ar,
         sort_order,
         is_primary
       )
@@ -162,7 +178,10 @@ function toStripeAmount(value: number) {
   return Math.round(value * 100);
 }
 
-function resolveImage(record: CheckoutProductImageRecord[] | null) {
+function resolveImage(
+  record: CheckoutProductImageRecord[] | null,
+  locale: Awaited<ReturnType<typeof getRequestLocale>>,
+) {
   if (!record || record.length === 0) {
     return {
       imageUrl: null,
@@ -182,8 +201,16 @@ function resolveImage(record: CheckoutProductImageRecord[] | null) {
 
   return {
     imageUrl: image.image_url,
-    mediaAngle: image.angle,
-    mediaLabel: image.label,
+    mediaAngle: getLocalizedCatalogField(
+      image as Record<string, unknown>,
+      "angle",
+      locale,
+    ),
+    mediaLabel: getLocalizedCatalogField(
+      image as Record<string, unknown>,
+      "label",
+      locale,
+    ),
   };
 }
 
@@ -233,6 +260,7 @@ async function buildPreparedCheckoutCart(): Promise<PreparedCheckoutCart | null>
     throw new Error(CHECKOUT_UNCONFIGURED_MESSAGE);
   }
 
+  const locale = await getRequestLocale();
   const checkoutCart = await getAuthenticatedCheckoutCart();
 
   if (!checkoutCart.customerEmail) {
@@ -263,7 +291,7 @@ async function buildPreparedCheckoutCart(): Promise<PreparedCheckoutCart | null>
       throw new Error(`${product.name} in size ${variant.size} is unavailable.`);
     }
 
-    const media = resolveImage(product.images);
+    const media = resolveImage(product.images, locale);
 
     return [
       {
@@ -271,9 +299,25 @@ async function buildPreparedCheckoutCart(): Promise<PreparedCheckoutCart | null>
         productId: product.id,
         variantId: variant.id,
         productSlug: product.slug,
-        productName: product.name,
-        categoryName: product.category?.name ?? "Uncategorized",
-        shortDescription: product.short_description,
+        productName: getLocalizedCatalogField(
+          product as Record<string, unknown>,
+          "name",
+          locale,
+        ),
+        categoryName: product.category
+          ? getLocalizedCatalogField(
+              product.category as Record<string, unknown>,
+              "name",
+              locale,
+            )
+          : locale === "ar"
+            ? "غير مصنف"
+            : "Uncategorized",
+        shortDescription: getLocalizedCatalogField(
+          product as Record<string, unknown>,
+          "short_description",
+          locale,
+        ),
         sku: variant.sku,
         size: variant.size,
         color: variant.color,

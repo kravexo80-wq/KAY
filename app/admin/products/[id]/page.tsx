@@ -5,6 +5,9 @@ import { notFound } from "next/navigation";
 import { PageIntro } from "@/components/layout/page-intro";
 import { AdminProductForm } from "@/components/storefront/admin-product-form";
 import { Button } from "@/components/ui/button";
+import { localizeHref } from "@/lib/i18n/config";
+import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
+import { getRequestI18n } from "@/lib/i18n/request";
 import { updateProductAction } from "@/lib/supabase/admin-product-actions";
 import {
   getAdminCatalogOptions,
@@ -33,10 +36,13 @@ export default async function AdminProductDetailPage({
 }: AdminProductDetailPageProps) {
   await requireAdmin("/admin/products");
   const [{ id }, resolvedSearchParams] = await Promise.all([params, searchParams]);
-  const [options, product] = await Promise.all([
+  const [{ locale, direction, dictionary }, options, product] = await Promise.all([
+    getRequestI18n(),
     getAdminCatalogOptions(),
     getAdminProductById(id),
   ]);
+  const copy = getExtendedUiCopy(locale).adminProducts;
+  const isRtl = direction === "rtl";
 
   if (!product) {
     notFound();
@@ -50,35 +56,41 @@ export default async function AdminProductDetailPage({
     : resolvedSearchParams.created === "product"
       ? {
           tone: "success" as const,
-          message: "Product created successfully. You can continue refining variants, images, and publishing state here.",
+          message: copy.editPage.createdMessage,
         }
       : resolvedSearchParams.updated === "product"
         ? {
             tone: "success" as const,
-            message: "Product changes saved and storefront/admin pages revalidated.",
+            message: copy.editPage.updatedMessage,
           }
         : null;
 
   return (
     <div className="space-y-8 pb-16 md:pb-24">
       <PageIntro
-        eyebrow="Edit product"
-        title={`Catalog editor for ${product.name}`}
-        description="Update the live product record, manage stock-bearing variants, refine gallery imagery, and adjust publishing state without leaving the admin surface."
-        note="The public storefront keeps reading the same Supabase product, variant, and image tables. This editor only changes the backend catalog records behind that existing premium UI."
+        eyebrow={copy.editPage.eyebrow}
+        title={`${copy.editPage.eyebrow}: ${product.displayName}`}
+        description={copy.editPage.description}
+        note={copy.editPage.note}
+        isRtl={isRtl}
         actions={
           <>
             <Button asChild>
-              <Link href="/admin/products">Back to products</Link>
+              <Link href={localizeHref(locale, "/admin/products")}>
+                {dictionary.common.backToProducts}
+              </Link>
             </Button>
             <Button asChild variant="secondary">
-              <Link href={`/products/${product.slug}`}>Open storefront page</Link>
+              <Link href={localizeHref(locale, `/products/${product.slug}`)}>
+                {dictionary.common.viewProduct}
+              </Link>
             </Button>
           </>
         }
       />
 
       <AdminProductForm
+        locale={locale}
         mode="edit"
         options={options}
         product={product}

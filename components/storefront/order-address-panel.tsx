@@ -4,6 +4,7 @@ interface OrderAddressPanelProps {
   title: string;
   description: string;
   address: OrderAddressSummary;
+  emptyMessage?: string;
 }
 
 function getAddressLines(address: OrderAddressSummary) {
@@ -33,6 +34,7 @@ export function OrderAddressPanel({
   title,
   description,
   address,
+  emptyMessage = "No address snapshot was captured for this section yet.",
 }: OrderAddressPanelProps) {
   const addressLines = getAddressLines(address);
   const visible = hasAddressContent(address);
@@ -53,9 +55,7 @@ export function OrderAddressPanel({
         </div>
       ) : (
         <div className="showroom-subpanel mt-5 px-4 py-4">
-          <p className="text-sm leading-7 text-white/56">
-            No address snapshot was captured for this section yet.
-          </p>
+          <p className="text-sm leading-7 text-white/56">{emptyMessage}</p>
         </div>
       )}
     </section>

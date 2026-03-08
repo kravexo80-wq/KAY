@@ -6,28 +6,49 @@ import type { Collection } from "@/types/collection";
 import type { Database, Json, Tables } from "@/types/database";
 import type { Product, ProductMedia, ProductSpec } from "@/types/product";
 
-import { getLocalizedCatalogField } from "@/lib/i18n/catalog";
+import {
+  getLocalizedCatalogField,
+  getLocalizedCatalogJsonField,
+  getLocalizedCatalogListField,
+} from "@/lib/i18n/catalog";
 import { getRequestLocale } from "@/lib/i18n/request";
 import type { Locale } from "@/lib/i18n/config";
 
 import { hasSupabaseEnv } from "./config";
 import { createReadOnlySupabaseClient } from "./server";
 
-type CategorySummary = Pick<Tables<"categories">, "id" | "name" | "slug">;
+type CategorySummary = Pick<
+  Tables<"categories">,
+  "id" | "name" | "name_ar" | "slug"
+>;
 type CollectionSummary = Pick<
   Tables<"collections">,
-  "id" | "slug" | "name" | "eyebrow" | "description" | "highlight" | "tone"
+  | "id"
+  | "slug"
+  | "name"
+  | "name_ar"
+  | "eyebrow"
+  | "eyebrow_ar"
+  | "description"
+  | "description_ar"
+  | "highlight"
+  | "highlight_ar"
+  | "tone"
 >;
 type ProductImageSummary = Pick<
   Tables<"product_images">,
   | "id"
   | "label"
+  | "label_ar"
   | "angle"
+  | "angle_ar"
   | "note"
+  | "note_ar"
   | "tone"
   | "image_url"
   | "storage_path"
   | "alt_text"
+  | "alt_text_ar"
   | "sort_order"
   | "is_primary"
 >;
@@ -68,52 +89,78 @@ export const productCatalogSelect = `
   collection_id,
   slug,
   name,
+  name_ar,
   short_description,
+  short_description_ar,
   description,
+  description_ar,
   story,
+  story_ar,
   base_price,
   compare_at_price,
   currency_code,
   tags,
+  tags_ar,
   materials,
+  materials_ar,
   fabric_notes,
+  fabric_notes_ar,
   care_notes,
+  care_notes_ar,
   fit_notes,
+  fit_notes_ar,
   specs,
+  specs_ar,
   limited_edition,
   is_active,
   is_featured,
   viewer_360_enabled,
   viewer_360_label,
+  viewer_360_label_ar,
   viewer_360_description,
+  viewer_360_description_ar,
   viewer_360_note,
+  viewer_360_note_ar,
   shipping_lead_time,
+  shipping_lead_time_ar,
   shipping_delivery,
+  shipping_delivery_ar,
   shipping_returns,
+  shipping_returns_ar,
   shipping_presentation,
+  shipping_presentation_ar,
   category:categories (
     id,
     name,
+    name_ar,
     slug
   ),
   collection:collections (
     id,
     slug,
     name,
+    name_ar,
     eyebrow,
+    eyebrow_ar,
     description,
+    description_ar,
     highlight,
+    highlight_ar,
     tone
   ),
   images:product_images (
     id,
     label,
+    label_ar,
     angle,
+    angle_ar,
     note,
+    note_ar,
     tone,
     image_url,
     storage_path,
     alt_text,
+    alt_text_ar,
     sort_order,
     is_primary
   ),
@@ -133,9 +180,13 @@ export const collectionCatalogSelect = `
   id,
   slug,
   name,
+  name_ar,
   eyebrow,
+  eyebrow_ar,
   description,
+  description_ar,
   highlight,
+  highlight_ar,
   tone,
   products:products (
     slug
@@ -206,22 +257,40 @@ function normalizeSpecs(specs: Json): ProductSpec[] {
   });
 }
 
-function mapProductImageToMedia(image: ProductImageSummary): ProductMedia {
+function mapProductImageToMedia(
+  image: ProductImageSummary,
+  locale: Locale,
+): ProductMedia {
   return {
     id: image.id,
-    label: image.label,
-    angle: image.angle,
-    note: image.note,
+    label: getLocalizedCatalogField(
+      image as Record<string, unknown>,
+      "label",
+      locale,
+    ),
+    angle: getLocalizedCatalogField(
+      image as Record<string, unknown>,
+      "angle",
+      locale,
+    ),
+    note: getLocalizedCatalogField(
+      image as Record<string, unknown>,
+      "note",
+      locale,
+    ),
     tone: image.tone,
   };
 }
 
-function createFallbackMedia(record: ProductCatalogRecord): ProductMedia {
+function createFallbackMedia(
+  record: ProductCatalogRecord,
+  locale: Locale,
+): ProductMedia {
   return {
     id: `${record.slug}-placeholder`,
-    label: "Showroom frame",
-    angle: "Primary display",
-    note: "Awaiting studio imagery",
+    label: locale === "ar" ? "إطار المعرض" : "Showroom frame",
+    angle: locale === "ar" ? "العرض الرئيسي" : "Primary display",
+    note: locale === "ar" ? "بانتظار صور الاستوديو" : "Awaiting studio imagery",
     tone: record.collection?.tone ?? "obsidian",
   };
 }
@@ -251,7 +320,7 @@ function mapProductRecordToProduct(
 ): Product {
   const gallery = [...(record.images ?? [])]
     .sort((left, right) => left.sort_order - right.sort_order)
-    .map(mapProductImageToMedia);
+    .map((image) => mapProductImageToMedia(image, locale));
 
   return {
     slug: record.slug,
@@ -262,7 +331,9 @@ function mapProductRecordToProduct(
           "name",
           locale,
         )
-      : "Uncategorized",
+      : locale === "ar"
+        ? "غير مصنف"
+        : "Uncategorized",
     collectionSlug: record.collection?.slug ?? "",
     price: Number(record.base_price),
     compareAtPrice: record.compare_at_price ? Number(record.compare_at_price) : null,
@@ -276,29 +347,79 @@ function mapProductRecordToProduct(
       "description",
       locale,
     ),
-    story: record.story,
+    story: getLocalizedCatalogField(record as Record<string, unknown>, "story", locale),
     featured: record.is_featured,
     limitedEdition: record.limited_edition,
-    tags: record.tags ?? [],
-    materials: record.materials ?? [],
-    fabricNotes: record.fabric_notes ?? [],
-    careNotes: record.care_notes ?? [],
-    fitNotes: record.fit_notes ?? [],
+    tags: getLocalizedCatalogListField(record as Record<string, unknown>, "tags", locale),
+    materials: getLocalizedCatalogListField(
+      record as Record<string, unknown>,
+      "materials",
+      locale,
+    ),
+    fabricNotes: getLocalizedCatalogListField(
+      record as Record<string, unknown>,
+      "fabric_notes",
+      locale,
+    ),
+    careNotes: getLocalizedCatalogListField(
+      record as Record<string, unknown>,
+      "care_notes",
+      locale,
+    ),
+    fitNotes: getLocalizedCatalogListField(
+      record as Record<string, unknown>,
+      "fit_notes",
+      locale,
+    ),
     sizes: getAvailableSizes(record.variants),
-    gallery: gallery.length > 0 ? gallery : [createFallbackMedia(record)],
+    gallery: gallery.length > 0 ? gallery : [createFallbackMedia(record, locale)],
     viewer360: {
       enabled: record.viewer_360_enabled,
-      label: record.viewer_360_label,
-      description: record.viewer_360_description,
-      note: record.viewer_360_note,
+      label: getLocalizedCatalogField(
+        record as Record<string, unknown>,
+        "viewer_360_label",
+        locale,
+      ),
+      description: getLocalizedCatalogField(
+        record as Record<string, unknown>,
+        "viewer_360_description",
+        locale,
+      ),
+      note: getLocalizedCatalogField(
+        record as Record<string, unknown>,
+        "viewer_360_note",
+        locale,
+      ),
     },
     shipping: {
-      leadTime: record.shipping_lead_time,
-      delivery: record.shipping_delivery,
-      returns: record.shipping_returns,
-      presentation: record.shipping_presentation,
+      leadTime: getLocalizedCatalogField(
+        record as Record<string, unknown>,
+        "shipping_lead_time",
+        locale,
+      ),
+      delivery: getLocalizedCatalogField(
+        record as Record<string, unknown>,
+        "shipping_delivery",
+        locale,
+      ),
+      returns: getLocalizedCatalogField(
+        record as Record<string, unknown>,
+        "shipping_returns",
+        locale,
+      ),
+      presentation: getLocalizedCatalogField(
+        record as Record<string, unknown>,
+        "shipping_presentation",
+        locale,
+      ),
     },
-    specs: normalizeSpecs(record.specs),
+    specs: normalizeSpecs(
+      getLocalizedCatalogJsonField(
+        record as Record<string, unknown>,
+        "specs",
+        locale,
+      ) ?? record.specs,
+    ),
   };
 }
 
@@ -309,13 +430,21 @@ function mapCollectionRecordToCollection(
   return {
     slug: record.slug,
     name: getLocalizedCatalogField(record as Record<string, unknown>, "name", locale),
-    eyebrow: record.eyebrow,
+    eyebrow: getLocalizedCatalogField(
+      record as Record<string, unknown>,
+      "eyebrow",
+      locale,
+    ),
     description: getLocalizedCatalogField(
       record as Record<string, unknown>,
       "description",
       locale,
     ),
-    highlight: record.highlight,
+    highlight: getLocalizedCatalogField(
+      record as Record<string, unknown>,
+      "highlight",
+      locale,
+    ),
     tone: record.tone,
     productSlugs: record.products?.map((product) => product.slug) ?? [],
   };

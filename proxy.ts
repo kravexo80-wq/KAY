@@ -60,6 +60,7 @@ export async function proxy(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone();
 
     redirectUrl.pathname = localizeHref(locale, pathname);
+    request.cookies.set(localeCookieName, locale);
 
     const response = NextResponse.redirect(redirectUrl);
 
@@ -72,6 +73,7 @@ export async function proxy(request: NextRequest) {
   const internalUrl = request.nextUrl.clone();
 
   internalUrl.pathname = stripLocaleFromPathname(pathname);
+  request.cookies.set(localeCookieName, pathnameLocale);
 
   const response = NextResponse.rewrite(internalUrl, {
     request: {

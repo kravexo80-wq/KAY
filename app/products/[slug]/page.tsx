@@ -126,6 +126,7 @@ export default async function ProductDetailPage({
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.02fr)_440px]">
           <ProductGallery
+            locale={locale}
             productName={product.name}
             media={product.gallery}
             viewer360={product.viewer360}

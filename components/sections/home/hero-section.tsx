@@ -201,7 +201,7 @@ export function HeroSection({
                 {featuredProduct.name}
               </h2>
               <p className="mt-3 text-xs uppercase tracking-[0.26em] text-[#f3e7c8]">
-                {formatPrice(featuredProduct.price)}
+                {formatPrice(featuredProduct.price, locale)}
               </p>
               <p className="mt-4 text-sm leading-7 text-white/56">
                 {featuredProduct.story}

@@ -3,15 +3,18 @@ import "server-only";
 import type { Tables } from "@/types/database";
 import type { ProductTone } from "@/types/product";
 
+import { getLocalizedCatalogField } from "@/lib/i18n/catalog";
+import { getRequestLocale } from "@/lib/i18n/request";
+
 import { createServerSupabaseClient } from "./server";
 
 type CategoryOptionRow = Pick<
   Tables<"categories">,
-  "id" | "name" | "slug" | "is_active" | "sort_order"
+  "id" | "name" | "name_ar" | "slug" | "is_active" | "sort_order"
 >;
 type CollectionOptionRow = Pick<
   Tables<"collections">,
-  "id" | "name" | "slug" | "is_active" | "sort_order"
+  "id" | "name" | "name_ar" | "slug" | "is_active" | "sort_order"
 >;
 type ProductVariantRow = Pick<
   Tables<"product_variants">,
@@ -42,6 +45,7 @@ type AdminProductListRow = Pick<
   Tables<"products">,
   | "id"
   | "name"
+  | "name_ar"
   | "slug"
   | "base_price"
   | "compare_at_price"
@@ -50,8 +54,8 @@ type AdminProductListRow = Pick<
   | "limited_edition"
   | "updated_at"
 > & {
-  category: Pick<Tables<"categories">, "name" | "slug"> | null;
-  collection: Pick<Tables<"collections">, "name" | "slug"> | null;
+  category: Pick<Tables<"categories">, "name" | "name_ar" | "slug"> | null;
+  collection: Pick<Tables<"collections">, "name" | "name_ar" | "slug"> | null;
   variants: Pick<Tables<"product_variants">, "stock_quantity" | "is_active">[] | null;
   images: Pick<Tables<"product_images">, "image_url" | "sort_order" | "is_primary">[] | null;
 };
@@ -62,6 +66,7 @@ type AdminProductEditorRow = Pick<
   | "category_id"
   | "collection_id"
   | "name"
+  | "name_ar"
   | "slug"
   | "short_description"
   | "description"
@@ -78,8 +83,8 @@ type AdminProductEditorRow = Pick<
   | "created_at"
   | "updated_at"
 > & {
-  category: Pick<Tables<"categories">, "name" | "slug"> | null;
-  collection: Pick<Tables<"collections">, "name" | "slug"> | null;
+  category: Pick<Tables<"categories">, "name" | "name_ar" | "slug"> | null;
+  collection: Pick<Tables<"collections">, "name" | "name_ar" | "slug"> | null;
   variants: ProductVariantRow[] | null;
   images: ProductImageRow[] | null;
 };
@@ -87,6 +92,7 @@ type AdminProductEditorRow = Pick<
 const adminProductListSelect = `
   id,
   name,
+  name_ar,
   slug,
   base_price,
   compare_at_price,
@@ -96,10 +102,12 @@ const adminProductListSelect = `
   updated_at,
   category:categories (
     name,
+    name_ar,
     slug
   ),
   collection:collections (
     name,
+    name_ar,
     slug
   ),
   variants:product_variants (
@@ -118,6 +126,7 @@ const adminProductEditorSelect = `
   category_id,
   collection_id,
   name,
+  name_ar,
   slug,
   short_description,
   description,
@@ -135,10 +144,12 @@ const adminProductEditorSelect = `
   updated_at,
   category:categories (
     name,
+    name_ar,
     slug
   ),
   collection:collections (
     name,
+    name_ar,
     slug
   ),
   variants:product_variants (
@@ -220,6 +231,7 @@ export interface AdminProductListItem {
 export interface AdminProductEditorData {
   id: string;
   name: string;
+  displayName: string;
   slug: string;
   shortDescription: string;
   description: string;
@@ -250,10 +262,15 @@ export interface AdminCatalogOptions {
 
 function mapCatalogOption(
   option: CategoryOptionRow | CollectionOptionRow,
+  locale: Awaited<ReturnType<typeof getRequestLocale>>,
 ): AdminCatalogOption {
   return {
     id: option.id,
-    name: option.name,
+    name: getLocalizedCatalogField(
+      option as Record<string, unknown>,
+      "name",
+      locale,
+    ),
     slug: option.slug,
     isActive: option.is_active,
     sortOrder: option.sort_order,
@@ -288,7 +305,10 @@ function mapImageRow(row: ProductImageRow): AdminProductImageFormValue {
   };
 }
 
-function mapProductListItem(row: AdminProductListRow): AdminProductListItem {
+function mapProductListItem(
+  row: AdminProductListRow,
+  locale: Awaited<ReturnType<typeof getRequestLocale>>,
+): AdminProductListItem {
   const variants = row.variants ?? [];
   const images = [...(row.images ?? [])].sort((left, right) => {
     if (left.is_primary === right.is_primary) {
@@ -300,16 +320,30 @@ function mapProductListItem(row: AdminProductListRow): AdminProductListItem {
 
   return {
     id: row.id,
-    name: row.name,
+    name: getLocalizedCatalogField(row as Record<string, unknown>, "name", locale),
     slug: row.slug,
     price: Number(row.base_price),
     compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : null,
     isActive: row.is_active,
     isFeatured: row.is_featured,
     limitedEdition: row.limited_edition,
-    categoryName: row.category?.name ?? "Uncategorized",
+    categoryName: row.category
+      ? getLocalizedCatalogField(
+          row.category as Record<string, unknown>,
+          "name",
+          locale,
+        )
+      : locale === "ar"
+        ? "غير مصنف"
+        : "Uncategorized",
     categorySlug: row.category?.slug ?? "",
-    collectionName: row.collection?.name ?? null,
+    collectionName: row.collection
+      ? getLocalizedCatalogField(
+          row.collection as Record<string, unknown>,
+          "name",
+          locale,
+        )
+      : null,
     collectionSlug: row.collection?.slug ?? null,
     totalStock: variants
       .filter((variant) => variant.is_active)
@@ -321,10 +355,18 @@ function mapProductListItem(row: AdminProductListRow): AdminProductListItem {
   };
 }
 
-function mapProductEditorData(row: AdminProductEditorRow): AdminProductEditorData {
+function mapProductEditorData(
+  row: AdminProductEditorRow,
+  locale: Awaited<ReturnType<typeof getRequestLocale>>,
+): AdminProductEditorData {
   return {
     id: row.id,
     name: row.name,
+    displayName: getLocalizedCatalogField(
+      row as Record<string, unknown>,
+      "name",
+      locale,
+    ),
     slug: row.slug,
     shortDescription: row.short_description,
     description: row.description,
@@ -332,9 +374,23 @@ function mapProductEditorData(row: AdminProductEditorRow): AdminProductEditorDat
     price: Number(row.base_price),
     compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : null,
     categoryId: row.category_id,
-    categoryName: row.category?.name ?? "Uncategorized",
+    categoryName: row.category
+      ? getLocalizedCatalogField(
+          row.category as Record<string, unknown>,
+          "name",
+          locale,
+        )
+      : locale === "ar"
+        ? "غير مصنف"
+        : "Uncategorized",
     collectionId: row.collection_id,
-    collectionName: row.collection?.name ?? null,
+    collectionName: row.collection
+      ? getLocalizedCatalogField(
+          row.collection as Record<string, unknown>,
+          "name",
+          locale,
+        )
+      : null,
     materials: row.materials ?? [],
     fabricNotes: row.fabric_notes ?? [],
     careNotes: row.care_notes ?? [],
@@ -354,17 +410,18 @@ function mapProductEditorData(row: AdminProductEditorRow): AdminProductEditorDat
 }
 
 export async function getAdminCatalogOptions(): Promise<AdminCatalogOptions> {
+  const locale = await getRequestLocale();
   const supabase = await createServerSupabaseClient();
   const [{ data: categories, error: categoriesError }, { data: collections, error: collectionsError }] =
     await Promise.all([
       supabase
         .from("categories")
-        .select("id, name, slug, is_active, sort_order")
+        .select("id, name, name_ar, slug, is_active, sort_order")
         .order("sort_order", { ascending: true })
         .order("name", { ascending: true }),
       supabase
         .from("collections")
-        .select("id, name, slug, is_active, sort_order")
+        .select("id, name, name_ar, slug, is_active, sort_order")
         .order("sort_order", { ascending: true })
         .order("name", { ascending: true }),
     ]);
@@ -378,12 +435,17 @@ export async function getAdminCatalogOptions(): Promise<AdminCatalogOptions> {
   }
 
   return {
-    categories: ((categories ?? []) as CategoryOptionRow[]).map(mapCatalogOption),
-    collections: ((collections ?? []) as CollectionOptionRow[]).map(mapCatalogOption),
+    categories: ((categories ?? []) as CategoryOptionRow[]).map((option) =>
+      mapCatalogOption(option, locale),
+    ),
+    collections: ((collections ?? []) as CollectionOptionRow[]).map((option) =>
+      mapCatalogOption(option, locale),
+    ),
   };
 }
 
 export async function getAdminProducts() {
+  const locale = await getRequestLocale();
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
     .from("products")
@@ -395,10 +457,13 @@ export async function getAdminProducts() {
     return [];
   }
 
-  return ((data ?? []) as AdminProductListRow[]).map(mapProductListItem);
+  return ((data ?? []) as AdminProductListRow[]).map((row) =>
+    mapProductListItem(row, locale),
+  );
 }
 
 export async function getAdminProductById(productId: string) {
+  const locale = await getRequestLocale();
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
     .from("products")
@@ -411,5 +476,5 @@ export async function getAdminProductById(productId: string) {
     return null;
   }
 
-  return data ? mapProductEditorData(data as AdminProductEditorRow) : null;
+  return data ? mapProductEditorData(data as AdminProductEditorRow, locale) : null;
 }

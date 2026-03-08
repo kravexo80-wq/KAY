@@ -1,10 +1,13 @@
 import Link from "next/link";
 
+import { localizeHref, type Locale } from "@/lib/i18n/config";
+import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
 import { formatPrice } from "@/lib/utils";
 
 import { ProductMediaFrame } from "./product-media-frame";
 
 interface CheckoutLineItemProps {
+  locale: Locale;
   item: {
     id: string;
     productName: string;
@@ -22,7 +25,9 @@ interface CheckoutLineItemProps {
   };
 }
 
-export function CheckoutLineItem({ item }: CheckoutLineItemProps) {
+export function CheckoutLineItem({ item, locale }: CheckoutLineItemProps) {
+  const copy = getExtendedUiCopy(locale).checkoutLineItem;
+
   return (
     <article className="luxury-panel overflow-hidden p-4 md:p-5">
       <div className="grid gap-5 lg:grid-cols-[170px_minmax(0,1fr)_170px] lg:items-start">
@@ -30,8 +35,8 @@ export function CheckoutLineItem({ item }: CheckoutLineItemProps) {
           media={{
             id: item.id,
             label: item.mediaLabel ?? item.productName,
-            angle: item.mediaAngle ?? "Studio angle",
-            note: "Checkout presentation",
+            angle: item.mediaAngle ?? copy.studioAngle,
+            note: copy.checkoutPresentation,
             tone: "obsidian",
           }}
           className="aspect-square w-full rounded-[1.6rem]"
@@ -45,7 +50,7 @@ export function CheckoutLineItem({ item }: CheckoutLineItemProps) {
               {item.categoryName}
             </span>
             <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[0.62rem] uppercase tracking-[0.24em] text-white/42">
-              Size {item.size}
+              {copy.size} {item.size}
             </span>
             {item.color ? (
               <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[0.62rem] uppercase tracking-[0.24em] text-white/42">
@@ -56,7 +61,7 @@ export function CheckoutLineItem({ item }: CheckoutLineItemProps) {
 
           <div>
             <Link
-              href={`/products/${item.productSlug}`}
+              href={localizeHref(locale, `/products/${item.productSlug}`)}
               className="inline-block text-3xl leading-none text-white transition hover:text-[#f3e7c8] md:text-4xl"
             >
               {item.productName}
@@ -71,21 +76,21 @@ export function CheckoutLineItem({ item }: CheckoutLineItemProps) {
               SKU {item.sku}
             </span>
             <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1">
-              {formatPrice(item.unitPrice)} each
+              {formatPrice(item.unitPrice, locale)} {copy.each}
             </span>
           </div>
         </div>
 
         <div className="showroom-subpanel p-4">
           <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-            Quantity
+            {copy.quantity}
           </p>
           <p className="mt-3 text-3xl leading-none text-white">{item.quantity}</p>
           <p className="mt-5 text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
-            Line total
+            {copy.lineTotal}
           </p>
           <p className="mt-3 text-xl leading-none text-[#f3e7c8]">
-            {formatPrice(item.lineTotal)}
+            {formatPrice(item.lineTotal, locale)}
           </p>
         </div>
       </div>

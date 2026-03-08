@@ -70,7 +70,7 @@ export function ProductCard({
                 </div>
               </div>
               <div className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs uppercase tracking-[0.24em] text-[#f3e7c8]">
-                {formatPrice(product.price)}
+                {formatPrice(product.price, locale)}
               </div>
             </div>
 

@@ -156,6 +156,7 @@ export default async function AccountPage({
                   key={order.id}
                   order={order}
                   href={localizeHref(locale, `/account/orders/${order.id}`)}
+                  locale={locale}
                   contextLabel={dictionary.account.recentOrderContext}
                 />
               ))}

@@ -1,5 +1,7 @@
 import type { Database } from "@/types/database";
 
+import type { Locale } from "@/lib/i18n/config";
+import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
 import { cn } from "@/lib/utils";
 
 type OrderStatus = Database["public"]["Enums"]["order_status"];
@@ -29,6 +31,7 @@ const paymentStatusClasses: Record<PaymentStatus, string> = {
 interface OrderStatusBadgeProps {
   kind: "order" | "payment";
   value: OrderStatus | PaymentStatus;
+  locale?: Locale;
   className?: string;
 }
 
@@ -36,9 +39,24 @@ export function formatOrderValueLabel(value: string) {
   return value.replace(/_/g, " ");
 }
 
+export function getLocalizedOrderValueLabel(value: string, locale: Locale) {
+  const copy = getExtendedUiCopy(locale);
+
+  if (value in copy.status.order) {
+    return copy.status.order[value as keyof typeof copy.status.order];
+  }
+
+  if (value in copy.status.payment) {
+    return copy.status.payment[value as keyof typeof copy.status.payment];
+  }
+
+  return formatOrderValueLabel(value);
+}
+
 export function OrderStatusBadge({
   kind,
   value,
+  locale = "en",
   className,
 }: OrderStatusBadgeProps) {
   const tone =
@@ -54,7 +72,7 @@ export function OrderStatusBadge({
         className,
       )}
     >
-      {formatOrderValueLabel(value)}
+      {getLocalizedOrderValueLabel(value, locale)}
     </span>
   );
 }

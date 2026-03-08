@@ -4,6 +4,9 @@ import Link from "next/link";
 import { PageIntro } from "@/components/layout/page-intro";
 import { AdminProductForm } from "@/components/storefront/admin-product-form";
 import { Button } from "@/components/ui/button";
+import { localizeHref } from "@/lib/i18n/config";
+import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
+import { getRequestI18n } from "@/lib/i18n/request";
 import { createProductAction } from "@/lib/supabase/admin-product-actions";
 import { getAdminCatalogOptions } from "@/lib/supabase/admin-products";
 import { requireAdmin } from "@/lib/supabase/auth";
@@ -22,10 +25,14 @@ export default async function AdminNewProductPage({
   searchParams,
 }: AdminNewProductPageProps) {
   await requireAdmin("/admin/products/new");
-  const [options, resolvedSearchParams] = await Promise.all([
-    getAdminCatalogOptions(),
-    searchParams,
-  ]);
+  const [{ locale, direction, dictionary }, options, resolvedSearchParams] =
+    await Promise.all([
+      getRequestI18n(),
+      getAdminCatalogOptions(),
+      searchParams,
+    ]);
+  const copy = getExtendedUiCopy(locale).adminProducts;
+  const isRtl = direction === "rtl";
   const notice = resolvedSearchParams.error
     ? {
         tone: "error" as const,
@@ -36,23 +43,29 @@ export default async function AdminNewProductPage({
   return (
     <div className="space-y-8 pb-16 md:pb-24">
       <PageIntro
-        eyebrow="Create product"
-        title="Add a new showroom piece to the live Kravexo catalog."
-        description="Create the core product record, set its merchandising state, assign category and collection, then define variants, stock quantities, and gallery images in one admin flow."
-        note="This first admin pass prioritizes products, variants, stock, and URL-based imagery while keeping compatibility with the current storefront product and gallery routes."
+        eyebrow={copy.newPage.eyebrow}
+        title={copy.newPage.title}
+        description={copy.newPage.description}
+        note={copy.newPage.note}
+        isRtl={isRtl}
         actions={
           <>
             <Button asChild>
-              <Link href="/admin/products">Back to products</Link>
+              <Link href={localizeHref(locale, "/admin/products")}>
+                {dictionary.common.backToProducts}
+              </Link>
             </Button>
             <Button asChild variant="secondary">
-              <Link href="/admin">Admin dashboard</Link>
+              <Link href={localizeHref(locale, "/admin")}>
+                {dictionary.common.backToDashboard}
+              </Link>
             </Button>
           </>
         }
       />
 
       <AdminProductForm
+        locale={locale}
         mode="create"
         options={options}
         action={createProductAction}

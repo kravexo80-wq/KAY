@@ -6,6 +6,7 @@ import { getDictionary, type Dictionary } from "./dictionaries";
 import {
   defaultLocale,
   getLocaleDirection,
+  getLocaleFromPathname,
   isLocale,
   localeCookieName,
   localeDirectionHeaderName,
@@ -19,9 +20,20 @@ import {
 export async function getRequestLocale(): Promise<Locale> {
   const headerStore = await headers();
   const headerLocale = headerStore.get(localeHeaderName);
+  const headerPathname = headerStore.get(localePathnameHeaderName);
 
   if (isLocale(headerLocale)) {
     return headerLocale;
+  }
+
+  if (headerPathname) {
+    const pathnameLocale = getLocaleFromPathname(
+      headerPathname.split("?")[0] ?? headerPathname,
+    );
+
+    if (pathnameLocale) {
+      return pathnameLocale;
+    }
   }
 
   const cookieStore = await cookies();
