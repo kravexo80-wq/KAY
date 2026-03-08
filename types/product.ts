@@ -6,6 +6,9 @@ export interface ProductMedia {
   angle: string;
   note: string;
   tone: ProductTone;
+  imageUrl?: string | null;
+  storagePath?: string | null;
+  altText?: string | null;
 }
 
 export interface ProductSpec {

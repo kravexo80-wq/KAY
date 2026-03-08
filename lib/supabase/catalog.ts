@@ -279,6 +279,13 @@ function mapProductImageToMedia(
       locale,
     ),
     tone: image.tone,
+    imageUrl: image.image_url,
+    storagePath: image.storage_path,
+    altText: getLocalizedCatalogField(
+      image as Record<string, unknown>,
+      "alt_text",
+      locale,
+    ),
   };
 }
 
@@ -292,6 +299,9 @@ function createFallbackMedia(
     angle: locale === "ar" ? "العرض الرئيسي" : "Primary display",
     note: locale === "ar" ? "بانتظار صور الاستوديو" : "Awaiting studio imagery",
     tone: record.collection?.tone ?? "obsidian",
+    imageUrl: null,
+    storagePath: null,
+    altText: null,
   };
 }
 

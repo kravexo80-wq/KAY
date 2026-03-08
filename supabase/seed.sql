@@ -722,3 +722,233 @@ set
   is_active = excluded.is_active,
   position = excluded.position,
   updated_at = timezone('utc', now());
+
+-- Example test product using a real local image from /public.
+-- Copy this section when you want to add more products manually.
+
+insert into public.products (
+  category_id,
+  collection_id,
+  name,
+  name_ar,
+  slug,
+  short_description,
+  short_description_ar,
+  description,
+  description_ar,
+  story,
+  story_ar,
+  base_price,
+  currency_code,
+  tags,
+  tags_ar,
+  materials,
+  materials_ar,
+  fabric_notes,
+  fabric_notes_ar,
+  care_notes,
+  care_notes_ar,
+  fit_notes,
+  fit_notes_ar,
+  specs,
+  specs_ar,
+  limited_edition,
+  is_active,
+  is_featured,
+  viewer_360_enabled,
+  viewer_360_label,
+  viewer_360_label_ar,
+  viewer_360_description,
+  viewer_360_description_ar,
+  viewer_360_note,
+  viewer_360_note_ar,
+  shipping_lead_time,
+  shipping_lead_time_ar,
+  shipping_delivery,
+  shipping_delivery_ar,
+  shipping_returns,
+  shipping_returns_ar,
+  shipping_presentation,
+  shipping_presentation_ar
+)
+values
+  (
+    (select id from public.categories where slug = 'women-occasion'),
+    (select id from public.collections where slug = 'signature-essentials'),
+    'Noor Garden Abaya',
+    'عباية نور جاردن',
+    'noor-garden-abaya',
+    'A soft floral abaya with a graceful full-length fall and a lighter occasion mood.',
+    'عباية زهرية ناعمة بانسياب كامل وطابع مناسب للمناسبات الهادئة.',
+    'The Noor Garden Abaya is a useful test product for real-image presentation. It combines a modest straight silhouette, delicate floral surface, and a lighter visual tone that contrasts well with Kravexo''s dark showroom interface.',
+    'تُستخدم عباية نور جاردن كمنتج تجريبي لعرض الصور الحقيقية. تجمع بين قصة مستقيمة محتشمة وسطح زهري دقيق ودرجة لونية أفتح تتباين بشكل واضح مع واجهة كرافكسو الداكنة.',
+    'This example is intentionally added with a real image path so you can learn the exact relationship between the product row, the product_images row, and the visible storefront result.',
+    'أُضيف هذا المثال عمداً بمسار صورة حقيقي حتى ترى العلاقة الدقيقة بين سجل المنتج وسجل صور المنتج والنتيجة الظاهرة في المتجر.',
+    285,
+    'USD',
+    array['Floral Edit', 'Testing Product'],
+    array['تحرير زهري', 'منتج تجريبي'],
+    array['Printed satin blend', 'Light drape lining', 'Soft floral finish'],
+    array['مزيج ساتان مطبوع', 'بطانة خفيفة بانسياب ناعم', 'تشطيب زهري هادئ'],
+    array[
+      'The printed satin blend gives the piece a softer reflective response than the core dark collection.',
+      'The straight body keeps the silhouette clean while the sleeve shape adds movement.'
+    ],
+    array[
+      'يعطي مزيج الساتان المطبوع القطعة انعكاساً أنعم من قطع التشكيلة الداكنة الأساسية.',
+      'تحافظ القصة المستقيمة على نظافة الخط العام بينما يضيف شكل الأكمام حركة خفيفة.'
+    ],
+    array[
+      'Dry clean preferred for color clarity and print longevity.',
+      'Steam lightly from the reverse side before presentation.'
+    ],
+    array[
+      'يفضّل التنظيف الجاف للحفاظ على وضوح اللون وثبات الطبعة.',
+      'تُبخّر بخفة من الجهة الداخلية قبل العرض.'
+    ],
+    array[
+      'Relaxed straight fit with full-length coverage.',
+      'Take your usual size for the intended modest line.'
+    ],
+    array[
+      'قصة مستقيمة مريحة مع تغطية كاملة الطول.',
+      'اختاري مقاسك المعتاد للحصول على الخط المحتشم المقصود.'
+    ],
+    '[{"label":"Fit","value":"Relaxed straight fit"},{"label":"Length","value":"Full length"},{"label":"Mood","value":"Light occasion floral"},{"label":"Care","value":"Dry clean preferred"}]'::jsonb,
+    '[{"label":"القصة","value":"مستقيمة مريحة"},{"label":"الطول","value":"طول كامل"},{"label":"الطابع","value":"زهري مناسب للمناسبات"},{"label":"العناية","value":"يفضل التنظيف الجاف"}]'::jsonb,
+    false,
+    true,
+    true,
+    true,
+    '360 showroom view',
+    'عرض المعرض 360',
+    'Reserved for a future 360 spin once more angles are photographed.',
+    'مخصص لعرض 360 مستقبلي بعد تصوير زوايا إضافية.',
+    'The page is ready for richer media later; this first version uses one real image.',
+    'الصفحة جاهزة لوسائط أغنى لاحقاً، وهذه النسخة الأولى تستخدم صورة حقيقية واحدة.',
+    'Dispatches in 2-4 business days.',
+    'يُجهز خلال 2 إلى 4 أيام عمل.',
+    'Tracked delivery available for test orders.',
+    'يتوفر شحن متتبع لطلبات الاختبار.',
+    'Returns accepted within 14 days on unworn pieces.',
+    'يُقبل الإرجاع خلال 14 يوماً للقطع غير المستخدمة.',
+    'Presented in branded packaging with a protective garment sleeve.',
+    'تُقدم داخل تغليف يحمل هوية العلامة مع غلاف حماية للقطعة.'
+  )
+on conflict (slug) do update
+set
+  category_id = excluded.category_id,
+  collection_id = excluded.collection_id,
+  name = excluded.name,
+  name_ar = excluded.name_ar,
+  short_description = excluded.short_description,
+  short_description_ar = excluded.short_description_ar,
+  description = excluded.description,
+  description_ar = excluded.description_ar,
+  story = excluded.story,
+  story_ar = excluded.story_ar,
+  base_price = excluded.base_price,
+  currency_code = excluded.currency_code,
+  tags = excluded.tags,
+  tags_ar = excluded.tags_ar,
+  materials = excluded.materials,
+  materials_ar = excluded.materials_ar,
+  fabric_notes = excluded.fabric_notes,
+  fabric_notes_ar = excluded.fabric_notes_ar,
+  care_notes = excluded.care_notes,
+  care_notes_ar = excluded.care_notes_ar,
+  fit_notes = excluded.fit_notes,
+  fit_notes_ar = excluded.fit_notes_ar,
+  specs = excluded.specs,
+  specs_ar = excluded.specs_ar,
+  limited_edition = excluded.limited_edition,
+  is_active = excluded.is_active,
+  is_featured = excluded.is_featured,
+  viewer_360_enabled = excluded.viewer_360_enabled,
+  viewer_360_label = excluded.viewer_360_label,
+  viewer_360_label_ar = excluded.viewer_360_label_ar,
+  viewer_360_description = excluded.viewer_360_description,
+  viewer_360_description_ar = excluded.viewer_360_description_ar,
+  viewer_360_note = excluded.viewer_360_note,
+  viewer_360_note_ar = excluded.viewer_360_note_ar,
+  shipping_lead_time = excluded.shipping_lead_time,
+  shipping_lead_time_ar = excluded.shipping_lead_time_ar,
+  shipping_delivery = excluded.shipping_delivery,
+  shipping_delivery_ar = excluded.shipping_delivery_ar,
+  shipping_returns = excluded.shipping_returns,
+  shipping_returns_ar = excluded.shipping_returns_ar,
+  shipping_presentation = excluded.shipping_presentation,
+  shipping_presentation_ar = excluded.shipping_presentation_ar,
+  updated_at = timezone('utc', now());
+
+insert into public.product_images (
+  product_id,
+  image_url,
+  storage_path,
+  alt_text,
+  alt_text_ar,
+  label,
+  label_ar,
+  angle,
+  angle_ar,
+  note,
+  note_ar,
+  tone,
+  sort_order,
+  is_primary
+)
+values
+  (
+    (select id from public.products where slug = 'noor-garden-abaya'),
+    '/testing/products/noor-garden-abaya/noor-garden-abaya-main.jpeg',
+    null,
+    'Noor Garden Abaya front view',
+    'عباية نور جاردن من الأمام',
+    'Hero frame',
+    'اللقطة الرئيسية',
+    'Front view',
+    'الواجهة الأمامية',
+    'Editorial floral finish',
+    'لمسة زهرية تحريرية',
+    'pearl',
+    0,
+    true
+  )
+on conflict (product_id, sort_order) do update
+set
+  image_url = excluded.image_url,
+  storage_path = excluded.storage_path,
+  alt_text = excluded.alt_text,
+  alt_text_ar = excluded.alt_text_ar,
+  label = excluded.label,
+  label_ar = excluded.label_ar,
+  angle = excluded.angle,
+  angle_ar = excluded.angle_ar,
+  note = excluded.note,
+  note_ar = excluded.note_ar,
+  tone = excluded.tone,
+  is_primary = excluded.is_primary;
+
+insert into public.product_variants (
+  product_id,
+  sku,
+  size,
+  color,
+  stock_quantity,
+  is_active,
+  position
+)
+values
+  ((select id from public.products where slug = 'noor-garden-abaya'), 'KRV-NOR-ABY-S', 'S', 'Blue Floral', 5, true, 10),
+  ((select id from public.products where slug = 'noor-garden-abaya'), 'KRV-NOR-ABY-M', 'M', 'Blue Floral', 7, true, 20),
+  ((select id from public.products where slug = 'noor-garden-abaya'), 'KRV-NOR-ABY-L', 'L', 'Blue Floral', 6, true, 30),
+  ((select id from public.products where slug = 'noor-garden-abaya'), 'KRV-NOR-ABY-XL', 'XL', 'Blue Floral', 4, true, 40)
+on conflict (sku) do update
+set
+  product_id = excluded.product_id,
+  size = excluded.size,
+  color = excluded.color,
+  stock_quantity = excluded.stock_quantity,
+  is_active = excluded.is_active,
+  position = excluded.position,
+  updated_at = timezone('utc', now());
