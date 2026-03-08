@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 import { getLocaleFromPathname, localizeHref } from "@/lib/i18n/config";
 import { createCheckoutSession } from "@/lib/stripe/checkout";
@@ -136,6 +137,10 @@ export async function buyNowAction(formData: FormData) {
 
     redirect(session.url);
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+
     redirect(
       buildRedirect(checkoutPath, {
         error:

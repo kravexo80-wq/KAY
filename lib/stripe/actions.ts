@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 import { createCheckoutSession } from "./checkout";
 
@@ -24,6 +25,10 @@ export async function startCheckoutAction() {
 
     redirect(session.url);
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+
     redirect(
       buildRedirect("/checkout", {
         error:
