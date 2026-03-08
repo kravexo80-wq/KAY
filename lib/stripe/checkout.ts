@@ -9,7 +9,7 @@ import { getRequestLocale } from "@/lib/i18n/request";
 import { requireAuth } from "@/lib/supabase/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-import { getAppUrl, hasStripeServerEnv } from "./config";
+import { getAppUrl, hasStripeCheckoutEnv } from "./config";
 import {
   attachStripeSessionToOrder,
   markOrderAsCheckoutStartFailed,
@@ -256,7 +256,7 @@ async function getAuthenticatedCheckoutCart(): Promise<AuthenticatedCheckoutCart
 }
 
 async function buildPreparedCheckoutCart(): Promise<PreparedCheckoutCart | null> {
-  if (!hasStripeServerEnv()) {
+  if (!hasStripeCheckoutEnv()) {
     throw new Error(CHECKOUT_UNCONFIGURED_MESSAGE);
   }
 
@@ -385,7 +385,7 @@ function createStripeLineItem(item: PreparedCheckoutItem) {
 }
 
 export async function getCheckoutPageData(): Promise<CheckoutPageResult> {
-  if (!hasStripeServerEnv()) {
+  if (!hasStripeCheckoutEnv()) {
     return {
       data: createEmptyCheckoutData(),
       error: CHECKOUT_UNCONFIGURED_MESSAGE,

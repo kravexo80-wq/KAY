@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { localizeHref } from "@/lib/i18n/config";
 import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { hasStripeCheckoutEnv } from "@/lib/stripe/config";
+import { syncCheckoutSessionForUser } from "@/lib/stripe/orders";
 import { requireAuth } from "@/lib/supabase/auth";
 import { getCurrentUserOrderByStripeSessionId } from "@/lib/supabase/orders";
 import { formatPrice } from "@/lib/utils";
@@ -24,12 +26,21 @@ type CheckoutSuccessPageProps = {
 export default async function CheckoutSuccessPage({
   searchParams,
 }: CheckoutSuccessPageProps) {
-  await requireAuth("/checkout/success");
+  const { user } = await requireAuth("/checkout/success");
   const { session_id: sessionId } = await searchParams;
-  const [{ locale, direction }, order] = await Promise.all([
-    getRequestI18n(),
-    sessionId ? getCurrentUserOrderByStripeSessionId(sessionId) : Promise.resolve(null),
-  ]);
+  const [{ locale, direction }] = await Promise.all([getRequestI18n()]);
+
+  if (sessionId && hasStripeCheckoutEnv()) {
+    try {
+      await syncCheckoutSessionForUser(sessionId, user.id, user.email ?? null);
+    } catch (error) {
+      console.error("Failed to sync checkout success session.", error);
+    }
+  }
+
+  const order = sessionId
+    ? await getCurrentUserOrderByStripeSessionId(sessionId)
+    : null;
   const uiCopy = getExtendedUiCopy(locale);
   const copy = uiCopy.checkoutSuccess;
   const isRtl = direction === "rtl";

@@ -12,6 +12,8 @@ import type {
 
 import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 
+import { getStripeServerClient } from "./server";
+
 type CartStatus = Database["public"]["Enums"]["cart_status"];
 type OrderStatus = Database["public"]["Enums"]["order_status"];
 type PaymentStatus = Database["public"]["Enums"]["payment_status"];
@@ -182,6 +184,10 @@ function createStripeLineItemSnapshot(
     imageUrl: product?.images?.[0] ?? null,
     description: product?.description ?? lineItem.description ?? null,
   } satisfies StripeLineItemSnapshot;
+}
+
+function normalizeEmail(value: string | null | undefined) {
+  return value?.trim().toLowerCase() ?? null;
 }
 
 function mapSessionStatusToOrderStatus(
@@ -379,6 +385,44 @@ export async function clearCartAfterSuccessfulCheckout(
   if (updateCartError) {
     throw new Error(`Failed to convert cart: ${updateCartError.message}`);
   }
+}
+
+export async function syncCheckoutSessionForUser(
+  sessionId: string,
+  userId: string,
+  userEmail?: string | null,
+) {
+  const stripe = getStripeServerClient();
+  const session = await stripe.checkout.sessions.retrieve(sessionId);
+  const sessionUserId = session.metadata?.user_id ?? null;
+  const normalizedUserEmail = normalizeEmail(userEmail);
+  const sessionEmail = normalizeEmail(
+    session.customer_details?.email ?? session.customer_email ?? null,
+  );
+
+  if (sessionUserId && sessionUserId !== userId) {
+    throw new Error("This checkout session does not belong to the current account.");
+  }
+
+  if (!sessionUserId && normalizedUserEmail && sessionEmail) {
+    if (normalizedUserEmail !== sessionEmail) {
+      throw new Error("This checkout session does not belong to the current account.");
+    }
+  }
+
+  const order = await upsertOrderFromCheckoutSession({ session });
+
+  if (session.payment_status === "paid") {
+    const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+      expand: ["data.price.product"],
+    });
+
+    await syncOrderItemsFromStripeSession(order.id, lineItems.data);
+    await finalizePaidOrderInventory(order.id);
+    await clearCartAfterSuccessfulCheckout(session.metadata?.cart_id);
+  }
+
+  return order;
 }
 
 export async function finalizePaidOrderInventory(orderId: string) {

@@ -7,7 +7,7 @@ import {
   syncOrderItemsFromStripeSession,
   upsertOrderFromCheckoutSession,
 } from "@/lib/stripe/orders";
-import { getStripeWebhookSecret, hasStripeServerEnv } from "@/lib/stripe/config";
+import { getStripeWebhookSecret, hasStripeWebhookEnv } from "@/lib/stripe/config";
 import { getStripeServerClient } from "@/lib/stripe/server";
 
 export const runtime = "nodejs";
@@ -26,7 +26,7 @@ async function buildWebhookEvent(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (!hasStripeServerEnv()) {
+  if (!hasStripeWebhookEnv()) {
     return NextResponse.json(
       { error: "Stripe is not configured in this environment." },
       { status: 503 },
