@@ -353,22 +353,19 @@ function parseImageRows(formData: FormData) {
     const sortOrderRaw = formData.get(`image_${index}_sort_order`);
     const remove = parseBoolean(formData, `image_${index}_remove`);
     const uploadFile = isImageFileEntry(uploadEntry) ? uploadEntry : null;
-    const hasAnyValue = Boolean(
-      id ||
-        imageUrl ||
-        uploadFile ||
-        label ||
+    const hasImageSource = Boolean(id || imageUrl || uploadFile);
+    const hasSupportingValue = Boolean(
+      label ||
         labelAr ||
         angle ||
         angleAr ||
         note ||
         noteAr ||
         altText ||
-        altTextAr ||
-        (typeof sortOrderRaw === "string" && sortOrderRaw.trim()),
+        altTextAr,
     );
 
-    if (!hasAnyValue && !remove) {
+    if (!hasImageSource && !hasSupportingValue && !remove) {
       continue;
     }
 
@@ -377,6 +374,10 @@ function parseImageRows(formData: FormData) {
         removedImageIds.push(id);
       }
 
+      continue;
+    }
+
+    if (!hasImageSource) {
       continue;
     }
 
