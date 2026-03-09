@@ -3,6 +3,9 @@
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
+import { localizeHref } from "@/lib/i18n/config";
+import { getRequestLocale } from "@/lib/i18n/request";
+
 import { createCheckoutSession } from "./checkout";
 
 function buildRedirect(pathname: string, params: Record<string, string | undefined>) {
@@ -20,6 +23,8 @@ function buildRedirect(pathname: string, params: Record<string, string | undefin
 }
 
 export async function startCheckoutAction() {
+  const locale = await getRequestLocale();
+
   try {
     const session = await createCheckoutSession();
 
@@ -30,7 +35,7 @@ export async function startCheckoutAction() {
     }
 
     redirect(
-      buildRedirect("/checkout", {
+      buildRedirect(localizeHref(locale, "/checkout"), {
         error:
           error instanceof Error
             ? error.message

@@ -1,107 +1,94 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { PageIntro } from "@/components/layout/page-intro";
+import {
+  TrustBulletList,
+  TrustCardGrid,
+  TrustParagraphStack,
+  TrustSection,
+} from "@/components/storefront/trust-page-sections";
+import { Button } from "@/components/ui/button";
+import { localizeHref } from "@/lib/i18n/config";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { getTrustCopy } from "@/lib/i18n/trust-copy";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "About",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale } = await getRequestI18n();
+  const copy = getTrustCopy(locale).about;
 
-const values = {
-  en: [
-    {
-      title: "Product-first staging",
-      description:
-        "Layouts are built to isolate the garment and let proportion, surface, and tailoring dominate the frame.",
-    },
-    {
-      title: "Modest, modern silhouettes",
-      description:
-        "The brand language stays culturally grounded while presenting modest fashion through a highly refined retail lens.",
-    },
-    {
-      title: "Premium restraint",
-      description:
-        "Nothing is loud. Contrast, finish, and spacing carry the sense of luxury instead of decorative excess.",
-    },
-  ],
-  ar: [
-    {
-      title: "عرض يضع المنتج أولاً",
-      description:
-        "تُبنى التكوينات لعزل القطعة وترك النسبة والسطح والتفصيل يهيمنون على الإطار.",
-    },
-    {
-      title: "خطوط محتشمة وحديثة",
-      description:
-        "تبقى لغة العلامة متجذرة ثقافياً مع تقديم الأزياء المحتشمة من خلال عدسة بيع راقية للغاية.",
-    },
-    {
-      title: "فخامة منضبطة",
-      description:
-        "لا شيء صاخب. فالتباين واللمسة النهائية والمسافات هي التي تحمل الإحساس بالفخامة بدل الزخرفة الزائدة.",
-    },
-  ],
-} as const;
+  return buildPageMetadata({
+    locale,
+    pathname: "/about",
+    title: locale === "ar" ? "عن كرافكسو" : "About Kravexo",
+    description: copy.description,
+  });
+}
 
 export default async function AboutPage() {
-  const { locale, direction, dictionary } = await getRequestI18n();
+  const { locale, direction } = await getRequestI18n();
+  const copy = getTrustCopy(locale).about;
   const isRtl = direction === "rtl";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-16 md:pb-24">
       <PageIntro
-        eyebrow={dictionary.about.eyebrow}
-        title={dictionary.about.title}
-        description={dictionary.about.description}
-        note={dictionary.about.note}
-        noteLabel={dictionary.common.showroomNote}
+        eyebrow={copy.eyebrow}
+        title={copy.title}
+        description={copy.description}
+        note={copy.note}
+        noteLabel={locale === "ar" ? "ملاحظة العلامة" : "Brand note"}
         isRtl={isRtl}
+        actions={
+          <>
+            <Button asChild>
+              <Link href={localizeHref(locale, "/shop")}>
+                {locale === "ar" ? "استكشاف المتجر" : "Explore the shop"}
+              </Link>
+            </Button>
+            <Button asChild variant="secondary">
+              <Link href={localizeHref(locale, "/contact")}>
+                {locale === "ar" ? "التواصل معنا" : "Contact us"}
+              </Link>
+            </Button>
+          </>
+        }
       />
 
-      <section className="section-frame grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-        <div className={`luxury-panel p-6 md:p-8 ${isRtl ? "text-right" : "text-left"}`}>
-          <p className="eyebrow">{dictionary.about.pointOfView}</p>
-          <div className="mt-4 space-y-5 text-base leading-8 text-white/62">
-            {locale === "ar" ? (
-              <>
-                <p>
-                  تمزج كرافكسو بين التوجيه الفاخر المعاصر للبيع بالتجزئة وبين رموز
-                  الأزياء المحتشمة المتجذرة في الأناقة والانضباط والحضور الاحتفالي.
-                </p>
-                <p>
-                  صُممت الواجهة لتبقى داكنة وواسعة عمداً حتى يبدو المنتج مضاءً
-                  ومحورياً وباهظ القيمة. الهدف هو أن تشعر حتى أبسط الخطوط بأنها
-                  بيان بصري مصمم بعناية.
-                </p>
-              </>
-            ) : (
-              <>
-                <p>
-                  Kravexo blends contemporary luxury retail direction with modest
-                  fashion codes rooted in elegance, restraint, and ceremonial
-                  presence.
-                </p>
-                <p>
-                  The storefront is intentionally dark and spacious so the product
-                  appears illuminated, central, and expensive. The goal is to make
-                  even a simple silhouette feel like a carefully staged statement.
-                </p>
-              </>
-            )}
-          </div>
-        </div>
+      <section className="section-frame grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+        <TrustSection
+          eyebrow={copy.story.eyebrow}
+          title={copy.story.title}
+          isRtl={isRtl}
+        >
+          <TrustParagraphStack paragraphs={copy.story.paragraphs ?? []} isRtl={isRtl} />
+        </TrustSection>
 
-        <div className="grid gap-4">
-          {values[locale].map((value) => (
-            <div key={value.title} className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}>
-              <h2 className="text-2xl leading-none text-white">{value.title}</h2>
-              <p className="mt-3 text-sm leading-7 text-white/56">
-                {value.description}
-              </p>
-            </div>
-          ))}
-        </div>
+        <TrustSection
+          eyebrow={copy.values.eyebrow}
+          title={copy.values.title}
+          description={copy.values.description}
+          isRtl={isRtl}
+          className="showroom-panel"
+        >
+          <TrustBulletList
+            items={copy.values.cards.map((card) => `${card.title}: ${card.description}`)}
+            isRtl={isRtl}
+          />
+        </TrustSection>
+      </section>
+
+      <section className="section-frame">
+        <TrustSection
+          eyebrow={copy.principles.eyebrow}
+          title={copy.principles.title}
+          description={copy.principles.description}
+          isRtl={isRtl}
+          className="showroom-panel"
+        >
+          <TrustCardGrid cards={copy.principles.cards} isRtl={isRtl} />
+        </TrustSection>
       </section>
     </div>
   );

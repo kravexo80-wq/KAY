@@ -1,0 +1,16 @@
+import { createBrandImage } from "@/lib/seo/brand-image";
+
+export const size = {
+  width: 180,
+  height: 180,
+};
+
+export const contentType = "image/png";
+
+export default function AppleIcon() {
+  return createBrandImage({
+    width: size.width,
+    height: size.height,
+    compact: true,
+  });
+}

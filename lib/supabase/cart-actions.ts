@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 import { getLocaleFromPathname, localizeHref } from "@/lib/i18n/config";
+import { getRequestLocale } from "@/lib/i18n/request";
 import { createCheckoutSession } from "@/lib/stripe/checkout";
 
 import { getSafeRedirectPath } from "./auth";
@@ -155,10 +156,11 @@ export async function buyNowAction(formData: FormData) {
 export async function updateCartItemQuantityAction(formData: FormData) {
   const cartItemId = getRequiredString(formData, "cartItemId");
   const quantity = parsePositiveInteger(formData.get("quantity"), 1);
+  const cartPath = localizeHref(await getRequestLocale(), "/cart");
 
   if (!cartItemId) {
     redirect(
-      buildRedirect("/cart", {
+      buildRedirect(cartPath, {
         cartError: "This cart item could not be updated.",
       }),
     );
@@ -167,11 +169,11 @@ export async function updateCartItemQuantityAction(formData: FormData) {
   const result = await updateCartItemQuantity({
     cartItemId,
     quantity,
-    nextPath: "/cart",
+    nextPath: cartPath,
   });
 
   redirect(
-    buildRedirect("/cart", {
+    buildRedirect(cartPath, {
       cartMessage: result.ok ? result.message : undefined,
       cartError: result.ok ? undefined : result.error,
     }),
@@ -180,10 +182,11 @@ export async function updateCartItemQuantityAction(formData: FormData) {
 
 export async function removeCartItemAction(formData: FormData) {
   const cartItemId = getRequiredString(formData, "cartItemId");
+  const cartPath = localizeHref(await getRequestLocale(), "/cart");
 
   if (!cartItemId) {
     redirect(
-      buildRedirect("/cart", {
+      buildRedirect(cartPath, {
         cartError: "This cart item could not be removed.",
       }),
     );
@@ -191,11 +194,11 @@ export async function removeCartItemAction(formData: FormData) {
 
   const result = await removeCartItem({
     cartItemId,
-    nextPath: "/cart",
+    nextPath: cartPath,
   });
 
   redirect(
-    buildRedirect("/cart", {
+    buildRedirect(cartPath, {
       cartMessage: result.ok ? result.message : undefined,
       cartError: result.ok ? undefined : result.error,
     }),

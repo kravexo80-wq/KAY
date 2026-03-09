@@ -9,11 +9,23 @@ import { CheckoutSummaryPanel } from "@/components/storefront/checkout-summary-p
 import { Button } from "@/components/ui/button";
 import { localizeHref } from "@/lib/i18n/config";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { getCheckoutPageData } from "@/lib/stripe/checkout";
 
-export const metadata: Metadata = {
-  title: "Checkout",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale } = await getRequestI18n();
+
+  return buildPageMetadata({
+    locale,
+    pathname: "/checkout",
+    title: locale === "ar" ? "الدفع" : "Checkout",
+    description:
+      locale === "ar"
+        ? "راجع الطلب ثم أكمل الدفع الآمن. هذه الصفحة تشغيلية ولا ينبغي فهرستها في محركات البحث."
+        : "Review the order and continue to secure checkout. This is an operational page and should not be indexed by search engines.",
+    noIndex: true,
+  });
+}
 
 type CheckoutPageProps = {
   searchParams: Promise<{

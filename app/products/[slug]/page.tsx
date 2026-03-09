@@ -9,6 +9,7 @@ import { ProductPurchasePanel } from "@/components/storefront/product-purchase-p
 import { ProductRecommendationsSection } from "@/components/storefront/product-recommendations-section";
 import { localizeHref } from "@/lib/i18n/config";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import {
   getCollectionBySlug,
   getProductBySlug,
@@ -29,19 +30,34 @@ export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const productResult = await getProductBySlug(slug);
+  const [{ locale }, productResult] = await Promise.all([
+    getRequestI18n(),
+    getProductBySlug(slug),
+  ]);
   const product = productResult.data;
 
   if (!product) {
-    return {
-      title: "Product not found",
-    };
+    return buildPageMetadata({
+      locale,
+      pathname: `/products/${slug}`,
+      title: locale === "ar" ? "المنتج غير موجود" : "Product not found",
+      description:
+        locale === "ar"
+          ? "تعذر العثور على هذا المنتج ضمن الكتالوج العام الحالي."
+          : "This product could not be found in the current public catalog.",
+      noIndex: true,
+    });
   }
 
-  return {
+  const primaryImage = product.gallery.find((item) => item.imageUrl)?.imageUrl ?? undefined;
+
+  return buildPageMetadata({
+    locale,
+    pathname: `/products/${product.slug}`,
     title: product.name,
-    description: product.description,
-  };
+    description: product.shortDescription || product.description,
+    imagePath: primaryImage,
+  });
 }
 
 export default async function ProductDetailPage({

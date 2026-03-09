@@ -9,13 +9,25 @@ import { CartSummaryPanel } from "@/components/storefront/cart-summary-panel";
 import { Button } from "@/components/ui/button";
 import { localizeHref } from "@/lib/i18n/config";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { getCartDetails } from "@/lib/supabase/cart";
 
-export const metadata: Metadata = {
-  title: "Cart",
-};
-
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale } = await getRequestI18n();
+
+  return buildPageMetadata({
+    locale,
+    pathname: "/cart",
+    title: locale === "ar" ? "السلة" : "Cart",
+    description:
+      locale === "ar"
+        ? "راجع القطع المختارة قبل المتابعة إلى الدفع الآمن. هذه الصفحة مخصصة للمستخدم الحالي فقط."
+        : "Review your selected pieces before secure checkout. This page is specific to the current signed-in customer.",
+    noIndex: true,
+  });
+}
 
 interface CartPageProps {
   searchParams: Promise<{

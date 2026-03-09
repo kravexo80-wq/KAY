@@ -4,13 +4,24 @@ import { PageIntro } from "@/components/layout/page-intro";
 import { CatalogStatePanel } from "@/components/storefront/catalog-state-panel";
 import { CollectionCard } from "@/components/storefront/collection-card";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { getAllCollections } from "@/lib/supabase/catalog";
 
-export const metadata: Metadata = {
-  title: "Collections",
-};
-
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale } = await getRequestI18n();
+
+  return buildPageMetadata({
+    locale,
+    pathname: "/collections",
+    title: locale === "ar" ? "المجموعات" : "Collections",
+    description:
+      locale === "ar"
+        ? "اكتشف مجموعات كرافكسو التحريرية، مع تقديم يوضح المزاج البصري لكل مجموعة والقطع المرتبطة بها."
+        : "Discover Kravexo’s editorial collections with refined mood, narrative positioning, and linked product selections.",
+  });
+}
 
 export default async function CollectionsPage() {
   const [{ locale, direction, dictionary }, collectionsResult] = await Promise.all([

@@ -7,8 +7,13 @@ import {
 } from "next/font/google";
 
 import { SiteShell } from "@/components/layout/site-shell";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { siteConfig } from "@/lib/config/site";
-import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request";
+import {
+  getRequestDirection,
+  getRequestLocale,
+  getRequestPathname,
+} from "@/lib/i18n/request";
 
 import "./globals.css";
 
@@ -36,35 +41,71 @@ const arabicDisplay = Noto_Kufi_Arabic({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: "Kravexo | Luxury Modest Wear",
-    template: `%s | ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  applicationName: siteConfig.name,
-  keywords: [
-    "Kravexo",
-    "luxury fashion",
-    "modest wear",
-    "abaya",
-    "thobe",
-    "Islamic clothing",
-  ],
-  openGraph: {
-    title: "Kravexo | Luxury Modest Wear",
-    description: siteConfig.description,
-    siteName: siteConfig.name,
-    type: "website",
-    url: siteConfig.url,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Kravexo | Luxury Modest Wear",
-    description: siteConfig.description,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [locale, pathname] = await Promise.all([
+    getRequestLocale(),
+    getRequestPathname(),
+  ]);
+  const defaultTitle =
+    locale === "ar"
+      ? "كرافكسو | أزياء محتشمة فاخرة"
+      : `${siteConfig.name} | Luxury modest wear`;
+  const defaultDescription =
+    locale === "ar"
+      ? "متجر أزياء محتشمة فاخرة بتقديم بصري داكن، أنيق، ومتمحور حول المنتج."
+      : "Luxury modest wear presented through a dark cinematic showroom built for refined product focus.";
+
+  return {
+    ...buildPageMetadata({
+      locale,
+      pathname,
+      title: defaultTitle,
+      description: defaultDescription,
+    }),
+    title: {
+      default: defaultTitle,
+      template: locale === "ar" ? `%s | ${siteConfig.name}` : `%s | ${siteConfig.name}`,
+    },
+    keywords:
+      locale === "ar"
+        ? [
+            "كرافكسو",
+            "أزياء محتشمة",
+            "عبايات",
+            "ملابس إسلامية",
+            "أزياء عربية فاخرة",
+          ]
+        : [
+            "Kravexo",
+            "luxury modest wear",
+            "abaya",
+            "Islamic clothing",
+            "Arabic fashion",
+            "premium modest fashion",
+          ],
+    formatDetection: {
+      email: false,
+      telephone: false,
+      address: false,
+    },
+    manifest: "/manifest.webmanifest",
+    icons: {
+      icon: [
+        { url: "/favicon.ico" },
+        { url: "/icon", type: "image/png", sizes: "32x32" },
+      ],
+      apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+    },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "black-translucent",
+      title: siteConfig.name,
+    },
+    other: {
+      "color-scheme": "dark",
+    },
+  };
+}
 
 export const dynamic = "force-dynamic";
 

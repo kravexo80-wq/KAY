@@ -8,6 +8,7 @@ import { ProductGrid } from "@/components/storefront/product-grid";
 import { Button } from "@/components/ui/button";
 import { localizeHref } from "@/lib/i18n/config";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import {
   getCollectionBySlug,
   getProductsByCollectionSlug,
@@ -23,19 +24,31 @@ export async function generateMetadata({
   params,
 }: CollectionPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const collectionResult = await getCollectionBySlug(slug);
+  const [{ locale }, collectionResult] = await Promise.all([
+    getRequestI18n(),
+    getCollectionBySlug(slug),
+  ]);
   const collection = collectionResult.data;
 
   if (!collection) {
-    return {
-      title: "Collection",
-    };
+    return buildPageMetadata({
+      locale,
+      pathname: `/collections/${slug}`,
+      title: locale === "ar" ? "المجموعة غير موجودة" : "Collection not found",
+      description:
+        locale === "ar"
+          ? "تعذر العثور على هذه المجموعة ضمن العروض العامة الحالية."
+          : "This collection could not be found in the current public catalog.",
+      noIndex: true,
+    });
   }
 
-  return {
+  return buildPageMetadata({
+    locale,
+    pathname: `/collections/${collection.slug}`,
     title: collection.name,
     description: collection.description,
-  };
+  });
 }
 
 export default async function CollectionDetailPage({

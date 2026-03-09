@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 
 import type { Tables } from "@/types/database";
+import { localizeHref } from "@/lib/i18n/config";
+import { getRequestLocale } from "@/lib/i18n/request";
 
 import { hasSupabaseEnv } from "./config";
 import { createServerSupabaseClient } from "./server";
@@ -48,7 +50,11 @@ export function getProfileDisplayName(
   return "Account";
 }
 
-function buildLoginRedirect(nextPath = "/account", error?: string) {
+function buildLoginRedirect(
+  locale: Awaited<ReturnType<typeof getRequestLocale>>,
+  nextPath = "/account",
+  error?: string,
+) {
   const searchParams = new URLSearchParams();
   const safeNextPath = getSafeRedirectPath(nextPath, "/account");
 
@@ -62,7 +68,9 @@ function buildLoginRedirect(nextPath = "/account", error?: string) {
 
   const queryString = searchParams.toString();
 
-  return queryString ? `/login?${queryString}` : "/login";
+  const loginPath = localizeHref(locale, "/login");
+
+  return queryString ? `${loginPath}?${queryString}` : loginPath;
 }
 
 export const getCurrentUser = cache(async (): Promise<User | null> => {
@@ -114,14 +122,16 @@ export const getCurrentProfile = cache(async (): Promise<AppProfile | null> => {
 });
 
 export async function requireAuth(nextPath = "/account") {
+  const locale = await getRequestLocale();
+
   if (!hasSupabaseEnv()) {
-    redirect(buildLoginRedirect(nextPath, AUTH_UNAVAILABLE_MESSAGE));
+    redirect(buildLoginRedirect(locale, nextPath, AUTH_UNAVAILABLE_MESSAGE));
   }
 
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect(buildLoginRedirect(nextPath));
+    redirect(buildLoginRedirect(locale, nextPath));
   }
 
   const profile = await getCurrentProfile();
@@ -136,7 +146,7 @@ export async function requireAdmin(nextPath = "/admin") {
   const auth = await requireAuth(nextPath);
 
   if (auth.profile?.role !== "admin") {
-    redirect("/account?denied=admin");
+    redirect(localizeHref(await getRequestLocale(), "/account?denied=admin"));
   }
 
   return auth;

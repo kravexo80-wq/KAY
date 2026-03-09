@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { PageIntro } from "@/components/layout/page-intro";
 import { Button } from "@/components/ui/button";
+import { getAdminTaxonomyCopy } from "@/lib/i18n/admin-taxonomy-copy";
 import { localizeHref } from "@/lib/i18n/config";
 import { getRequestI18n } from "@/lib/i18n/request";
 import { getProfileDisplayName, requireAdmin } from "@/lib/supabase/auth";
@@ -16,6 +17,7 @@ export default async function AdminPage() {
     getRequestI18n(),
     requireAdmin("/admin"),
   ]);
+  const taxonomyCopy = getAdminTaxonomyCopy(locale);
   const isRtl = direction === "rtl";
   const metrics = [
     {
@@ -56,6 +58,16 @@ export default async function AdminPage() {
             <Button asChild variant="secondary">
               <Link href={localizeHref(locale, "/admin/orders")}>
                 {dictionary.admin.reviewOrders}
+              </Link>
+            </Button>
+            <Button asChild variant="secondary">
+              <Link href={localizeHref(locale, "/admin/categories")}>
+                {locale === "ar" ? "إدارة الفئات" : "Manage categories"}
+              </Link>
+            </Button>
+            <Button asChild variant="secondary">
+              <Link href={localizeHref(locale, "/admin/collections")}>
+                {locale === "ar" ? "إدارة المجموعات" : "Manage collections"}
               </Link>
             </Button>
           </>
@@ -109,6 +121,16 @@ export default async function AdminPage() {
               <Button asChild variant="secondary">
                 <Link href={localizeHref(locale, "/admin/orders")}>
                   {dictionary.admin.openOrders}
+                </Link>
+              </Button>
+              <Button asChild variant="secondary">
+                <Link href={localizeHref(locale, "/admin/categories")}>
+                  {taxonomyCopy.categories.list.eyebrow}
+                </Link>
+              </Button>
+              <Button asChild variant="secondary">
+                <Link href={localizeHref(locale, "/admin/collections")}>
+                  {taxonomyCopy.collections.list.eyebrow}
                 </Link>
               </Button>
             </div>

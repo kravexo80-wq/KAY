@@ -28,7 +28,7 @@
     }
   },
   "footer": {
-    "description": "Luxury Arabic and Islamic clothing presented with the restraint, shadow, and clarity of a dark premium showroom.",
+    "description": "Luxury Arabic and Islamic dress presented with quiet light, measured composition, and the discipline of a dark showroom.",
     "copyright": "© 2026 Kravexo. Crafted for premium modest wear.",
     "groups": {
       "storefront": "Storefront",
@@ -81,22 +81,22 @@
         "stagingTitle": "Hero staging",
         "stagingBody": "Full-width campaign composition with controlled glow.",
         "mediaTitle": "Media system",
-        "mediaBody": "Multi-angle cards prepared for real product imagery later.",
+        "mediaBody": "Multi-angle framing designed to receive campaign imagery with ease.",
         "commerceTitle": "Commerce path",
-        "commerceBody": "Ready for secure checkout, zoom, and richer product media."
+        "commerceBody": "Composed for secure checkout, image zoom, and richer product storytelling."
       },
       "featuredPiece": "Featured piece",
       "fallback": {
         "eyebrow": "Featured product",
-        "title": "The showroom is ready for live catalog highlights.",
-        "description": "No featured product is currently published. Mark a live product as featured to restore the hero spotlight."
+        "title": "The hero spotlight is ready for its lead piece.",
+        "description": "No featured product is currently published. Mark one live piece as featured to restore the opening focus."
       }
     },
     "featuredCollections": {
       "eyebrow": "Collections",
-      "title": "Curated drops framed like editorial rooms.",
+      "title": "Curated collections staged like editorial chapters.",
       "description": "Every collection is presented as its own mood, tone, and silhouette world so the storefront feels closer to a luxury showroom than a generic fashion catalog.",
-      "note": "The card system is intentionally dark and restrained so future campaign imagery can sit on top of it without losing the premium tone.",
+      "note": "The composition stays restrained so future campaign imagery can settle in naturally without losing the sense of luxury.",
       "logicTitle": "Presentation logic",
       "logicDescription": "Hover states, tonal overlays, and editorial spacing are tuned to keep each collection feeling composed and high-value.",
       "emptyEyebrow": "Featured collections",
@@ -105,9 +105,9 @@
     },
     "featuredProducts": {
       "eyebrow": "Featured pieces",
-      "title": "Showroom cards built to make the garment feel elevated.",
+      "title": "Showroom cards that let the garment lead.",
       "description": "The products are presented with darker stages, reflective framing, refined metadata, and enough breathing room to read as premium objects.",
-      "note": "Real photography can replace the placeholder media surfaces later without changing the surrounding composition.",
+      "note": "Real photography can step into these frames later without disturbing the surrounding composition.",
       "focusTitle": "Current focus",
       "focusDescription": "Strong card hierarchy, premium hover behavior, and spotlighted price treatment for a more luxurious storefront rhythm.",
       "viewCatalog": "View full catalog",
@@ -118,24 +118,24 @@
     "newsletter": {
       "eyebrow": "Private list",
       "title": "Reserve first access to drops, edits, and private showroom releases.",
-      "description": "A premium opt-in surface prepared for future launch alerts, tailored communication, and invite-led releases without breaking the dark showroom tone.",
+      "description": "Join the private list for early access, collection previews, and quieter release notes, all in keeping with the brand's restrained tone.",
       "tags": ["Early access", "No noise", "Private drop alerts"],
       "formTitle": "Sign up",
-      "formDescription": "Simple now, with live validation and confirmation for the current build.",
+      "formDescription": "Sign up for launch notices, collection previews, and private release updates.",
       "emailPlaceholder": "Email address",
       "interestPlaceholder": "Preferred collection",
       "submit": "Join the list",
       "footer": "Campaign access, launch alerts, and collection previews",
       "successTitle": "Joined successfully",
-      "successMessage": "The private list form is now active in this build and your request was accepted.",
+      "successMessage": "You are now on the private list. Expect early access notes, collection previews, and release updates.",
       "errorTitle": "Unable to join",
-      "errorMessage": "Enter a valid email address to submit the private list form."
+      "errorMessage": "Enter a valid email address to join the private list."
     }
   },
   "shop": {
     "eyebrow": "Shop",
-    "title": "A catalog designed around display clarity.",
-    "description": "The shop keeps the same premium showroom rhythm while reading directly from the live catalog for active public products.",
+    "title": "A curated catalog with the calm of a private showroom.",
+    "description": "Browse active Kravexo pieces in a catalog shaped for clarity, atmosphere, and product focus.",
     "note": "Filtering, sorting, inventory state, and richer merchandising can expand on top of this structure without changing the visual language.",
     "allPieces": "All pieces",
     "catalogEyebrow": "Shop catalog",
@@ -148,7 +148,7 @@
       "eyebrow": "Collections",
       "title": "Curated edits with their own mood and silhouette logic.",
       "description": "Collections are treated as luxury chapters rather than simple catalog tags, giving each product family a distinct narrative space.",
-      "note": "Each collection now supports its own slug route and reads from the live catalog while preserving the current editorial card system.",
+      "note": "Each collection opens as its own chapter while preserving the same dark editorial rhythm.",
       "stateEyebrow": "Collection index",
       "emptyTitle": "No public collections are available.",
       "unavailableTitle": "Collections are temporarily unavailable.",
@@ -157,8 +157,8 @@
     "detail": {
       "fallbackEyebrow": "Collection",
       "fallbackTitle": "This collection is temporarily unavailable.",
-      "fallbackDescription": "The route is live, but the collection data could not be loaded for this request.",
-      "fallbackNote": "Please retry once the live catalog connection is available again.",
+      "fallbackDescription": "The collection could not be retrieved for this request.",
+      "fallbackNote": "Please try again shortly.",
       "stateEyebrow": "Collection state",
       "stateTitle": "Collection details could not be loaded right now.",
       "stateDescription": "If this collection exists and is active, it will render here once the catalog connection is available.",
@@ -173,8 +173,8 @@
   "product": {
     "eyebrow": "Product",
     "fallbackTitle": "The showroom piece is temporarily unavailable.",
-    "fallbackDescription": "The product route is live, but the catalog data could not be loaded for this request.",
-    "fallbackNote": "Please retry once the live catalog connection is available again.",
+    "fallbackDescription": "The product details could not be retrieved for this request.",
+    "fallbackNote": "Please try again shortly.",
     "stateEyebrow": "Product state",
     "stateTitle": "This product could not be loaded right now.",
     "stateDescription": "If the product exists and is active, it will render here once the catalog connection is available.",
@@ -182,7 +182,7 @@
     "storyHeading": "Designed to hold presence under shadow, spotlight, and space.",
     "collectionNote": "Collection note",
     "signatureCollection": "Kravexo signature",
-    "signatureDescription": "Presented inside the Kravexo dark showroom system for future editorial storytelling.",
+    "signatureDescription": "Presented within the Kravexo showroom language for a more deliberate product narrative.",
     "fabricNotes": "Fabric notes",
     "fit": "Fit and silhouette",
     "care": "Care guidance",
@@ -194,19 +194,19 @@
       "description": "These recommendations are presented as a continuation of the product story, not a generic upsell strip, so the page keeps its luxury editorial rhythm.",
       "note": "The existing product card system is reused here so related pieces stay visually consistent with the rest of the storefront.",
       "contextTitle": "Collection context",
-      "contextFallback": "Related pieces can expand into richer recommendation logic once live catalog and customer data are connected.",
+      "contextFallback": "As the collection grows, this space can deepen into a richer editorial edit.",
       "empty": "Related products will appear here as the collection expands."
     },
     "purchase": {
       "cartIssue": "Cart issue",
       "cartUpdate": "Cart update",
       "selectSize": "Select size",
-      "variantValidation": "Live variant validation",
+      "variantValidation": "Live size and stock check",
       "quantity": "Quantity",
       "selected": "Selected",
       "buyNow": "Buy now",
       "addToCart": "Add to cart",
-      "availableNote": "Cart, quantity, and stock validation are now live for authenticated accounts.",
+      "availableNote": "Size and quantity are checked against current availability before the selection moves to cart or checkout.",
       "unavailableNote": "This product is not currently available for cart selection.",
       "fitProfile": "Fit profile"
     }
@@ -214,14 +214,14 @@
   "cart": {
     "eyebrow": "Cart",
     "unauthenticatedTitle": "Sign in to access your saved showroom selections.",
-    "unauthenticatedDescription": "Cart persistence is live for authenticated customers. Sign in to review saved pieces, adjust quantities, and carry your selections forward to checkout.",
-    "unauthenticatedNote": "Guest cart support is intentionally reserved for a later phase. This first implementation keeps cart persistence clean and account-scoped.",
-    "activeTitle": "Your selected pieces are held in the Kravexo cart.",
-    "activeDescription": "Review your chosen variants, confirm available stock, and move the current selection into secure checkout when the basket feels right.",
-    "activeNote": "Quantities update against live variant stock, and successful payment now creates a real order record automatically.",
+    "unauthenticatedDescription": "Sign in to review saved pieces, adjust quantities, and carry your selections forward to checkout.",
+    "unauthenticatedNote": "Guest carts can follow later. For now, saved selections remain cleanly tied to the account.",
+    "activeTitle": "Your selected pieces are gathered here.",
+    "activeDescription": "Review your chosen sizes, confirm availability, and continue to checkout when ready.",
+    "activeNote": "Quantities reflect current variant stock, and completed payment moves the order into your account history.",
     "emptyTitle": "Your cart is ready for its first showroom piece.",
-    "emptyDescription": "Your authenticated cart is active and ready. Once you add a product variant from a product page, it will appear here with live stock-aware quantity controls.",
-    "emptyNote": "Saved cart persistence is live for signed-in customers, even when the current basket is empty.",
+    "emptyDescription": "Choose a size from any product page and it will appear here with stock-aware quantity controls.",
+    "emptyNote": "Your saved cart remains ready whenever you return.",
     "feedbackError": "Cart issue",
     "feedbackSuccess": "Cart update",
     "accessEyebrow": "Cart access",
@@ -236,8 +236,8 @@
     "emptyStateDescription": "Browse the showroom, choose a size from any product page, and your authenticated cart will persist that selection here.",
     "summary": {
       "eyebrow": "Order summary",
-      "title": "Held in the showroom.",
-      "description": "Your selections are saved to your authenticated account and can now move into a secure checkout session without changing the cart structure.",
+    "title": "Reserved for checkout.",
+    "description": "Your selected pieces remain saved to your account until you are ready to continue.",
       "pieces": "Pieces",
       "subtotal": "Subtotal",
       "shipping": "Shipping",
@@ -250,13 +250,13 @@
   },
   "checkout": {
     "eyebrow": "Checkout",
-    "title": "Complete your order through a secure checkout session.",
-    "description": "Your authenticated cart is prepared server-side, then finalized into a Kravexo order once payment succeeds.",
-    "note": "Shipping and billing details are collected during secure checkout. The order record and item snapshots are synchronized back into your account after payment confirmation.",
+    "title": "Complete your order in one secure final step.",
+    "description": "Your saved selections are reviewed server-side before payment is confirmed.",
+    "note": "Shipping and billing details are collected during checkout, then attached to your order once payment is confirmed.",
     "issueTitle": "Checkout issue",
     "stateEyebrow": "Checkout state",
-    "unconfiguredTitle": "Secure checkout is not configured yet.",
-    "unconfiguredDescription": "Add the required payment environment values for this deployment to enable checkout session creation and confirmation syncing.",
+    "unconfiguredTitle": "Checkout is unavailable in this environment.",
+    "unconfiguredDescription": "Required payment settings are still missing for this deployment.",
     "errorTitle": "The checkout session could not be prepared.",
     "errorDescription": "Review the cart and try again. Live stock and order validation run before checkout is opened.",
     "emptyTitle": "Your cart is empty.",
@@ -264,7 +264,7 @@
     "summary": {
       "eyebrow": "Secure checkout",
       "title": "Complete payment in a secure session.",
-      "description": "Pricing is derived server-side from your authenticated cart. Shipping and billing details are collected without trusting any client-submitted totals.",
+      "description": "Totals are prepared from your saved cart. Shipping and billing details are collected in the secure payment step.",
       "pieces": "Pieces",
       "subtotal": "Subtotal",
       "shipping": "Shipping",
@@ -273,15 +273,15 @@
       "cta": "Open secure checkout",
       "backToCart": "Return to cart",
       "pipelineTitle": "Order pipeline",
-      "pipelineBody": "A pending order record is prepared before redirect. Payment confirmation then syncs the address snapshot and converts the cart once checkout succeeds."
+      "pipelineBody": "An order record is prepared before redirect. After payment succeeds, address details and final order state are synchronized automatically."
     }
   },
   "auth": {
     "login": {
       "eyebrow": "Login",
       "title": "A private entry point into the Kravexo showroom.",
-      "description": "Sign in to access protected profile pages, saved selections, and future customer-only functionality.",
-      "note": "The same refined visual language now extends into a complete account flow.",
+      "description": "Sign in to review orders, saved selections, and protected account details.",
+      "note": "The same restrained showroom language continues through the private account journey.",
       "issueTitle": "Sign-in issue",
       "updateTitle": "Account update",
       "email": "Email address",
@@ -294,8 +294,8 @@
     "signup": {
       "eyebrow": "Signup",
       "title": "Create a Kravexo account for protected access.",
-      "description": "Create your account to access protected pages, saved selections, and future customer services.",
-      "note": "The page keeps the same refined visual rhythm while now enforcing stronger password standards.",
+      "description": "Create an account to save selections, place orders, and review future purchases.",
+      "note": "Account creation follows the same calm visual rhythm, with stronger password standards already in place.",
       "issueTitle": "Signup issue",
       "updateTitle": "Account update",
       "fullName": "Full name",
@@ -347,9 +347,9 @@
   },
   "account": {
     "eyebrow": "Account",
-    "description": "This page is protected and loads the real signed-in customer profile together with recent account activity.",
+    "description": "Your protected account brings together profile details, recent orders, and saved purchasing history.",
     "deniedNote": "Admin access is restricted to Kravexo profiles with the admin role.",
-    "defaultNote": "Recent orders now appear here after successful payment, and this protected account view is ready for fuller order history and address management next.",
+    "defaultNote": "Recent orders appear here after successful payment, with room for future address and profile refinement.",
     "roleAdmin": "Admin",
     "roleCustomer": "Customer",
     "session": "Session",
@@ -365,10 +365,10 @@
     "lastName": "Last name",
     "notSet": "Not set yet",
     "recentOrders": "Recent orders",
-    "recentOrdersTitle": "Recent order records are now live.",
+    "recentOrdersTitle": "Your most recent orders.",
     "viewHistory": "View full history",
     "recentOrderContext": "Recent order",
-    "emptyOrders": "No orders have been recorded for this account yet. Once a checkout succeeds, recent orders will appear here without any further UI restructuring."
+    "emptyOrders": "No orders have been placed on this account yet. Once a purchase is confirmed, it will appear here automatically."
   },
   "admin": {
     "eyebrow": "Admin Dashboard",

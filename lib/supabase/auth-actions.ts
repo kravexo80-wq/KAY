@@ -9,6 +9,7 @@ import {
   localizeHref,
   type Locale,
 } from "@/lib/i18n/config";
+import { getRequestLocale } from "@/lib/i18n/request";
 
 import { getSafeRedirectPath } from "./auth";
 import { hasSupabaseEnv } from "./config";
@@ -370,12 +371,14 @@ export async function updatePasswordAction(formData: FormData) {
 }
 
 export async function logoutAction() {
+  const locale = await getRequestLocale();
+
   if (!hasSupabaseEnv()) {
-    redirect("/");
+    redirect(localizeHref(locale, "/"));
   }
 
   const supabase = await createServerSupabaseClient();
   await supabase.auth.signOut();
 
-  redirect("/");
+  redirect(localizeHref(locale, "/"));
 }

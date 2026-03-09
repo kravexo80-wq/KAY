@@ -3,6 +3,7 @@ import Link from "next/link";
 import { footerNavigation } from "@/lib/config/navigation";
 import { localizeHref, type Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { getTrustCopy } from "@/lib/i18n/trust-copy";
 import { siteConfig } from "@/lib/config/site";
 
 interface FooterProps {
@@ -20,9 +21,11 @@ export function Footer({
   commonCopy,
   isRtl = false,
 }: FooterProps) {
+  const trustCopy = getTrustCopy(locale);
+
   return (
     <footer className="mt-24 border-t border-white/8 bg-black/40">
-      <div className="section-frame section-space grid gap-12 lg:grid-cols-[1.2fr_repeat(3,minmax(0,1fr))]">
+      <div className="section-frame section-space grid gap-12 md:grid-cols-2 xl:grid-cols-[1.2fr_repeat(4,minmax(0,1fr))]">
         <div className={`space-y-5 ${isRtl ? "text-right" : "text-left"}`}>
           <p className="eyebrow">Kravexo</p>
           <div className="space-y-3">
@@ -60,6 +63,23 @@ export function Footer({
             </div>
           </div>
         ))}
+
+        <div className={`space-y-4 ${isRtl ? "text-right" : "text-left"}`}>
+          <p className="text-sm uppercase tracking-[0.24em] text-white/46">
+            {trustCopy.footer.groupLabel}
+          </p>
+          <div className="space-y-3">
+            {trustCopy.footer.links.map((link) => (
+              <Link
+                key={link.href}
+                href={localizeHref(locale, link.href)}
+                className="block text-sm text-white/66 transition hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="section-frame flex flex-col gap-2 border-t border-white/8 py-6 text-xs uppercase tracking-[0.22em] text-white/35 sm:flex-row sm:items-center sm:justify-between">

@@ -7,13 +7,24 @@ import { ProductGrid } from "@/components/storefront/product-grid";
 import { Button } from "@/components/ui/button";
 import { localizeHref } from "@/lib/i18n/config";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { getAllProducts } from "@/lib/supabase/catalog";
 
-export const metadata: Metadata = {
-  title: "Shop",
-};
-
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale } = await getRequestI18n();
+
+  return buildPageMetadata({
+    locale,
+    pathname: "/shop",
+    title: locale === "ar" ? "المتجر" : "Shop",
+    description:
+      locale === "ar"
+        ? "تصفح قطع كرافكسو النشطة من الأزياء المحتشمة الفاخرة، مع عرض بصري داكن ومحتوى يركز على الخامة والوقفة والتفاصيل."
+        : "Browse Kravexo’s active luxury modest wear collection with a dark editorial presentation focused on silhouette, fabric, and finish.",
+  });
+}
 
 export default async function ShopPage() {
   const [{ locale, direction, dictionary }, productsResult] = await Promise.all([

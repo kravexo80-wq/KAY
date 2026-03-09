@@ -4,6 +4,7 @@ import type Stripe from "stripe";
 
 import type { Tables } from "@/types/database";
 
+import { localizeHref } from "@/lib/i18n/config";
 import { getLocalizedCatalogField } from "@/lib/i18n/catalog";
 import { getRequestLocale } from "@/lib/i18n/request";
 import { requireAuth } from "@/lib/supabase/auth";
@@ -121,6 +122,8 @@ interface AuthenticatedCheckoutCart {
 
 const CHECKOUT_UNCONFIGURED_MESSAGE =
   "Secure checkout is not configured in this environment yet.";
+const CHECKOUT_CART_REVIEW_MESSAGE =
+  "One or more pieces in your cart are no longer available. Return to the cart to review your selections before checkout.";
 
 const checkoutItemsSelect = `
   id,
@@ -262,6 +265,7 @@ async function buildPreparedCheckoutCart(): Promise<PreparedCheckoutCart | null>
 
   const locale = await getRequestLocale();
   const checkoutCart = await getAuthenticatedCheckoutCart();
+  let unavailableItemCount = 0;
 
   if (!checkoutCart.customerEmail) {
     throw new Error("Your account is missing an email address for checkout.");
@@ -276,6 +280,7 @@ async function buildPreparedCheckoutCart(): Promise<PreparedCheckoutCart | null>
     const product = variant?.product;
 
     if (!variant || !product || !variant.is_active || !product.is_active) {
+      unavailableItemCount += 1;
       return [];
     }
 
@@ -330,6 +335,14 @@ async function buildPreparedCheckoutCart(): Promise<PreparedCheckoutCart | null>
       },
     ];
   });
+
+  if (unavailableItemCount > 0) {
+    throw new Error(
+      locale === "ar"
+        ? "بعض القطع في السلة لم تعد متاحة. عُد إلى السلة لمراجعة اختياراتك قبل متابعة الدفع."
+        : CHECKOUT_CART_REVIEW_MESSAGE,
+    );
+  }
 
   const subtotal = items.reduce(
     (total, item) => total + item.unitPrice * item.quantity,
@@ -453,9 +466,12 @@ export async function createCheckoutSession(): Promise<CreateCheckoutSessionResu
     throw new Error("Add at least one piece to your cart before checkout.");
   }
 
+  const locale = await getRequestLocale();
   const stripe = getStripeServerClient();
   const order = await prepareCheckoutOrder({ cart });
   const appUrl = getAppUrl();
+  const successPath = localizeHref(locale, "/checkout/success");
+  const cancelPath = localizeHref(locale, "/checkout/cancel");
   let session: Stripe.Checkout.Session;
 
   try {
@@ -467,8 +483,8 @@ export async function createCheckoutSession(): Promise<CreateCheckoutSessionResu
       shipping_address_collection: {
         allowed_countries: ["US", "CA", "GB", "AE", "SA", "QA", "KW", "BH", "OM"],
       },
-      success_url: `${appUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/checkout/cancel?order_id=${order.id}`,
+      success_url: `${appUrl}${successPath}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}${cancelPath}?order_id=${order.id}`,
       line_items: cart.items.map(createStripeLineItem),
       metadata: {
         cart_id: cart.cartId,

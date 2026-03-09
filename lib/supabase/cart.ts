@@ -380,16 +380,24 @@ async function resolveVariantSelection(
   };
 }
 
-async function getCartItemForUpdate(
+async function getOwnedCartItemForMutation(
   supabase: SupabaseClient<Database>,
+  userId: string,
   cartItemId: string,
 ) {
+  const activeCart = await getActiveCartForUser(supabase, userId);
+
+  if (!activeCart) {
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("cart_items")
     .select(
       "id, quantity, cart_id, product_variant:product_variants(id, stock_quantity)",
     )
     .eq("id", cartItemId)
+    .eq("cart_id", activeCart.id)
     .maybeSingle();
 
   throwOnError(error, "Failed to load cart item");
@@ -682,8 +690,12 @@ export async function updateCartItemQuantity({
   }
 
   try {
-    const { supabase } = await getAuthenticatedCartContext(nextPath);
-    const cartItem = await getCartItemForUpdate(supabase, cartItemId);
+    const { supabase, user } = await getAuthenticatedCartContext(nextPath);
+    const cartItem = await getOwnedCartItemForMutation(
+      supabase,
+      user.id,
+      cartItemId,
+    );
 
     if (!cartItem || !cartItem.product_variant) {
       return {
@@ -733,8 +745,25 @@ export async function removeCartItem({
   }
 
   try {
-    const { supabase } = await getAuthenticatedCartContext(nextPath);
-    const { error } = await supabase.from("cart_items").delete().eq("id", cartItemId);
+    const { supabase, user } = await getAuthenticatedCartContext(nextPath);
+    const cartItem = await getOwnedCartItemForMutation(
+      supabase,
+      user.id,
+      cartItemId,
+    );
+
+    if (!cartItem) {
+      return {
+        ok: false,
+        error: "This cart item could not be found.",
+      };
+    }
+
+    const { error } = await supabase
+      .from("cart_items")
+      .delete()
+      .eq("id", cartItem.id)
+      .eq("cart_id", cartItem.cart_id);
 
     throwOnError(error, "Failed to remove cart item");
 

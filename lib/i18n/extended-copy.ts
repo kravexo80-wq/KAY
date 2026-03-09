@@ -46,9 +46,9 @@ const extendedCopy = {
       noAddressSnapshot: "No address snapshot was captured for this section yet.",
       customerList: {
         eyebrow: "Order history",
-        title: "Your Kravexo orders, captured in one protected account view.",
+        title: "Your Kravexo orders, gathered in one private account view.",
         description:
-          "Every order remains available here with payment state, order progress, inventory sync visibility, and preserved line-item snapshots.",
+          "Every order remains available here with its payment state, fulfilment progress, and preserved line-item details.",
         note:
           "This history is scoped to the signed-in customer only. Each order detail view keeps the original size, color, price, and address snapshots from checkout.",
         emptyTitle: "No orders have been placed on this account yet.",
@@ -58,7 +58,7 @@ const extendedCopy = {
       customerDetail: {
         eyebrow: "Order detail",
         description:
-          "This protected detail view preserves the live order state together with the exact line items, address snapshots, and checkout references captured at purchase time.",
+          "This detail view preserves the current order state together with the exact line items, address snapshots, and checkout references captured at purchase time.",
         noteSettled:
           "Inventory has already been finalized for this paid order, so the purchased stock is settled.",
         notePending:
@@ -75,7 +75,7 @@ const extendedCopy = {
         billingSummaryTitle: "Billing summary",
         billingSummaryDescription:
           "Stored exactly as returned by the checkout confirmation.",
-        operationalEyebrow: "Operational state",
+        operationalEyebrow: "Order state",
         inventorySync: "Inventory sync",
         stripeSession: "Checkout session",
         unavailable: "Unavailable",
@@ -398,9 +398,9 @@ const extendedCopy = {
       noAddressSnapshot: "لم يُلتقط عنوان محفوظ لهذا القسم بعد.",
       customerList: {
         eyebrow: "سجل الطلبات",
-        title: "طلبات كرافكسو الخاصة بك ضمن عرض حساب محمي واحد.",
+        title: "طلبات كرافكسو الخاصة بك ضمن عرض حساب خاص واحد.",
         description:
-          "كل طلب يظل متاحاً هنا مع حالة الدفع وتقدم الطلب ووضوح مزامنة المخزون ولقطات عناصر الطلب المحفوظة.",
+          "يبقى كل طلب متاحاً هنا مع حالة الدفع وتقدم الطلب وتفاصيل العناصر كما سُجلت وقت الشراء.",
         note:
           "هذا السجل يخص العميل المسجل فقط. تحتفظ كل صفحة تفاصيل بالقياس واللون والسعر والعنوان كما التُقطت عند الدفع.",
         emptyTitle: "لم تُسجل أي طلبات لهذا الحساب بعد.",
@@ -410,7 +410,7 @@ const extendedCopy = {
       customerDetail: {
         eyebrow: "تفاصيل الطلب",
         description:
-          "يحفظ هذا العرض المحمي حالة الطلب الحية مع العناصر الدقيقة ولقطات العناوين ومراجع الدفع التي تم التقاطها وقت الشراء.",
+          "يحفظ هذا العرض تفاصيل الطلب الحالية مع العناصر الدقيقة ولقطات العناوين ومراجع الدفع كما التُقطت وقت الشراء.",
         noteSettled:
           "تمت تسوية المخزون بالفعل لهذا الطلب المدفوع، لذا أصبح المخزون المشتَرى مثبتاً.",
         notePending:
@@ -425,7 +425,7 @@ const extendedCopy = {
         shippingSummaryDescription: "تم التقاطه أثناء الدفع الآمن للتنفيذ الفعلي.",
         billingSummaryTitle: "ملخص الفوترة",
         billingSummaryDescription: "حُفظ تماماً كما أعادته جلسة تأكيد الدفع.",
-        operationalEyebrow: "الحالة التشغيلية",
+        operationalEyebrow: "حالة الطلب",
         inventorySync: "مزامنة المخزون",
         stripeSession: "جلسة الدفع",
         unavailable: "غير متاح",

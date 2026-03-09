@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
+
 import { FeaturedCollectionsSection } from "@/components/sections/home/featured-collections-section";
 import { FeaturedProductsSection } from "@/components/sections/home/featured-products-section";
 import { HeroSection } from "@/components/sections/home/hero-section";
 import { NewsletterSection } from "@/components/sections/home/newsletter-section";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { submitNewsletterAction } from "@/lib/site-actions";
 import {
   getFeaturedCollections,
@@ -10,6 +13,23 @@ import {
 } from "@/lib/supabase/catalog";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale } = await getRequestI18n();
+
+  return buildPageMetadata({
+    locale,
+    pathname: "/",
+    title:
+      locale === "ar"
+        ? "متجر أزياء محتشمة فاخرة"
+        : "Luxury modest fashion showroom",
+    description:
+      locale === "ar"
+        ? "واجهة أزياء محتشمة فاخرة بتقديم بصري داكن، ومجموعات مختارة، وصفحات منتجات مصممة كقطع عرض مركزية."
+        : "A luxury modest fashion storefront with dark cinematic presentation, curated collections, and product pages built like showroom centerpieces.",
+  });
+}
 
 type HomePageProps = {
   searchParams: Promise<{
