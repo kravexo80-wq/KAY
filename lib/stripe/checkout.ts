@@ -18,6 +18,10 @@ import {
 } from "./orders";
 import type { PreparedCheckoutCart, PreparedCheckoutItem } from "./orders";
 import { getStripeServerClient } from "./server";
+import {
+  buildCheckoutShippingMetadata,
+  type CheckoutShippingDetails,
+} from "./shipping";
 
 type CheckoutCartRecord = Pick<
   Tables<"carts">,
@@ -105,6 +109,10 @@ export interface CheckoutPageResult {
   data: CheckoutPageData;
   error: string | null;
   status: CheckoutStateStatus;
+}
+
+interface CreateCheckoutSessionInput {
+  shippingDetails: CheckoutShippingDetails;
 }
 
 interface CreateCheckoutSessionResult {
@@ -459,7 +467,9 @@ export async function getCheckoutPageData(): Promise<CheckoutPageResult> {
   }
 }
 
-export async function createCheckoutSession(): Promise<CreateCheckoutSessionResult> {
+export async function createCheckoutSession({
+  shippingDetails,
+}: CreateCheckoutSessionInput): Promise<CreateCheckoutSessionResult> {
   const cart = await buildPreparedCheckoutCart();
 
   if (!cart || cart.items.length === 0) {
@@ -468,7 +478,7 @@ export async function createCheckoutSession(): Promise<CreateCheckoutSessionResu
 
   const locale = await getRequestLocale();
   const stripe = getStripeServerClient();
-  const order = await prepareCheckoutOrder({ cart });
+  const order = await prepareCheckoutOrder({ cart, shippingDetails });
   const appUrl = getAppUrl();
   const successPath = localizeHref(locale, "/checkout/success");
   const cancelPath = localizeHref(locale, "/checkout/cancel");
@@ -480,9 +490,6 @@ export async function createCheckoutSession(): Promise<CreateCheckoutSessionResu
       submit_type: "pay",
       customer_email: cart.customerEmail,
       billing_address_collection: "required",
-      shipping_address_collection: {
-        allowed_countries: ["US", "CA", "GB", "AE", "SA", "QA", "KW", "BH", "OM"],
-      },
       success_url: `${appUrl}${successPath}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}${cancelPath}?order_id=${order.id}`,
       line_items: cart.items.map(createStripeLineItem),
@@ -493,12 +500,15 @@ export async function createCheckoutSession(): Promise<CreateCheckoutSessionResu
         subtotal_amount: `${cart.subtotal}`,
         total_amount: `${cart.total}`,
         user_id: cart.userId,
+        ...buildCheckoutShippingMetadata(shippingDetails),
       },
       payment_intent_data: {
         metadata: {
           cart_id: cart.cartId,
           order_id: order.id,
           user_id: cart.userId,
+          shipping_full_name: shippingDetails.fullName,
+          shipping_phone: shippingDetails.phoneNumber,
         },
       },
     });

@@ -13,6 +13,12 @@ import type {
 import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 
 import { getStripeServerClient } from "./server";
+import {
+  buildCheckoutShippingAddressFromMetadata,
+  buildCheckoutShippingAddressSnapshot,
+  mergeOrderAddressSnapshots,
+  type CheckoutShippingDetails,
+} from "./shipping";
 
 type CartStatus = Database["public"]["Enums"]["cart_status"];
 type OrderStatus = Database["public"]["Enums"]["order_status"];
@@ -57,6 +63,7 @@ export interface PreparedCheckoutCart {
 
 interface PrepareOrderInput {
   cart: PreparedCheckoutCart;
+  shippingDetails: CheckoutShippingDetails;
 }
 
 interface UpsertOrderFromSessionInput {
@@ -292,7 +299,10 @@ async function getOrderItemCount(orderId: string) {
   return count ?? 0;
 }
 
-export async function prepareCheckoutOrder({ cart }: PrepareOrderInput) {
+export async function prepareCheckoutOrder({
+  cart,
+  shippingDetails,
+}: PrepareOrderInput) {
   const supabase = createServiceRoleSupabaseClient();
   const orderInsert = {
     user_id: cart.userId,
@@ -304,7 +314,10 @@ export async function prepareCheckoutOrder({ cart }: PrepareOrderInput) {
     total_amount: cart.total,
     status: "pending",
     payment_status: "pending",
-    shipping_address: {},
+    shipping_address: buildCheckoutShippingAddressSnapshot(
+      shippingDetails,
+      cart.customerEmail,
+    ),
     billing_address: {},
     notes: buildOrderNote(cart),
   } satisfies OrderInsert;
@@ -473,6 +486,11 @@ export async function upsertOrderFromCheckoutSession({
     throw new Error("The checkout session does not include a customer email.");
   }
 
+  const shippingAddress = mergeOrderAddressSnapshots(
+    buildCheckoutShippingAddressFromMetadata(session.metadata, customerEmail),
+    buildShippingAddress(session),
+  );
+
   const existingOrder =
     (await findOrderByStripeSessionId(session.id)) ??
     (orderId ? await findOrderById(orderId) : null);
@@ -497,7 +515,10 @@ export async function upsertOrderFromCheckoutSession({
       toCurrencyAmount(session.amount_total) ??
       existingOrder?.total_amount ??
       0,
-    shipping_address: buildShippingAddress(session),
+    shipping_address: mergeOrderAddressSnapshots(
+      existingOrder?.shipping_address,
+      shippingAddress,
+    ),
     billing_address: buildBillingAddress(session),
     stripe_checkout_session_id: session.id,
     stripe_payment_intent_id:
@@ -551,7 +572,7 @@ export async function upsertOrderFromCheckoutSession({
         session.metadata?.total_amount,
         toCurrencyAmount(session.amount_total),
       ),
-      shipping_address: buildShippingAddress(session),
+      shipping_address: shippingAddress,
       billing_address: buildBillingAddress(session),
       stripe_checkout_session_id: session.id,
       stripe_payment_intent_id:

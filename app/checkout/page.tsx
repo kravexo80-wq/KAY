@@ -11,6 +11,7 @@ import { localizeHref } from "@/lib/i18n/config";
 import { getRequestI18n } from "@/lib/i18n/request";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { getCheckoutPageData } from "@/lib/stripe/checkout";
+import { getCheckoutShippingDetailsFromSearchParams } from "@/lib/stripe/shipping";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { locale } = await getRequestI18n();
@@ -30,17 +31,24 @@ export async function generateMetadata(): Promise<Metadata> {
 type CheckoutPageProps = {
   searchParams: Promise<{
     error?: string;
+    shipping_full_name?: string;
+    shipping_phone?: string;
+    shipping_country?: string;
+    shipping_address_line1?: string;
+    shipping_address_line2?: string;
+    shipping_city?: string;
+    shipping_postcode?: string;
   }>;
 };
 
 export default async function CheckoutPage({ searchParams }: CheckoutPageProps) {
-  const { error } = await searchParams;
-  const [{ locale, direction, dictionary }, checkoutResult] = await Promise.all([
-    getRequestI18n(),
-    getCheckoutPageData(),
-  ]);
+  const [resolvedSearchParams, { locale, direction, dictionary }, checkoutResult] =
+    await Promise.all([searchParams, getRequestI18n(), getCheckoutPageData()]);
+  const { error } = resolvedSearchParams;
   const isRtl = direction === "rtl";
   const checkout = checkoutResult.data;
+  const shippingDetails =
+    getCheckoutShippingDetailsFromSearchParams(resolvedSearchParams);
 
   return (
     <div className="space-y-8 pb-16 md:space-y-10 md:pb-24">
@@ -120,10 +128,12 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
           <CheckoutSummaryPanel
             locale={locale}
             copy={dictionary.checkout.summary}
+            shippingCopy={dictionary.checkout.shipping}
             itemCount={checkout.itemCount}
             subtotal={checkout.subtotal}
             shippingAmount={checkout.shippingAmount}
             total={checkout.total}
+            shippingDetails={shippingDetails}
             isRtl={isRtl}
           />
         </section>

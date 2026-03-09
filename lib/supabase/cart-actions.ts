@@ -1,11 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 import { getLocaleFromPathname, localizeHref } from "@/lib/i18n/config";
 import { getRequestLocale } from "@/lib/i18n/request";
-import { createCheckoutSession } from "@/lib/stripe/checkout";
 
 import { getSafeRedirectPath } from "./auth";
 import {
@@ -133,24 +131,7 @@ export async function buyNowAction(formData: FormData) {
     );
   }
 
-  try {
-    const session = await createCheckoutSession();
-
-    redirect(session.url);
-  } catch (error) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
-
-    redirect(
-      buildRedirect(checkoutPath, {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Checkout could not be started right now.",
-      }),
-    );
-  }
+  redirect(checkoutPath);
 }
 
 export async function updateCartItemQuantityAction(formData: FormData) {

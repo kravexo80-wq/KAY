@@ -252,7 +252,7 @@
     "eyebrow": "Checkout",
     "title": "Complete your order in one secure final step.",
     "description": "Your saved selections are reviewed server-side before payment is confirmed.",
-    "note": "Shipping and billing details are collected during checkout, then attached to your order once payment is confirmed.",
+    "note": "Enter delivery details here first, then continue into the secure payment step to complete billing and payment confirmation.",
     "issueTitle": "Checkout issue",
     "stateEyebrow": "Checkout state",
     "unconfiguredTitle": "Checkout is unavailable in this environment.",
@@ -261,10 +261,23 @@
     "errorDescription": "Review the cart and try again. Live stock and order validation run before checkout is opened.",
     "emptyTitle": "Your cart is empty.",
     "emptyDescription": "Add a product variant from any product page before starting checkout.",
+    "shipping": {
+      "eyebrow": "Delivery details",
+      "title": "Where should we send the order?",
+      "description": "These delivery details are attached to the order before payment so the order record is complete from the moment checkout begins.",
+      "fullName": "Full name",
+      "phoneNumber": "Phone number",
+      "country": "Country",
+      "addressLine1": "Address line 1",
+      "addressLine2": "Address line 2",
+      "city": "City",
+      "postcode": "Postcode",
+      "optional": "Optional"
+    },
     "summary": {
       "eyebrow": "Secure checkout",
       "title": "Complete payment in a secure session.",
-      "description": "Totals are prepared from your saved cart. Shipping and billing details are collected in the secure payment step.",
+      "description": "Totals are prepared from your saved cart. Delivery details are confirmed here before payment continues in the secure payment step.",
       "pieces": "Pieces",
       "subtotal": "Subtotal",
       "shipping": "Shipping",
@@ -273,7 +286,7 @@
       "cta": "Open secure checkout",
       "backToCart": "Return to cart",
       "pipelineTitle": "Order pipeline",
-      "pipelineBody": "An order record is prepared before redirect. After payment succeeds, address details and final order state are synchronized automatically."
+      "pipelineBody": "An order record is prepared with your delivery details before redirect. After payment succeeds, billing details and final order state are synchronized automatically."
     }
   },
   "auth": {

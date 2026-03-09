@@ -6,24 +6,37 @@ import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { formatPrice } from "@/lib/utils";
 
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 interface CheckoutSummaryPanelProps {
   locale: Locale;
   copy: Dictionary["checkout"]["summary"];
+  shippingCopy: Dictionary["checkout"]["shipping"];
   itemCount: number;
   subtotal: number;
   shippingAmount: number;
   total: number;
+  shippingDetails: {
+    fullName: string;
+    phoneNumber: string;
+    country: string;
+    addressLine1: string;
+    addressLine2: string;
+    city: string;
+    postcode: string;
+  };
   isRtl?: boolean;
 }
 
 export function CheckoutSummaryPanel({
   locale,
   copy,
+  shippingCopy,
   itemCount,
   subtotal,
   shippingAmount,
   total,
+  shippingDetails,
   isRtl = false,
 }: CheckoutSummaryPanelProps) {
   return (
@@ -54,7 +67,120 @@ export function CheckoutSummaryPanel({
         </div>
       </div>
 
-      <form action={startCheckoutAction} className="mt-6">
+      <form action={startCheckoutAction} className="mt-6 space-y-4">
+        <div className="showroom-subpanel px-4 py-4">
+          <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+            {shippingCopy.eyebrow}
+          </p>
+          <h3 className="mt-3 text-lg leading-none text-white">{shippingCopy.title}</h3>
+          <p className="mt-3 text-sm leading-7 text-white/58">{shippingCopy.description}</p>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            <div className="space-y-2 md:col-span-2">
+              <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+                {shippingCopy.fullName}
+              </p>
+              <Input
+                name="shipping_full_name"
+                defaultValue={shippingDetails.fullName}
+                placeholder={shippingCopy.fullName}
+                autoComplete="shipping name"
+                className="text-start"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+                {shippingCopy.phoneNumber}
+              </p>
+              <Input
+                type="tel"
+                name="shipping_phone"
+                defaultValue={shippingDetails.phoneNumber}
+                placeholder={shippingCopy.phoneNumber}
+                autoComplete="tel"
+                className="text-start"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+                {shippingCopy.country}
+              </p>
+              <Input
+                name="shipping_country"
+                defaultValue={shippingDetails.country}
+                placeholder={shippingCopy.country}
+                autoComplete="shipping country"
+                className="text-start"
+                required
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+                {shippingCopy.addressLine1}
+              </p>
+              <Input
+                name="shipping_address_line1"
+                defaultValue={shippingDetails.addressLine1}
+                placeholder={shippingCopy.addressLine1}
+                autoComplete="shipping address-line1"
+                className="text-start"
+                required
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+                  {shippingCopy.addressLine2}
+                </p>
+                <span className="text-[0.62rem] uppercase tracking-[0.24em] text-white/24">
+                  {shippingCopy.optional}
+                </span>
+              </div>
+              <Input
+                name="shipping_address_line2"
+                defaultValue={shippingDetails.addressLine2}
+                placeholder={shippingCopy.addressLine2}
+                autoComplete="shipping address-line2"
+                className="text-start"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+                {shippingCopy.city}
+              </p>
+              <Input
+                name="shipping_city"
+                defaultValue={shippingDetails.city}
+                placeholder={shippingCopy.city}
+                autoComplete="shipping address-level2"
+                className="text-start"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-[0.62rem] uppercase tracking-[0.24em] text-white/32">
+                {shippingCopy.postcode}
+              </p>
+              <Input
+                name="shipping_postcode"
+                defaultValue={shippingDetails.postcode}
+                placeholder={shippingCopy.postcode}
+                autoComplete="shipping postal-code"
+                className="text-start"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
         <Button size="lg" className="w-full" type="submit">
           {copy.cta}
         </Button>
