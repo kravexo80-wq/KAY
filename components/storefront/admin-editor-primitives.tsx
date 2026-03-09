@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { cn } from "@/lib/utils";
+
 export const adminSelectClassName =
   "h-12 w-full rounded-[1.2rem] border border-white/10 bg-white/[0.04] px-4 text-sm text-white outline-none transition focus:border-[#b79d67]/35";
 
@@ -97,6 +99,101 @@ export function AdminEditorSectionHeading({
       {description ? (
         <p className="max-w-2xl text-sm leading-7 text-white/48">{description}</p>
       ) : null}
+    </div>
+  );
+}
+
+export function AdminEditorSurface({
+  children,
+  tone = "panel",
+  className,
+}: {
+  children: ReactNode;
+  tone?: "panel" | "elevated" | "muted";
+  className?: string;
+}) {
+  const toneClassName = {
+    panel: "showroom-panel",
+    elevated: "luxury-panel",
+    muted: "luxury-muted-panel",
+  }[tone];
+
+  return <section className={cn(toneClassName, "p-6 md:p-8", className)}>{children}</section>;
+}
+
+export function AdminEditorLocalePill({
+  label,
+  className,
+}: {
+  label: string;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[0.62rem] uppercase tracking-[0.24em] text-white/46",
+        className,
+      )}
+    >
+      {label}
+    </span>
+  );
+}
+
+export function AdminEditorToggleTile({
+  name,
+  label,
+  hint,
+  defaultChecked,
+  isRtl = false,
+}: {
+  name: string;
+  label: string;
+  hint?: string;
+  defaultChecked?: boolean;
+  isRtl?: boolean;
+}) {
+  return (
+    <label className="rounded-[1.4rem] border border-white/8 bg-white/[0.03] p-4 transition hover:border-white/14">
+      <div
+        className={cn(
+          "flex items-start justify-between gap-4",
+          isRtl && "flex-row-reverse text-right",
+        )}
+      >
+        <div className="space-y-2">
+          <p className="text-sm uppercase tracking-[0.22em] text-white/72">{label}</p>
+          {hint ? <p className="text-sm leading-6 text-white/42">{hint}</p> : null}
+        </div>
+        <input
+          type="checkbox"
+          name={name}
+          defaultChecked={defaultChecked}
+          className="mt-1 h-4 w-4 shrink-0 rounded border-white/12 bg-transparent accent-[#b79d67]"
+        />
+      </div>
+    </label>
+  );
+}
+
+export function AdminEditorMetaRow({
+  label,
+  value,
+  isRtl = false,
+}: {
+  label: string;
+  value: ReactNode;
+  isRtl?: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex items-center justify-between gap-4 rounded-[1.2rem] border border-white/8 bg-white/[0.02] px-4 py-3 text-sm text-white/56",
+        isRtl && "flex-row-reverse text-right",
+      )}
+    >
+      <span>{label}</span>
+      <span className="text-white/76">{value}</span>
     </div>
   );
 }
