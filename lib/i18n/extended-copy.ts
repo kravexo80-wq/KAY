@@ -48,17 +48,17 @@ const extendedCopy = {
         eyebrow: "Order history",
         title: "Your Kravexo orders, captured in one protected account view.",
         description:
-          "Every Stripe-backed order now lands in Supabase and remains available here with payment state, order progress, inventory sync visibility, and preserved line-item snapshots.",
+          "Every order remains available here with payment state, order progress, inventory sync visibility, and preserved line-item snapshots.",
         note:
           "This history is scoped to the signed-in customer only. Each order detail view keeps the original size, color, price, and address snapshots from checkout.",
         emptyTitle: "No orders have been placed on this account yet.",
         emptyDescription:
-          "Once a secure Stripe checkout completes, the order will appear here automatically with its live payment and fulfillment status.",
+          "Once secure checkout completes, the order will appear here automatically with its live payment and fulfillment status.",
       },
       customerDetail: {
         eyebrow: "Order detail",
         description:
-          "This protected detail view preserves the live order state from Supabase together with the exact line items, address snapshots, and checkout references captured at purchase time.",
+          "This protected detail view preserves the live order state together with the exact line items, address snapshots, and checkout references captured at purchase time.",
         noteSettled:
           "Inventory has already been finalized for this paid order, so the purchased stock is settled.",
         notePending:
@@ -71,13 +71,13 @@ const extendedCopy = {
         shipping: "Shipping",
         shippingSummaryTitle: "Shipping summary",
         shippingSummaryDescription:
-          "Captured from Stripe Checkout for physical fulfillment.",
+          "Captured during secure checkout for physical fulfillment.",
         billingSummaryTitle: "Billing summary",
         billingSummaryDescription:
           "Stored exactly as returned by the checkout confirmation.",
         operationalEyebrow: "Operational state",
         inventorySync: "Inventory sync",
-        stripeSession: "Stripe session",
+        stripeSession: "Checkout session",
         unavailable: "Unavailable",
         orderNoteEyebrow: "Order note",
       },
@@ -85,7 +85,7 @@ const extendedCopy = {
         eyebrow: "Admin orders",
         title: "Operational order oversight for the Kravexo showroom.",
         description:
-          "This admin-only surface lists every Supabase-backed order with live payment state, fulfillment state, and inventory-finalization visibility.",
+          "This admin-only surface lists every order with live payment state, fulfillment state, and inventory-finalization visibility.",
         note:
           "Status updates remain separate from payment records. Inventory deduction stays in the existing paid-order finalization flow so stock changes are not duplicated here.",
         orders: "Orders",
@@ -94,12 +94,12 @@ const extendedCopy = {
         inventorySettled: "Inventory settled",
         emptyTitle: "No orders have been recorded yet.",
         emptyDescription:
-          "Once a Stripe checkout completes successfully, the webhook-backed order records will appear here for operational review.",
+          "Once checkout completes successfully, the order records will appear here for operational review.",
       },
       adminDetail: {
         eyebrow: "Admin order detail",
         description:
-          "This page combines the immutable checkout snapshot with the admin-managed fulfillment state, Stripe references, and inventory-finalization timing.",
+          "This page combines the immutable checkout snapshot with the admin-managed fulfillment state, payment references, and inventory-finalization timing.",
         noteSettled:
           "Stock has already been deducted exactly once for this paid order.",
         notePending:
@@ -113,7 +113,7 @@ const extendedCopy = {
         inventoryFinalized: "Inventory finalized",
         internalNoteEyebrow: "Internal note",
         totalsEyebrow: "Order totals",
-        stripeEyebrow: "Stripe references",
+        stripeEyebrow: "Payment references",
         checkoutSession: "Checkout session",
         paymentIntent: "Payment intent",
         adminControlEyebrow: "Admin control",
@@ -170,19 +170,19 @@ const extendedCopy = {
       waitingTitleSuffix: "is waiting for payment sync.",
       waitingTitleFallback: "Your payment has been received.",
       waitingDescription:
-        "Stripe has returned successfully. Kravexo is finalizing the order record, payment confirmation, and inventory sync now.",
+        "Payment has returned successfully. Kravexo is finalizing the order record, payment confirmation, and inventory sync now.",
       waitingNote:
-        "If the order details do not appear immediately, refresh shortly. The webhook confirmation can land a moment after the browser returns from Stripe.",
+        "If the order details do not appear immediately, refresh shortly. Confirmation can land a moment after the browser returns from checkout.",
       syncEyebrow: "Order sync",
       syncTitle: "We are confirming your order details.",
       syncDescription:
-        "The order record already exists, but Stripe webhook confirmation has not fully marked it as paid yet. This page will reflect the completed order as soon as that sync finishes.",
+        "The order record already exists, but payment confirmation has not fully marked it as paid yet. This page will reflect the completed order as soon as that sync finishes.",
       confirmedTitlePrefix: "Order",
       confirmedTitleSuffix: "is now in the Kravexo system.",
       confirmedDescription:
-        "Payment confirmation has returned from Stripe and the order is ready for account history, fulfillment tooling, and future delivery updates.",
+        "Payment confirmation has returned and the order is ready for account history, fulfillment tooling, and future delivery updates.",
       confirmedNote:
-        "This success view reads the live Supabase order record tied to the Stripe checkout session.",
+        "This success view reads the live order record tied to the checkout session.",
       confirmationEyebrow: "Order confirmation",
       orderNumber: "Order number",
       orderStatus: "Order status",
@@ -196,16 +196,16 @@ const extendedCopy = {
       eyebrow: "Checkout cancelled",
       title: "Your checkout session was left before payment confirmation.",
       description:
-        "The cart remains intact, so you can return to it, adjust your pieces, or restart Stripe Checkout when ready.",
+        "The cart remains intact, so you can return to it, adjust your pieces, or restart checkout when ready.",
       noteWithOrderPrefix: "A pending order reference exists for this attempt (",
       noteWithOrderSuffix:
-        "). If you restart checkout, a fresh Stripe session will be created from the current cart state.",
+        "). If you restart checkout, a fresh payment session will be created from the current cart state.",
       noteWithoutOrder:
         "No payment was captured. The current cart remains available in your account.",
       stateEyebrow: "Checkout state",
       stateTitle: "No payment was recorded.",
       stateDescription:
-        "Kravexo only converts the cart and confirms the order after Stripe reports a successful payment event. Until then, your selections remain in the authenticated cart.",
+        "Kravexo only converts the cart and confirms the order after a successful payment event is confirmed. Until then, your selections remain in the authenticated cart.",
     },
     adminProducts: {
       list: {
@@ -214,7 +214,7 @@ const extendedCopy = {
         description:
           "This admin-only surface manages live products, publishing state, category and collection assignment, variants, stock quantities, and simple gallery URLs without touching code.",
         note:
-          "Products stay aligned with the existing Supabase catalog schema, and storefront pages are revalidated after changes so the public luxury UI stays intact.",
+          "Products stay aligned with the existing catalog schema, and storefront pages are revalidated after changes so the public luxury UI stays intact.",
         products: "Products",
         active: "Active",
         featured: "Featured",
@@ -240,7 +240,7 @@ const extendedCopy = {
         description:
           "Update the live product record, manage stock-bearing variants, refine gallery imagery, and adjust publishing state without leaving the admin surface.",
         note:
-          "The public storefront keeps reading the same Supabase product, variant, and image tables. This editor only changes the backend catalog records behind that existing premium UI.",
+          "The public storefront keeps reading the same product, variant, and image records. This editor only changes the backend catalog behind that existing premium UI.",
         createdMessage:
           "Product created successfully. You can continue refining variants, images, and publishing state here.",
         updatedMessage:
@@ -309,7 +309,7 @@ const extendedCopy = {
         images: "Images",
         imagesTitle: "Uploads and URL-based gallery management.",
         imagesNote:
-          "Uploading to Supabase Storage now works alongside manual image URLs, so the storefront gallery can keep using the same product_images records.",
+          "Managed uploads now work alongside manual image URLs, so the storefront gallery can keep using the same product image records.",
         upload: "upload",
         uploadHint:
           "Upload a new image file. If both are provided, the uploaded file overrides the manual URL.",
@@ -346,7 +346,7 @@ const extendedCopy = {
           "Slugs stay unique, variants are validated before save, and storefront/admin routes are revalidated after each product change.",
         categoryRequired: "Category required",
         categoryRequiredBody:
-          "Add at least one category in Supabase before creating products. This first admin pass prioritizes product editing and assignment over dedicated category CRUD pages.",
+          "Add at least one category before creating products. This first admin pass prioritizes product editing and assignment over dedicated category CRUD pages.",
         productRecord: "Product record",
         created: "Created",
         updated: "Updated",
@@ -400,17 +400,17 @@ const extendedCopy = {
         eyebrow: "سجل الطلبات",
         title: "طلبات كرافكسو الخاصة بك ضمن عرض حساب محمي واحد.",
         description:
-          "كل طلب مرتبط بـ Stripe يصل الآن إلى Supabase ويظل متاحاً هنا مع حالة الدفع وتقدم الطلب ووضوح مزامنة المخزون ولقطات عناصر الطلب المحفوظة.",
+          "كل طلب يظل متاحاً هنا مع حالة الدفع وتقدم الطلب ووضوح مزامنة المخزون ولقطات عناصر الطلب المحفوظة.",
         note:
           "هذا السجل يخص العميل المسجل فقط. تحتفظ كل صفحة تفاصيل بالقياس واللون والسعر والعنوان كما التُقطت عند الدفع.",
         emptyTitle: "لم تُسجل أي طلبات لهذا الحساب بعد.",
         emptyDescription:
-          "بمجرد اكتمال جلسة Stripe Checkout بأمان سيظهر الطلب هنا تلقائياً مع حالة الدفع والتنفيذ.",
+          "بمجرد اكتمال الدفع الآمن سيظهر الطلب هنا تلقائياً مع حالة الدفع والتنفيذ.",
       },
       customerDetail: {
         eyebrow: "تفاصيل الطلب",
         description:
-          "يحفظ هذا العرض المحمي حالة الطلب الحية من Supabase مع العناصر الدقيقة ولقطات العناوين ومراجع الدفع التي تم التقاطها وقت الشراء.",
+          "يحفظ هذا العرض المحمي حالة الطلب الحية مع العناصر الدقيقة ولقطات العناوين ومراجع الدفع التي تم التقاطها وقت الشراء.",
         noteSettled:
           "تمت تسوية المخزون بالفعل لهذا الطلب المدفوع، لذا أصبح المخزون المشتَرى مثبتاً.",
         notePending:
@@ -422,12 +422,12 @@ const extendedCopy = {
         subtotal: "المجموع الفرعي",
         shipping: "الشحن",
         shippingSummaryTitle: "ملخص الشحن",
-        shippingSummaryDescription: "تم التقاطه من Stripe Checkout للتنفيذ الفعلي.",
+        shippingSummaryDescription: "تم التقاطه أثناء الدفع الآمن للتنفيذ الفعلي.",
         billingSummaryTitle: "ملخص الفوترة",
         billingSummaryDescription: "حُفظ تماماً كما أعادته جلسة تأكيد الدفع.",
         operationalEyebrow: "الحالة التشغيلية",
         inventorySync: "مزامنة المخزون",
-        stripeSession: "جلسة Stripe",
+        stripeSession: "جلسة الدفع",
         unavailable: "غير متاح",
         orderNoteEyebrow: "ملاحظة الطلب",
       },
@@ -435,7 +435,7 @@ const extendedCopy = {
         eyebrow: "طلبات الإدارة",
         title: "إشراف تشغيلي على طلبات معرض كرافكسو.",
         description:
-          "تعرض هذه الواجهة الإدارية فقط كل الطلبات المرتبطة بـ Supabase مع حالة الدفع وحالة التنفيذ ووضوح تثبيت المخزون.",
+          "تعرض هذه الواجهة الإدارية فقط كل الطلبات مع حالة الدفع وحالة التنفيذ ووضوح تثبيت المخزون.",
         note:
           "تظل تحديثات الحالة منفصلة عن سجلات الدفع. ويظل خصم المخزون ضمن مسار تثبيت الطلبات المدفوعة الحالي حتى لا يتكرر الخصم هنا.",
         orders: "الطلبات",
@@ -444,12 +444,12 @@ const extendedCopy = {
         inventorySettled: "المخزون المثبت",
         emptyTitle: "لم تُسجل طلبات بعد.",
         emptyDescription:
-          "بمجرد نجاح Stripe Checkout ستظهر سجلات الطلبات المدعومة بالويب هوك هنا للمراجعة التشغيلية.",
+          "بمجرد نجاح الدفع ستظهر سجلات الطلبات هنا للمراجعة التشغيلية.",
       },
       adminDetail: {
         eyebrow: "تفاصيل الطلب الإداري",
         description:
-          "تجمع هذه الصفحة بين لقطة الدفع الثابتة وحالة التنفيذ التي يديرها المسؤول ومراجع Stripe وتوقيت تثبيت المخزون.",
+          "تجمع هذه الصفحة بين لقطة الدفع الثابتة وحالة التنفيذ التي يديرها المسؤول ومراجع الدفع وتوقيت تثبيت المخزون.",
         noteSettled: "تم خصم المخزون مرة واحدة بالفعل لهذا الطلب المدفوع.",
         notePending:
           "لم يتم تثبيت خصم المخزون بعد. ويظل مسار تثبيت المخزون للطلبات المدفوعة هو المصدر الوحيد للحقيقة.",
@@ -462,7 +462,7 @@ const extendedCopy = {
         inventoryFinalized: "تثبيت المخزون",
         internalNoteEyebrow: "ملاحظة داخلية",
         totalsEyebrow: "إجماليات الطلب",
-        stripeEyebrow: "مراجع Stripe",
+        stripeEyebrow: "مراجع الدفع",
         checkoutSession: "جلسة الدفع",
         paymentIntent: "نية الدفع",
         adminControlEyebrow: "التحكم الإداري",
@@ -519,19 +519,19 @@ const extendedCopy = {
       waitingTitleSuffix: "بانتظار مزامنة الدفع.",
       waitingTitleFallback: "تم استلام دفعتك.",
       waitingDescription:
-        "عاد Stripe بنجاح. يقوم كرافكسو الآن بإنهاء سجل الطلب وتأكيد الدفع ومزامنة المخزون.",
+        "عاد الدفع بنجاح. يقوم كرافكسو الآن بإنهاء سجل الطلب وتأكيد الدفع ومزامنة المخزون.",
       waitingNote:
-        "إذا لم تظهر تفاصيل الطلب فوراً فقم بالتحديث بعد قليل. قد تصل رسالة الويب هوك بعد عودة المتصفح من Stripe بلحظة.",
+        "إذا لم تظهر تفاصيل الطلب فوراً فقم بالتحديث بعد قليل. قد يصل تأكيد الدفع بعد عودة المتصفح من خطوة الدفع بلحظة.",
       syncEyebrow: "مزامنة الطلب",
       syncTitle: "نؤكد تفاصيل طلبك الآن.",
       syncDescription:
-        "سجل الطلب موجود بالفعل، لكن تأكيد Stripe عبر الويب هوك لم يثبته كمدفوع بالكامل بعد. ستعكس هذه الصفحة الطلب المكتمل فور انتهاء المزامنة.",
+        "سجل الطلب موجود بالفعل، لكن تأكيد الدفع لم يثبته كمدفوع بالكامل بعد. ستعكس هذه الصفحة الطلب المكتمل فور انتهاء المزامنة.",
       confirmedTitlePrefix: "الطلب",
       confirmedTitleSuffix: "أصبح الآن داخل نظام كرافكسو.",
       confirmedDescription:
-        "عاد تأكيد الدفع من Stripe وأصبح الطلب جاهزاً لسجل الحساب وأدوات التنفيذ وتحديثات التوصيل المستقبلية.",
+        "عاد تأكيد الدفع وأصبح الطلب جاهزاً لسجل الحساب وأدوات التنفيذ وتحديثات التوصيل المستقبلية.",
       confirmedNote:
-        "يعتمد هذا العرض على سجل الطلب الحي في Supabase المرتبط بجلسة Stripe Checkout.",
+        "يعتمد هذا العرض على سجل الطلب الحي المرتبط بجلسة الدفع.",
       confirmationEyebrow: "تأكيد الطلب",
       orderNumber: "رقم الطلب",
       orderStatus: "حالة الطلب",
@@ -545,16 +545,16 @@ const extendedCopy = {
       eyebrow: "إلغاء الدفع",
       title: "تمت مغادرة جلسة الدفع قبل تأكيد السداد.",
       description:
-        "تظل السلة محفوظة، لذا يمكنك العودة إليها أو تعديل القطع أو إعادة تشغيل Stripe Checkout عندما تكون جاهزاً.",
+        "تظل السلة محفوظة، لذا يمكنك العودة إليها أو تعديل القطع أو إعادة تشغيل الدفع عندما تكون جاهزاً.",
       noteWithOrderPrefix: "يوجد مرجع طلب معلّق لهذه المحاولة (",
       noteWithOrderSuffix:
-        "). إذا أعدت بدء الدفع فسيتم إنشاء جلسة Stripe جديدة من حالة السلة الحالية.",
+        "). إذا أعدت بدء الدفع فسيتم إنشاء جلسة دفع جديدة من حالة السلة الحالية.",
       noteWithoutOrder:
         "لم يتم تسجيل أي دفعة. تظل السلة الحالية متاحة داخل حسابك.",
       stateEyebrow: "حالة الدفع",
       stateTitle: "لم يتم تسجيل أي دفعة.",
       stateDescription:
-        "لا يحول كرافكسو السلة ولا يؤكد الطلب إلا بعد أن يبلغ Stripe عن حدث دفع ناجح. وحتى ذلك الحين تبقى اختياراتك داخل السلة المرتبطة بالحساب.",
+        "لا يحول كرافكسو السلة ولا يؤكد الطلب إلا بعد تأكيد حدث دفع ناجح. وحتى ذلك الحين تبقى اختياراتك داخل السلة المرتبطة بالحساب.",
     },
     adminProducts: {
       list: {
@@ -563,7 +563,7 @@ const extendedCopy = {
         description:
           "تدير هذه الواجهة الإدارية فقط المنتجات الحية وحالة النشر وتعيين الفئة والمجموعة والمتغيرات وكميات المخزون وروابط المعرض البسيطة من دون لمس الكود.",
         note:
-          "تبقى المنتجات متوافقة مع مخطط كتالوج Supabase الحالي، وتُعاد تهيئة صفحات المتجر والإدارة بعد التغييرات حتى تظل الواجهة العامة الفاخرة كما هي.",
+          "تبقى المنتجات متوافقة مع مخطط الكتالوج الحالي، وتُعاد تهيئة صفحات المتجر والإدارة بعد التغييرات حتى تظل الواجهة العامة الفاخرة كما هي.",
         products: "المنتجات",
         active: "النشطة",
         featured: "المميزة",
@@ -589,7 +589,7 @@ const extendedCopy = {
         description:
           "حدّث سجل المنتج الحي وأدر المتغيرات المرتبطة بالمخزون وحسّن صور المعرض واضبط حالة النشر دون مغادرة سطح الإدارة.",
         note:
-          "يستمر المتجر العام في القراءة من جداول Supabase نفسها الخاصة بالمنتجات والمتغيرات والصور. يغيّر هذا المحرر فقط سجلات الكتالوج الخلفية التي تقف وراء الواجهة الحالية.",
+          "يستمر المتجر العام في القراءة من سجلات المنتجات والمتغيرات والصور نفسها. يغيّر هذا المحرر فقط سجلات الكتالوج الخلفية التي تقف وراء الواجهة الحالية.",
         createdMessage:
           "تم إنشاء المنتج بنجاح. يمكنك متابعة تحسين المتغيرات والصور وحالة النشر من هنا.",
         updatedMessage:
@@ -658,7 +658,7 @@ const extendedCopy = {
         images: "الصور",
         imagesTitle: "الرفع وإدارة المعرض بالروابط.",
         imagesNote:
-          "أصبح الرفع إلى Supabase Storage يعمل الآن إلى جانب روابط الصور اليدوية، لذلك يمكن لمعرض المتجر الاستمرار باستخدام سجلات product_images نفسها.",
+          "أصبح الرفع المدار يعمل الآن إلى جانب روابط الصور اليدوية، لذلك يمكن لمعرض المتجر الاستمرار باستخدام سجلات الصور نفسها.",
         upload: "رفع",
         uploadHint:
           "ارفع ملف صورة جديداً. إذا وُجد الملف والرابط معاً فسيأخذ الملف المرفوع الأولوية.",
@@ -696,7 +696,7 @@ const extendedCopy = {
           "تظل المعرفات فريدة، ويتم التحقق من المتغيرات قبل الحفظ، كما تُعاد تهيئة مسارات المتجر والإدارة بعد كل تغيير.",
         categoryRequired: "الفئة مطلوبة",
         categoryRequiredBody:
-          "أضف فئة واحدة على الأقل في Supabase قبل إنشاء المنتجات. تعطي هذه المرحلة الأولوية لتحرير المنتجات وتعيينها قبل بناء صفحات CRUD مستقلة للفئات.",
+          "أضف فئة واحدة على الأقل قبل إنشاء المنتجات. تعطي هذه المرحلة الأولوية لتحرير المنتجات وتعيينها قبل بناء صفحات CRUD مستقلة للفئات.",
         productRecord: "سجل المنتج",
         created: "أُنشئ في",
         updated: "آخر تحديث",

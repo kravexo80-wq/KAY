@@ -120,7 +120,7 @@ interface AuthenticatedCheckoutCart {
 }
 
 const CHECKOUT_UNCONFIGURED_MESSAGE =
-  "Stripe checkout is not configured in this environment yet.";
+  "Secure checkout is not configured in this environment yet.";
 
 const checkoutItemsSelect = `
   id,
@@ -489,14 +489,18 @@ export async function createCheckoutSession(): Promise<CreateCheckoutSessionResu
   } catch (error) {
     await markOrderAsCheckoutStartFailed(
       order.id,
-      error instanceof Error ? error.message : "Stripe session creation failed.",
+      error instanceof Error
+        ? error.message
+        : "The payment session could not be created right now.",
     );
 
     throw error;
   }
 
   if (!session.url) {
-    throw new Error("Stripe did not return a redirect URL for this checkout session.");
+    throw new Error(
+      "The payment session did not return a redirect URL for checkout.",
+    );
   }
 
   await attachStripeSessionToOrder(order.id, session.id);

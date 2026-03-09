@@ -230,6 +230,19 @@ function getItemCount(items: OrderItemSelectRow[] | null | undefined) {
   return (items ?? []).reduce((total, item) => total + item.quantity, 0);
 }
 
+function sanitizeOrderNote(value: string | null | undefined) {
+  if (!value) {
+    return "";
+  }
+
+  return value
+    .replace(/Stripe Checkout/gi, "secure checkout")
+    .replace(/Stripe checkout/gi, "secure checkout")
+    .replace(/Stripe session/gi, "payment session")
+    .replace(/Stripe/gi, "payment")
+    .replace(/Supabase/gi, "the system");
+}
+
 function mapOrderSummary(
   order: OrderSummaryRow & { order_items?: OrderItemSelectRow[] | null },
 ): AccountOrderSummary {
@@ -297,7 +310,7 @@ function mapOrderDetail(order: OrderDetailRow): OrderDetail {
     ...mapOrderSummary(order),
     userId: order.user_id,
     cartId: order.cart_id,
-    notes: order.notes,
+    notes: sanitizeOrderNote(order.notes),
     stripeCheckoutSessionId: order.stripe_checkout_session_id,
     stripePaymentIntentId: order.stripe_payment_intent_id,
     shippingAddress: getAddressSummary(order.shipping_address),

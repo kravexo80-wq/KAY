@@ -83,13 +83,13 @@
         "mediaTitle": "Media system",
         "mediaBody": "Multi-angle cards prepared for real product imagery later.",
         "commerceTitle": "Commerce path",
-        "commerceBody": "Ready for Supabase, Stripe, zoom, and richer motion."
+        "commerceBody": "Ready for secure checkout, zoom, and richer product media."
       },
       "featuredPiece": "Featured piece",
       "fallback": {
         "eyebrow": "Featured product",
         "title": "The showroom is ready for live catalog highlights.",
-        "description": "No featured product is currently published. Mark a live product as featured in Supabase to restore the hero spotlight."
+        "description": "No featured product is currently published. Mark a live product as featured to restore the hero spotlight."
       }
     },
     "featuredCollections": {
@@ -101,7 +101,7 @@
       "logicDescription": "Hover states, tonal overlays, and editorial spacing are tuned to keep each collection feeling composed and high-value.",
       "emptyEyebrow": "Featured collections",
       "emptyTitle": "Curated collection worlds will appear here.",
-      "emptyDescription": "No featured collections are currently published. Feature a collection in Supabase to populate this section."
+      "emptyDescription": "No featured collections are currently published. Feature a collection to populate this section."
     },
     "featuredProducts": {
       "eyebrow": "Featured pieces",
@@ -113,7 +113,7 @@
       "viewCatalog": "View full catalog",
       "emptyEyebrow": "Featured products",
       "emptyTitle": "Featured pieces will stage here once published.",
-      "emptyDescription": "No featured products are currently active. Feature catalog pieces in Supabase to repopulate this grid."
+      "emptyDescription": "No featured products are currently active. Feature catalog pieces to repopulate this grid."
     },
     "newsletter": {
       "eyebrow": "Private list",
@@ -135,30 +135,30 @@
   "shop": {
     "eyebrow": "Shop",
     "title": "A catalog designed around display clarity.",
-    "description": "The shop keeps the same premium showroom rhythm while now reading directly from the live Supabase catalog for active public products.",
+    "description": "The shop keeps the same premium showroom rhythm while reading directly from the live catalog for active public products.",
     "note": "Filtering, sorting, inventory state, and richer merchandising can expand on top of this structure without changing the visual language.",
     "allPieces": "All pieces",
     "catalogEyebrow": "Shop catalog",
     "emptyTitle": "No public products are live yet.",
     "unavailableTitle": "The public catalog is temporarily unavailable.",
-    "emptyDescription": "Once active products are published in Supabase, they will appear here automatically."
+    "emptyDescription": "Once active products are published, they will appear here automatically."
   },
   "collections": {
     "index": {
       "eyebrow": "Collections",
       "title": "Curated edits with their own mood and silhouette logic.",
       "description": "Collections are treated as luxury chapters rather than simple catalog tags, giving each product family a distinct narrative space.",
-      "note": "Each collection now supports its own slug route and reads from the live Supabase catalog while preserving the current editorial card system.",
+      "note": "Each collection now supports its own slug route and reads from the live catalog while preserving the current editorial card system.",
       "stateEyebrow": "Collection index",
       "emptyTitle": "No public collections are available.",
       "unavailableTitle": "Collections are temporarily unavailable.",
-      "emptyDescription": "Publish active collections in Supabase to populate this page."
+      "emptyDescription": "Publish active collections to populate this page."
     },
     "detail": {
       "fallbackEyebrow": "Collection",
       "fallbackTitle": "This collection is temporarily unavailable.",
       "fallbackDescription": "The route is live, but the collection data could not be loaded for this request.",
-      "fallbackNote": "Please retry once the Supabase catalog is configured and reachable.",
+      "fallbackNote": "Please retry once the live catalog connection is available again.",
       "stateEyebrow": "Collection state",
       "stateTitle": "Collection details could not be loaded right now.",
       "stateDescription": "If this collection exists and is active, it will render here once the catalog connection is available.",
@@ -167,14 +167,14 @@
       "catalogEyebrow": "Collection catalog",
       "emptyTitle": "No public products are currently assigned to this collection.",
       "unavailableTitle": "This collection's products are temporarily unavailable.",
-      "emptyDescription": "Publish active products against this collection in Supabase to populate this showroom."
+      "emptyDescription": "Publish active products against this collection to populate this showroom."
     }
   },
   "product": {
     "eyebrow": "Product",
     "fallbackTitle": "The showroom piece is temporarily unavailable.",
     "fallbackDescription": "The product route is live, but the catalog data could not be loaded for this request.",
-    "fallbackNote": "Please retry once the Supabase catalog is configured and reachable.",
+    "fallbackNote": "Please retry once the live catalog connection is available again.",
     "stateEyebrow": "Product state",
     "stateTitle": "This product could not be loaded right now.",
     "stateDescription": "If the product exists and is active, it will render here once the catalog connection is available.",
@@ -217,19 +217,19 @@
     "unauthenticatedDescription": "Cart persistence is live for authenticated customers. Sign in to review saved pieces, adjust quantities, and carry your selections forward to checkout.",
     "unauthenticatedNote": "Guest cart support is intentionally reserved for a later phase. This first implementation keeps cart persistence clean and account-scoped.",
     "activeTitle": "Your selected pieces are held in the Kravexo cart.",
-    "activeDescription": "Review your chosen variants, confirm available stock, and move the current selection into secure Stripe Checkout when the basket feels right.",
-    "activeNote": "Quantities update against live variant stock, and successful Stripe checkout now creates a real order record in Supabase.",
+    "activeDescription": "Review your chosen variants, confirm available stock, and move the current selection into secure checkout when the basket feels right.",
+    "activeNote": "Quantities update against live variant stock, and successful payment now creates a real order record automatically.",
     "emptyTitle": "Your cart is ready for its first showroom piece.",
     "emptyDescription": "Your authenticated cart is active and ready. Once you add a product variant from a product page, it will appear here with live stock-aware quantity controls.",
-    "emptyNote": "The cart table and item persistence are now live in Supabase, even when the current basket is empty.",
+    "emptyNote": "Saved cart persistence is live for signed-in customers, even when the current basket is empty.",
     "feedbackError": "Cart issue",
     "feedbackSuccess": "Cart update",
     "accessEyebrow": "Cart access",
     "accessTitle": "Login to open your saved cart.",
-    "accessDescription": "Add-to-cart is already routed through authenticated Supabase carts. Sign in to review persisted selections and prepare for checkout in the next phase.",
+    "accessDescription": "Add-to-cart is already routed through authenticated saved carts. Sign in to review persisted selections and prepare for checkout.",
     "stateEyebrow": "Cart state",
     "unconfiguredTitle": "Cart persistence is not configured yet.",
-    "unconfiguredDescription": "Provide the Supabase environment values for this deployment to enable live cart reads and mutations.",
+    "unconfiguredDescription": "Provide the required environment values for this deployment to enable live cart reads and mutations.",
     "errorTitle": "The cart could not be loaded right now.",
     "errorDescription": "Please retry shortly. Existing cart data remains stored if the request failed transiently.",
     "emptyStateTitle": "Your cart is currently empty.",
@@ -237,7 +237,7 @@
     "summary": {
       "eyebrow": "Order summary",
       "title": "Held in the showroom.",
-      "description": "Your selections are saved to your authenticated account and can now move into a secure Stripe Checkout session without changing the cart structure.",
+      "description": "Your selections are saved to your authenticated account and can now move into a secure checkout session without changing the cart structure.",
       "pieces": "Pieces",
       "subtotal": "Subtotal",
       "shipping": "Shipping",
@@ -245,26 +245,26 @@
       "total": "Estimated total",
       "cta": "Proceed to checkout",
       "shippingNoteTitle": "Shipping note",
-      "shippingNoteBody": "Address collection and payment confirmation now continue inside Stripe Checkout, while the resulting order syncs back into Supabase."
+      "shippingNoteBody": "Address collection and payment confirmation continue in the secure payment step, while the resulting order syncs back into your account history."
     }
   },
   "checkout": {
     "eyebrow": "Checkout",
-    "title": "Complete your order through a secure Stripe session.",
-    "description": "Your authenticated cart is converted into Stripe line items server-side, then finalized into a Kravexo order once payment succeeds.",
-    "note": "Shipping and billing details are collected inside Stripe Checkout. The order record and item snapshots are synchronized back into Supabase after payment confirmation.",
+    "title": "Complete your order through a secure checkout session.",
+    "description": "Your authenticated cart is prepared server-side, then finalized into a Kravexo order once payment succeeds.",
+    "note": "Shipping and billing details are collected during secure checkout. The order record and item snapshots are synchronized back into your account after payment confirmation.",
     "issueTitle": "Checkout issue",
     "stateEyebrow": "Checkout state",
-    "unconfiguredTitle": "Stripe checkout is not configured yet.",
-    "unconfiguredDescription": "Add the Stripe server credentials for this environment to enable checkout session creation and webhook syncing.",
+    "unconfiguredTitle": "Secure checkout is not configured yet.",
+    "unconfiguredDescription": "Add the required payment environment values for this deployment to enable checkout session creation and confirmation syncing.",
     "errorTitle": "The checkout session could not be prepared.",
-    "errorDescription": "Review the cart and try again. Live stock and order validation run before Stripe is opened.",
+    "errorDescription": "Review the cart and try again. Live stock and order validation run before checkout is opened.",
     "emptyTitle": "Your cart is empty.",
     "emptyDescription": "Add a product variant from any product page before starting checkout.",
     "summary": {
-      "eyebrow": "Stripe checkout",
-      "title": "Complete payment in a secure Stripe session.",
-      "description": "Pricing is derived server-side from your authenticated cart. Stripe will collect shipping and billing details without exposing secret keys or trusting any client-submitted totals.",
+      "eyebrow": "Secure checkout",
+      "title": "Complete payment in a secure session.",
+      "description": "Pricing is derived server-side from your authenticated cart. Shipping and billing details are collected without trusting any client-submitted totals.",
       "pieces": "Pieces",
       "subtotal": "Subtotal",
       "shipping": "Shipping",
@@ -273,19 +273,20 @@
       "cta": "Open secure checkout",
       "backToCart": "Return to cart",
       "pipelineTitle": "Order pipeline",
-      "pipelineBody": "A pending order record is prepared before redirect. Stripe webhooks then confirm payment, sync address snapshots, and convert the cart once checkout succeeds."
+      "pipelineBody": "A pending order record is prepared before redirect. Payment confirmation then syncs the address snapshot and converts the cart once checkout succeeds."
     }
   },
   "auth": {
     "login": {
       "eyebrow": "Login",
       "title": "A private entry point into the Kravexo showroom.",
-      "description": "Sign in with your Supabase-backed account to access protected profile pages, session-aware navigation, and future customer-only functionality.",
-      "note": "The luxury visual language stays intact while the auth flow is now real.",
+      "description": "Sign in to access protected profile pages, saved selections, and future customer-only functionality.",
+      "note": "The same refined visual language now extends into a complete account flow.",
       "issueTitle": "Sign-in issue",
       "updateTitle": "Account update",
       "email": "Email address",
       "password": "Password",
+      "forgotPassword": "Forgot your password?",
       "submit": "Sign in",
       "switchLead": "New to Kravexo?",
       "switchCta": "Create an account"
@@ -293,24 +294,62 @@
     "signup": {
       "eyebrow": "Signup",
       "title": "Create a Kravexo account for protected access.",
-      "description": "Account creation now uses Supabase Auth and prepares the linked profile record used for protected customer and admin access.",
-      "note": "The page keeps the same refined visual rhythm while the underlying signup flow is now real.",
+      "description": "Create your account to access protected pages, saved selections, and future customer services.",
+      "note": "The page keeps the same refined visual rhythm while now enforcing stronger password standards.",
       "issueTitle": "Signup issue",
       "updateTitle": "Account update",
       "fullName": "Full name",
       "email": "Email address",
       "password": "Password",
       "passwordPlaceholder": "Create password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Repeat password",
+      "passwordRulesTitle": "Password requirements",
+      "passwordRules": [
+        "Use 10 to 64 characters.",
+        "Include at least one uppercase letter and one lowercase letter.",
+        "Include at least one number and one symbol.",
+        "Do not use spaces."
+      ],
       "submit": "Create account",
       "switchLead": "Already registered?",
       "switchCta": "Sign in"
+    },
+    "forgotPassword": {
+      "eyebrow": "Password reset",
+      "title": "Request a secure link to create a new password.",
+      "description": "Enter your account email and we will send a reset link that returns you to Kravexo.",
+      "note": "The reset flow keeps the same private-showroom visual language while moving password recovery into the live account system.",
+      "issueTitle": "Reset issue",
+      "updateTitle": "Reset update",
+      "email": "Email address",
+      "submit": "Send reset link",
+      "switchLead": "Remembered your password?",
+      "switchCta": "Return to login"
+    },
+    "resetPassword": {
+      "eyebrow": "Create new password",
+      "title": "Set a new password for your Kravexo account.",
+      "description": "Choose a strong new password to regain access to your protected account.",
+      "note": "Use the reset link from your email to open this page with a valid recovery session.",
+      "issueTitle": "Reset issue",
+      "updateTitle": "Password update",
+      "password": "New password",
+      "passwordPlaceholder": "Enter new password",
+      "confirmPassword": "Confirm new password",
+      "confirmPasswordPlaceholder": "Repeat new password",
+      "submit": "Save new password",
+      "stateEyebrow": "Recovery session",
+      "stateTitle": "Open the reset link from your email to continue.",
+      "stateDescription": "For security, this page only accepts password updates from a valid recovery link.",
+      "requestAnother": "Request another reset link"
     }
   },
   "account": {
     "eyebrow": "Account",
-    "description": "This page is now auth-protected and loads the real signed-in Supabase user together with the linked profile record.",
+    "description": "This page is protected and loads the real signed-in customer profile together with recent account activity.",
     "deniedNote": "Admin access is restricted to Kravexo profiles with the admin role.",
-    "defaultNote": "Recent orders now land in Supabase after Stripe checkout, and this protected account view is ready for fuller order history and address management next.",
+    "defaultNote": "Recent orders now appear here after successful payment, and this protected account view is ready for fuller order history and address management next.",
     "roleAdmin": "Admin",
     "roleCustomer": "Customer",
     "session": "Session",
@@ -326,15 +365,15 @@
     "lastName": "Last name",
     "notSet": "Not set yet",
     "recentOrders": "Recent orders",
-    "recentOrdersTitle": "Stripe-backed order records are now live.",
+    "recentOrdersTitle": "Recent order records are now live.",
     "viewHistory": "View full history",
     "recentOrderContext": "Recent order",
-    "emptyOrders": "No Stripe-backed orders have been recorded for this account yet. Once a checkout succeeds, recent orders will appear here without any further UI restructuring."
+    "emptyOrders": "No orders have been recorded for this account yet. Once a checkout succeeds, recent orders will appear here without any further UI restructuring."
   },
   "admin": {
     "eyebrow": "Admin Dashboard",
     "title": "Operational access confirmed for the Kravexo admin surface.",
-    "description": "This route is now protected by Supabase Auth and the profiles.role guard, so only authenticated administrators can reach it.",
+    "description": "This route is protected by the account role guard, so only authenticated administrators can reach it.",
     "note": "Catalog management, order oversight, and reporting can now build on top of a real admin access boundary.",
     "manageProducts": "Manage products",
     "reviewOrders": "Review orders",
@@ -368,7 +407,7 @@
     "eyebrow": "Contact",
     "title": "Luxury retail tone, direct support structure.",
     "description": "The contact surface is designed for concierge support, wholesale inquiry, press requests, and future customer service integration.",
-    "note": "This form now validates and confirms submissions in the current build, and it remains ready for future Supabase, email, or support-platform integration.",
+    "note": "This form now validates and confirms submissions in the current build, and it remains ready for future email or support-platform integration.",
     "fullName": "Full name",
     "email": "Email address",
     "subject": "Subject",

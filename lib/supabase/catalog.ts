@@ -194,7 +194,7 @@ export const collectionCatalogSelect = `
 `;
 
 const CATALOG_UNCONFIGURED_MESSAGE =
-  "Supabase catalog settings are not configured in this environment yet.";
+  "Catalog access is not configured in this environment yet.";
 const CATALOG_ERROR_MESSAGE =
   "The catalog could not be loaded right now. Please try again shortly.";
 

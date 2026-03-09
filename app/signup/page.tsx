@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { localizeHref } from "@/lib/i18n/config";
 import { getRequestI18n } from "@/lib/i18n/request";
+import {
+  getPasswordPolicyTitle,
+  passwordPolicy,
+} from "@/lib/supabase/password-policy";
 import { getCurrentUser, getSafeRedirectPath } from "@/lib/supabase/auth";
 import { signupAction } from "@/lib/supabase/auth-actions";
 
@@ -32,6 +36,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
     nextPath === "/account"
       ? localizeHref(locale, "/login")
       : localizeHref(locale, `/login?next=${encodeURIComponent(nextPath)}`);
+  const passwordTitle = getPasswordPolicyTitle(locale);
 
   if (user) {
     redirect(nextPath);
@@ -68,6 +73,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
           ) : null}
 
           <input type="hidden" name="next" value={nextPath} />
+          <input type="hidden" name="locale" value={locale} />
 
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.24em] text-white/38">
@@ -106,8 +112,39 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
               placeholder={dictionary.auth.signup.passwordPlaceholder}
               autoComplete="new-password"
               required
+              minLength={passwordPolicy.minLength}
+              maxLength={passwordPolicy.maxLength}
+              pattern={passwordPolicy.htmlPattern}
+              title={passwordTitle}
               className="text-start"
             />
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-xs uppercase tracking-[0.24em] text-white/38">
+              {dictionary.auth.signup.confirmPassword}
+            </p>
+            <Input
+              type="password"
+              name="confirmPassword"
+              placeholder={dictionary.auth.signup.confirmPasswordPlaceholder}
+              autoComplete="new-password"
+              required
+              minLength={passwordPolicy.minLength}
+              maxLength={passwordPolicy.maxLength}
+              pattern={passwordPolicy.htmlPattern}
+              title={passwordTitle}
+              className="text-start"
+            />
+          </div>
+
+          <div className="showroom-subpanel p-4">
+            <p className="eyebrow">{dictionary.auth.signup.passwordRulesTitle}</p>
+            <ul className="mt-3 space-y-2 text-sm leading-7 text-white/58">
+              {dictionary.auth.signup.passwordRules.map((rule) => (
+                <li key={rule}>{rule}</li>
+              ))}
+            </ul>
           </div>
 
           <Button type="submit" className="w-full">

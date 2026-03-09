@@ -32,6 +32,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     nextPath === "/account"
       ? localizeHref(locale, "/signup")
       : localizeHref(locale, `/signup?next=${encodeURIComponent(nextPath)}`);
+  const forgotPasswordHref = localizeHref(locale, "/forgot-password");
 
   if (user) {
     redirect(nextPath);
@@ -68,6 +69,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           ) : null}
 
           <input type="hidden" name="next" value={nextPath} />
+          <input type="hidden" name="locale" value={locale} />
 
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-[0.24em] text-white/38">
@@ -95,6 +97,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               required
               className="text-start"
             />
+            <div className={`${isRtl ? "text-left" : "text-right"}`}>
+              <Link
+                href={forgotPasswordHref}
+                className="text-xs text-white/52 transition hover:text-white"
+              >
+                {dictionary.auth.login.forgotPassword}
+              </Link>
+            </div>
           </div>
 
           <Button type="submit" className="w-full">

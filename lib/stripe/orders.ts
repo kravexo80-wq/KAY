@@ -146,7 +146,7 @@ function buildBillingAddress(session: Stripe.Checkout.Session) {
 }
 
 function buildOrderNote(cart: PreparedCheckoutCart) {
-  return `Stripe Checkout initiated from cart ${cart.cartId}.`;
+  return `Secure checkout initiated from cart ${cart.cartId}.`;
 }
 
 function createOrderItemSnapshot(item: PreparedCheckoutItem) {
@@ -448,7 +448,7 @@ export async function markOrderAsCheckoutStartFailed(
     .update({
       status: "cancelled",
       payment_status: "failed",
-      notes: `Stripe session creation failed: ${reason}`,
+      notes: `Payment session creation failed: ${reason}`,
     } satisfies OrderUpdate)
     .eq("id", orderId);
 
@@ -470,7 +470,7 @@ export async function upsertOrderFromCheckoutSession({
     session.customer_details?.email ?? session.customer_email ?? null;
 
   if (!customerEmail) {
-    throw new Error("Stripe checkout session does not include a customer email.");
+    throw new Error("The checkout session does not include a customer email.");
   }
 
   const existingOrder =
@@ -515,7 +515,7 @@ export async function upsertOrderFromCheckoutSession({
         : existingOrder?.paid_at ?? null,
     notes:
       existingOrder?.notes ||
-      `Stripe Checkout session ${session.id} synced from webhook.`,
+      `Checkout session ${session.id} synchronized after payment confirmation.`,
   } satisfies OrderUpdate;
 
   let order: OrderRow;
@@ -562,7 +562,7 @@ export async function upsertOrderFromCheckoutSession({
         paymentStatusOverride ?? mapSessionStatusToPaymentStatus(session),
       status: orderStatusOverride ?? mapSessionStatusToOrderStatus(session),
       paid_at: session.payment_status === "paid" ? new Date().toISOString() : null,
-      notes: `Order created from Stripe Checkout session ${session.id}.`,
+      notes: `Order created from checkout session ${session.id}.`,
     } satisfies OrderInsert;
 
     const { data, error } = await supabase
