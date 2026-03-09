@@ -1,9 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Languages } from "lucide-react";
 
-import { switchHrefLocale, type Locale } from "@/lib/i18n/config";
+import {
+  getLocaleFromPathname,
+  switchHrefLocale,
+  type Locale,
+} from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 
 interface LanguageSwitcherProps {
@@ -15,6 +20,15 @@ export function LanguageSwitcher({
   locale,
   currentPath,
 }: LanguageSwitcherProps) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const browserPath = pathname
+    ? `${pathname}${searchParams.size > 0 ? `?${searchParams.toString()}` : ""}`
+    : null;
+  const resolvedCurrentPath =
+    browserPath && getLocaleFromPathname(pathname)
+      ? browserPath
+      : currentPath;
   const options: Array<{
     locale: Locale;
     label: string;
@@ -38,7 +52,7 @@ export function LanguageSwitcher({
         return (
           <Link
             key={option.locale}
-            href={switchHrefLocale(currentPath, option.locale)}
+            href={switchHrefLocale(resolvedCurrentPath, option.locale)}
             aria-current={isActive ? "page" : undefined}
             className={cn(
               "inline-flex h-8 items-center rounded-full px-3 text-[0.72rem] font-medium transition",
