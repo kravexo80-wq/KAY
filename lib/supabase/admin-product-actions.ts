@@ -264,16 +264,17 @@ function parseVariantRows(formData: FormData) {
     const color = toNullableString(formData.get(`variant_${index}_color`));
     const stockRaw = formData.get(`variant_${index}_stock_quantity`);
     const priceOverrideRaw = formData.get(`variant_${index}_price_override`);
-    const hasAnyValue = Boolean(
-      id ||
-        size ||
-        sku ||
-        color ||
-        (typeof stockRaw === "string" && stockRaw.trim()) ||
-        (typeof priceOverrideRaw === "string" && priceOverrideRaw.trim()),
+    const normalizedStockRaw =
+      typeof stockRaw === "string" ? stockRaw.trim() : "";
+    const normalizedPriceOverrideRaw =
+      typeof priceOverrideRaw === "string" ? priceOverrideRaw.trim() : "";
+    const hasVariantIdentity = Boolean(
+      id || size || sku || color || normalizedPriceOverrideRaw,
     );
+    const hasNonDefaultStockValue =
+      normalizedStockRaw !== "" && normalizedStockRaw !== "0";
 
-    if (!hasAnyValue) {
+    if (!hasVariantIdentity && !hasNonDefaultStockValue) {
       continue;
     }
 
