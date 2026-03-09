@@ -311,13 +311,17 @@ function mapCatalogOption(
   };
 }
 
+function toNullableNumber(value: number | null) {
+  return value === null ? null : Number(value);
+}
+
 function mapVariantRow(row: ProductVariantRow): AdminProductVariantFormValue {
   return {
     id: row.id,
     sku: row.sku,
     size: row.size,
     color: row.color,
-    priceOverride: row.price_override ? Number(row.price_override) : null,
+    priceOverride: toNullableNumber(row.price_override),
     stockQuantity: row.stock_quantity,
     isActive: row.is_active,
     position: row.position,
@@ -361,7 +365,7 @@ function mapProductListItem(
     name: getLocalizedCatalogField(row as Record<string, unknown>, "name", locale),
     slug: row.slug,
     price: Number(row.base_price),
-    compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : null,
+    compareAtPrice: toNullableNumber(row.compare_at_price),
     isActive: row.is_active,
     isFeatured: row.is_featured,
     limitedEdition: row.limited_edition,
@@ -414,7 +418,7 @@ function mapProductEditorData(
     story: row.story,
     storyAr: row.story_ar ?? "",
     price: Number(row.base_price),
-    compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : null,
+    compareAtPrice: toNullableNumber(row.compare_at_price),
     categoryId: row.category_id,
     categoryName: row.category
       ? getLocalizedCatalogField(

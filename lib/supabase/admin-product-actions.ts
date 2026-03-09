@@ -442,8 +442,12 @@ function parseImageRows(formData: FormData) {
 
 function parseProductPayload(formData: FormData): ParsedProductPayload {
   const name = toRequiredString(formData.get("name"), "Product name");
-  const parsedPrice = parseNonNegativeNumber(formData.get("price"), "Base price");
-  const price = parsedPrice ?? 0;
+  const price = parseNonNegativeNumber(formData.get("price"), "Base price");
+
+  if (price === null) {
+    throw new Error("Base price is required.");
+  }
+
   const compareAtPrice = parseNonNegativeNumber(
     formData.get("compare_at_price"),
     "Compare-at price",
