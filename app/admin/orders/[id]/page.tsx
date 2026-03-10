@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { localizeHref } from "@/lib/i18n/config";
 import { getExtendedUiCopy } from "@/lib/i18n/extended-copy";
 import { getRequestI18n } from "@/lib/i18n/request";
+import { deleteOrderAction } from "@/lib/supabase/order-actions";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { getOrderByIdForAdmin } from "@/lib/supabase/orders";
 import { formatPrice } from "@/lib/utils";
@@ -59,6 +60,12 @@ export default async function AdminOrderDetailPage({
   const copy = getExtendedUiCopy(locale).orders;
   const detailCopy = copy.adminDetail;
   const isRtl = direction === "rtl";
+  const deleteButtonLabel = locale === "ar" ? "حذف الطلب" : "Delete order";
+  const deleteEyebrow = locale === "ar" ? "إجراء إداري" : "Admin action";
+  const deleteNote =
+    locale === "ar"
+      ? "يحذف هذا السجل وعناصره من العرض الإداري وسجل العميل."
+      : "This removes the order record and its line items from both admin and customer views.";
 
   if (!order) {
     notFound();
@@ -206,6 +213,26 @@ export default async function AdminOrderDetailPage({
             returnTo={localizeHref(locale, `/admin/orders/${order.id}`)}
             locale={locale}
           />
+
+          <section className="luxury-muted-panel p-5">
+            <p className="eyebrow">{deleteEyebrow}</p>
+            <p className="mt-4 text-sm leading-7 text-white/58">{deleteNote}</p>
+            <form action={deleteOrderAction} className="mt-5">
+              <input type="hidden" name="orderId" value={order.id} />
+              <input
+                type="hidden"
+                name="returnTo"
+                value={localizeHref(locale, `/admin/orders/${order.id}`)}
+              />
+              <Button
+                type="submit"
+                variant="secondary"
+                className="w-full border-[#8f4b4b]/40 bg-[#8f4b4b]/10 text-[#f3d8d8] hover:border-[#b56666]/55 hover:bg-[#8f4b4b]/18 hover:text-white"
+              >
+                {deleteButtonLabel}
+              </Button>
+            </form>
+          </section>
 
           <section className="showroom-panel p-6 md:p-7">
             <p className="eyebrow">{detailCopy.totalsEyebrow}</p>

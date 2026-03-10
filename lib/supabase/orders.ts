@@ -416,6 +416,22 @@ export async function updateOrderStatus(
   return data ? mapOrderDetail(data as OrderDetailRow) : null;
 }
 
+export async function deleteOrderById(orderId: string) {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from("orders")
+    .delete()
+    .eq("id", orderId)
+    .select("id")
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to delete order: ${error.message}`);
+  }
+
+  return Boolean(data?.id);
+}
+
 export async function getCurrentUserOrderByStripeSessionId(sessionId: string) {
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
