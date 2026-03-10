@@ -397,6 +397,9 @@ export function AdminProductForm({
   const hasCategoryOptions = categoryOptions.length > 0;
   const showTimestamps = Boolean(product);
   const title = product?.displayName || product?.name || ui.newProduct;
+  const formId = product?.id
+    ? `admin-product-form-${product.id}`
+    : "admin-product-form-new";
 
   return (
     <div className="space-y-6">
@@ -412,6 +415,7 @@ export function AdminProductForm({
       ) : null}
 
       <form
+        id={formId}
         action={action}
         encType="multipart/form-data"
         className="section-frame space-y-6"
@@ -453,7 +457,13 @@ export function AdminProductForm({
                   {ui.categoryMissing}
                 </div>
               ) : null}
-              <Button type="submit" size="lg" className="min-w-[220px]" disabled={!hasCategoryOptions}>
+              <Button
+                type="submit"
+                form={formId}
+                size="lg"
+                className="min-w-[220px]"
+                disabled={!hasCategoryOptions}
+              >
                 {isCreateMode ? copy.createProduct : copy.saveProduct}
               </Button>
             </div>
