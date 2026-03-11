@@ -9,6 +9,7 @@ import { getLocalizedCatalogField } from "@/lib/i18n/catalog";
 import { getRequestLocale } from "@/lib/i18n/request";
 import { requireAuth } from "@/lib/supabase/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createTestingMediaGallery } from "@/lib/testing/product-media-fallbacks";
 
 import { getAppUrl, hasStripeCheckoutEnv } from "./config";
 import {
@@ -190,14 +191,17 @@ function toStripeAmount(value: number) {
 }
 
 function resolveImage(
+  productSlug: string,
   record: CheckoutProductImageRecord[] | null,
   locale: Awaited<ReturnType<typeof getRequestLocale>>,
 ) {
   if (!record || record.length === 0) {
+    const fallbackMedia = createTestingMediaGallery(productSlug, locale)[0];
+
     return {
-      imageUrl: null,
-      mediaAngle: null,
-      mediaLabel: null,
+      imageUrl: fallbackMedia.imageUrl ?? null,
+      mediaAngle: fallbackMedia.angle,
+      mediaLabel: fallbackMedia.label,
     };
   }
 
@@ -304,7 +308,7 @@ async function buildPreparedCheckoutCart(): Promise<PreparedCheckoutCart | null>
       throw new Error(`${product.name} in size ${variant.size} is unavailable.`);
     }
 
-    const media = resolveImage(product.images, locale);
+    const media = resolveImage(product.slug, product.images, locale);
 
     return [
       {

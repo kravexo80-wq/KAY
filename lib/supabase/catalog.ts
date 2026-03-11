@@ -13,6 +13,7 @@ import {
 } from "@/lib/i18n/catalog";
 import { getRequestLocale } from "@/lib/i18n/request";
 import type { Locale } from "@/lib/i18n/config";
+import { createTestingMediaGallery } from "@/lib/testing/product-media-fallbacks";
 
 import { hasSupabaseEnv } from "./config";
 import { createReadOnlySupabaseClient } from "./server";
@@ -293,16 +294,11 @@ function createFallbackMedia(
   record: ProductCatalogRecord,
   locale: Locale,
 ): ProductMedia {
-  return {
-    id: `${record.slug}-placeholder`,
-    label: locale === "ar" ? "إطار المعرض" : "Showroom frame",
-    angle: locale === "ar" ? "العرض الرئيسي" : "Primary display",
-    note: locale === "ar" ? "بانتظار صور الاستوديو" : "Awaiting studio imagery",
-    tone: record.collection?.tone ?? "obsidian",
-    imageUrl: null,
-    storagePath: null,
-    altText: null,
-  };
+  return createTestingMediaGallery(
+    record.slug,
+    locale,
+    record.collection?.tone ?? "obsidian",
+  )[0];
 }
 
 function getAvailableSizes(variants: ProductVariantSummary[] | null) {
@@ -382,7 +378,17 @@ function mapProductRecordToProduct(
       locale,
     ),
     sizes: getAvailableSizes(record.variants),
-    gallery: gallery.length > 0 ? gallery : [createFallbackMedia(record, locale)],
+    gallery:
+      gallery.length > 0
+        ? gallery
+        : [
+            createFallbackMedia(record, locale),
+            ...createTestingMediaGallery(
+              record.slug,
+              locale,
+              record.collection?.tone ?? "obsidian",
+            ).slice(1),
+          ],
     viewer360: {
       enabled: record.viewer_360_enabled,
       label: getLocalizedCatalogField(

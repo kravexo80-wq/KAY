@@ -12,6 +12,7 @@ import type { ProductMedia } from "@/types/product";
 
 import { getLocalizedCatalogField } from "@/lib/i18n/catalog";
 import { getRequestLocale } from "@/lib/i18n/request";
+import { createTestingMediaGallery } from "@/lib/testing/product-media-fallbacks";
 
 import { getCurrentUser, requireAuth } from "./auth";
 import { hasSupabaseEnv } from "./config";
@@ -36,6 +37,10 @@ type CartProductImageSummary = Pick<
   | "note"
   | "note_ar"
   | "tone"
+  | "image_url"
+  | "storage_path"
+  | "alt_text"
+  | "alt_text_ar"
   | "sort_order"
   | "is_primary"
 >;
@@ -186,6 +191,10 @@ const cartItemDetailsSelect = `
         note,
         note_ar,
         tone,
+        image_url,
+        storage_path,
+        alt_text,
+        alt_text_ar,
         sort_order,
         is_primary
       )
@@ -225,13 +234,7 @@ function createFallbackCartMedia(
   product: CartProductSummary,
   locale: Awaited<ReturnType<typeof getRequestLocale>>,
 ): ProductMedia {
-  return {
-    id: `${product.slug}-cart-placeholder`,
-    label: locale === "ar" ? "إطار المعرض" : "Showroom frame",
-    angle: locale === "ar" ? "العرض الرئيسي" : "Primary display",
-    note: locale === "ar" ? "بانتظار صور الاستوديو" : "Awaiting studio imagery",
-    tone: "obsidian",
-  };
+  return createTestingMediaGallery(product.slug, locale, "obsidian")[0];
 }
 
 function mapCartItemRecord(
@@ -266,6 +269,13 @@ function mapCartItemRecord(
             locale,
           ),
           tone: gallery[0].tone,
+          imageUrl: gallery[0].image_url,
+          storagePath: gallery[0].storage_path,
+          altText: getLocalizedCatalogField(
+            gallery[0] as Record<string, unknown>,
+            "alt_text",
+            locale,
+          ),
         }
       : createFallbackCartMedia(product, locale);
 
