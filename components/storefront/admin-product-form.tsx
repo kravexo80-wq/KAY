@@ -319,13 +319,17 @@ const workspaceCopy = {
     title: "Product workspace",
     newProduct: "New product",
     draft: "Draft",
-    slugPending: "Slug will be generated from the product name.",
+    slugPending: "Slug will be generated when saved.",
+    overview: "Overview",
+    overviewHint: "Identity, pricing, and publish state.",
     content: "Content",
-    contentHint: "Storefront copy in two clean columns.",
-    blankRows: "Blank rows are ignored on save.",
-    variantsHint: "Sizes, colors, stock, and price overrides in one compact editor.",
-    imagesHint: "Visual-first media cards with upload and URL support.",
-    notesHint: "Lower-priority notes stay together here.",
+    contentHint: "English and Arabic storefront copy.",
+    setup: "Catalog setup",
+    setupHint: "Variants and images in one place.",
+    details: "Details",
+    detailsHint: "Fabric, care, fit, and internal record info.",
+    blankRows: "Blank rows are ignored.",
+    imagesHint: "Upload and URL support in one gallery editor.",
     recordHint: "Internal timestamps only.",
     activeHint: "Visible on the live storefront.",
     featuredHint: "Eligible for homepage placement.",
@@ -341,13 +345,17 @@ const workspaceCopy = {
     title: "مساحة تحرير المنتج",
     newProduct: "منتج جديد",
     draft: "مسودة",
-    slugPending: "سيتم توليد المعرّف من اسم المنتج.",
+    slugPending: "سيتم توليد المعرّف عند الحفظ.",
+    overview: "نظرة عامة",
+    overviewHint: "الهوية والسعر وحالة النشر.",
     content: "المحتوى",
-    contentHint: "نسخة الواجهة في عمودين واضحين.",
-    blankRows: "يتم تجاهل الصفوف الفارغة عند الحفظ.",
-    variantsHint: "المقاسات والألوان والمخزون وتجاوزات السعر في محرر مدمج.",
-    imagesHint: "بطاقات مرئية أولًا مع دعم الرفع والرابط اليدوي.",
-    notesHint: "الملاحظات الأقل أولوية تبقى هنا معًا.",
+    contentHint: "نسخة الواجهة بالعربية والإنجليزية.",
+    setup: "إعداد المنتج",
+    setupHint: "المتغيرات والصور في مكان واحد.",
+    details: "تفاصيل إضافية",
+    detailsHint: "القماش والعناية والمقاس ومعلومات السجل.",
+    blankRows: "يتم تجاهل الصفوف الفارغة.",
+    imagesHint: "الرفع والرابط اليدوي داخل محرر صور واحد.",
     recordHint: "طوابع زمنية داخلية فقط.",
     activeHint: "يظهر في المتجر العام.",
     featuredHint: "مؤهل للظهور في الصفحة الرئيسية.",
@@ -383,14 +391,14 @@ export function AdminProductForm({
   const variantRows = [
     ...(product?.variants ?? []),
     ...Array.from(
-      { length: isCreateMode ? 4 : 3 },
+      { length: isCreateMode ? 2 : 1 },
       (_, index) => createBlankVariant((product?.variants.length ?? 0) + index),
     ),
   ];
   const imageRows = [
     ...(product?.images ?? []),
     ...Array.from(
-      { length: isCreateMode ? 4 : 3 },
+      { length: isCreateMode ? 2 : 1 },
       (_, index) => createBlankImage((product?.images.length ?? 0) + index),
     ),
   ];
@@ -471,7 +479,7 @@ export function AdminProductForm({
         </div>
 
         <section className="luxury-panel p-6 md:p-8">
-          <SectionHeading title={copy.basicInfo} isRtl={isRtl} />
+          <SectionHeading title={ui.overview} description={ui.overviewHint} isRtl={isRtl} />
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             <Field label={`${copy.productName} (${ui.english})`} isRtl={isRtl}>
               <Input
@@ -520,10 +528,6 @@ export function AdminProductForm({
               isRtl={isRtl}
             />
           </div>
-        </section>
-
-        <section className="showroom-panel p-6 md:p-8">
-          <SectionHeading title={copy.merchandising} isRtl={isRtl} />
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <Field label={copy.basePrice} isRtl={isRtl}>
               <Input
@@ -678,10 +682,14 @@ export function AdminProductForm({
 
           <section className="showroom-panel p-6 md:p-8">
             <div className="flex flex-wrap items-end justify-between gap-3">
-              <SectionHeading title={copy.variants} description={ui.variantsHint} isRtl={isRtl} />
+              <SectionHeading title={ui.setup} description={ui.setupHint} isRtl={isRtl} />
               <p className="text-[0.68rem] uppercase tracking-[0.24em] text-white/34">
                 {ui.blankRows}
               </p>
+            </div>
+
+            <div className={cn("mt-6 mb-4", isRtl ? "text-right" : "text-left")}>
+              <p className="eyebrow">{copy.variants}</p>
             </div>
 
             <div className="mt-6 hidden xl:grid xl:grid-cols-[0.8fr_0.95fr_1.35fr_0.8fr_0.95fr_0.85fr] xl:gap-3 xl:px-4">
@@ -772,17 +780,19 @@ export function AdminProductForm({
                 </div>
               ))}
             </div>
-          </section>
 
-          <section className="luxury-panel p-6 md:p-8">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <SectionHeading title={copy.images} description={ui.imagesHint} isRtl={isRtl} />
-              <p className="text-[0.68rem] uppercase tracking-[0.24em] text-white/34">
-                {ui.blankRows}
-              </p>
-            </div>
+            <div className="mt-8 rounded-[1.7rem] border border-white/8 bg-white/[0.03] p-5 md:p-6">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div className={cn("space-y-2", isRtl ? "text-right" : "text-left")}>
+                  <h3 className="text-lg text-white">{copy.images}</h3>
+                  <p className="text-sm text-white/42">{ui.imagesHint}</p>
+                </div>
+                <p className="text-[0.68rem] uppercase tracking-[0.24em] text-white/34">
+                  {ui.blankRows}
+                </p>
+              </div>
 
-            <div className="mt-6 space-y-4">
+              <div className="mt-6 space-y-4">
               {imageRows.map((image, index) => (
                 <div
                   key={image.id ?? `new-image-${index}`}
@@ -999,10 +1009,11 @@ export function AdminProductForm({
                 </div>
               ))}
             </div>
+            </div>
           </section>
 
         <section className="showroom-panel p-6 md:p-8">
-          <SectionHeading title={copy.notesAndDetails} description={ui.notesHint} isRtl={isRtl} />
+          <SectionHeading title={ui.details} description={ui.detailsHint} isRtl={isRtl} />
           <div className="mt-6 grid gap-4 xl:grid-cols-2">
             <DetailBlock
               title={copy.materials}
@@ -1057,17 +1068,17 @@ export function AdminProductForm({
               isRtl={isRtl}
             />
           </div>
-        </section>
 
-        {showTimestamps ? (
-          <section className="luxury-muted-panel p-5">
-            <SectionHeading title={copy.productRecord} description={ui.recordHint} isRtl={isRtl} />
+          {showTimestamps ? (
+            <div className="mt-6 rounded-[1.45rem] border border-white/8 bg-white/[0.03] p-5">
+              <SectionHeading title={copy.productRecord} description={ui.recordHint} isRtl={isRtl} />
             <div className="mt-5 grid gap-3 md:grid-cols-2">
               <AdminEditorMetaRow label={copy.created} value={product?.createdAt} isRtl={isRtl} />
               <AdminEditorMetaRow label={copy.updated} value={product?.updatedAt} isRtl={isRtl} />
             </div>
-          </section>
-        ) : null}
+            </div>
+          ) : null}
+        </section>
       </form>
     </div>
   );

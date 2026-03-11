@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, ShoppingBag, UserRound } from "lucide-react";
+import { ShoppingBag, UserRound } from "lucide-react";
 
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Button } from "@/components/ui/button";
@@ -96,13 +96,6 @@ export function Header({
                 locale={locale}
                 currentPath={currentPath}
               />
-              <Link
-                href={localizeHref(locale, "/shop")}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/75 transition hover:bg-white/[0.08] hover:text-white"
-                aria-label={copy.navigation.shop}
-              >
-                <Search className="h-4 w-4" />
-              </Link>
               <Link
                 href={localizeHref(locale, "/cart")}
                 className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/75 transition hover:bg-white/[0.08] hover:text-white"

@@ -27,7 +27,7 @@ export function FeaturedProductsSection({
 }: FeaturedProductsSectionProps) {
   return (
     <section className="section-frame section-space space-y-10">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <SectionHeading
           eyebrow={copy.eyebrow}
           title={copy.title}
@@ -36,13 +36,7 @@ export function FeaturedProductsSection({
           isRtl={isRtl}
         />
 
-        <div className={`flex flex-col gap-4 lg:items-end ${isRtl ? "text-right" : "text-left"}`}>
-          <div className="showroom-subpanel w-full px-5 py-4 lg:max-w-[320px]">
-            <p className="eyebrow">{copy.focusTitle}</p>
-            <p className="mt-3 text-sm leading-7 text-white/54">
-              {copy.focusDescription}
-            </p>
-          </div>
+        <div className={`flex ${isRtl ? "justify-end" : "justify-start lg:justify-end"}`}>
           <Button asChild variant="secondary">
             <Link href={localizeHref(locale, "/shop")}>{copy.viewCatalog}</Link>
           </Button>

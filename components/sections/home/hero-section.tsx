@@ -81,9 +81,6 @@ export function HeroSection({
     );
   }
 
-  const secondaryMedia = featuredProduct.gallery[1] ?? featuredProduct.gallery[0];
-  const detailMedia = featuredProduct.gallery[2] ?? secondaryMedia;
-
   return (
     <section className="px-4 pt-6 md:px-6 md:pt-8">
       <div className="showroom-panel mx-auto max-w-[1520px] px-6 py-8 md:px-10 md:py-12 xl:px-14 xl:py-14">
@@ -138,43 +135,16 @@ export function HeroSection({
                 </span>
               ))}
             </div>
-
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="showroom-subpanel px-4 py-5">
-                <p className="text-[0.66rem] uppercase tracking-[0.28em] text-white/34">
-                  {copy.cards.stagingTitle}
-                </p>
-                <p className="mt-3 text-lg leading-7 text-white">
-                  {copy.cards.stagingBody}
-                </p>
-              </div>
-              <div className="showroom-subpanel px-4 py-5">
-                <p className="text-[0.66rem] uppercase tracking-[0.28em] text-white/34">
-                  {copy.cards.mediaTitle}
-                </p>
-                <p className="mt-3 text-lg leading-7 text-white">
-                  {copy.cards.mediaBody}
-                </p>
-              </div>
-              <div className="showroom-subpanel px-4 py-5">
-                <p className="text-[0.66rem] uppercase tracking-[0.28em] text-white/34">
-                  {copy.cards.commerceTitle}
-                </p>
-                <p className="mt-3 text-lg leading-7 text-white">
-                  {copy.cards.commerceBody}
-                </p>
-              </div>
-            </div>
           </div>
 
-          <div className="relative min-h-[34rem] xl:min-h-[46rem]">
+          <div className="relative min-h-[34rem] xl:min-h-[40rem]">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute left-1/2 top-[10%] h-[58%] w-[68%] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.16),transparent_72%)] blur-[76px]" />
               <div className="absolute inset-x-[15%] bottom-[7%] h-14 rounded-full bg-[radial-gradient(circle,rgba(190,169,124,0.2),transparent_74%)] blur-3xl" />
               <div className="absolute inset-x-[22%] bottom-[8%] h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.28),transparent)]" />
             </div>
 
-            <div className="relative mx-auto max-w-[36rem]">
+            <div className="relative mx-auto max-w-[34rem]">
               <ProductMediaFrame
                 media={featuredProduct.gallery[0]}
                 className="aspect-[4/5] rounded-[2.8rem]"
@@ -182,17 +152,7 @@ export function HeroSection({
               />
             </div>
 
-            <div className="absolute -left-2 bottom-[7%] hidden w-44 lg:block xl:-left-8 xl:w-52">
-              <ProductMediaFrame
-                media={secondaryMedia}
-                className="aspect-[3/4] rounded-[1.7rem]"
-                chrome="minimal"
-                emphasis="card"
-                showNote={false}
-              />
-            </div>
-
-            <div className="showroom-subpanel absolute right-0 top-[6%] hidden w-60 p-5 lg:block xl:right-[2%]">
+            <div className="showroom-subpanel absolute bottom-[3%] right-[3%] hidden w-64 p-5 lg:block">
               <p className="eyebrow">{copy.featuredPiece}</p>
               <h2 className="mt-4 text-4xl leading-none text-white">
                 {featuredProduct.name}
@@ -210,16 +170,6 @@ export function HeroSection({
                 {copy.featuredPiece}
                 <ArrowRight className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`} />
               </Link>
-            </div>
-
-            <div className="absolute bottom-[2%] right-[4%] hidden w-44 lg:block xl:w-48">
-              <ProductMediaFrame
-                media={detailMedia}
-                className="aspect-[4/3] rounded-[1.6rem]"
-                chrome="minimal"
-                emphasis="card"
-                showNote={false}
-              />
             </div>
           </div>
         </div>
