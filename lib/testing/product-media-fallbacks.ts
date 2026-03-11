@@ -1,8 +1,12 @@
 import type { Locale } from "@/lib/i18n/config";
 import type { ProductMedia, ProductTone } from "@/types/product";
 
-const TEST_IMAGE_BASE_PATH =
-  "/testing/products/noor-garden-abaya/noor-garden-abaya-main.jpeg";
+const TEST_FRAME_PATHS = [
+  "/testing/viewer360/modest-sequence/frame-01.jpg",
+  "/testing/viewer360/modest-sequence/frame-02.jpg",
+  "/testing/viewer360/modest-sequence/frame-03.jpg",
+  "/testing/viewer360/modest-sequence/frame-04.jpg",
+] as const;
 
 function getLocalizedTestingValue(locale: Locale, en: string, ar: string) {
   return locale === "ar" ? ar : en;
@@ -17,60 +21,56 @@ export function createTestingMediaGallery(
     {
       id: `${slug}-testing-front`,
       label: getLocalizedTestingValue(locale, "Studio frame", "إطار الاستوديو"),
-      angle: getLocalizedTestingValue(locale, "Front view", "عرض أمامي"),
+      angle: getLocalizedTestingValue(locale, "Front silhouette", "الواجهة الأمامية"),
       note: getLocalizedTestingValue(
         locale,
-        "Sample testing image while the live gallery is still being prepared.",
-        "صورة تجريبية مؤقتة إلى حين تجهيز معرض المنتج النهائي.",
+        "Testing gallery image supplied with the launch build.",
+        "صورة تجريبية مرفقة مع نسخة الإطلاق للاختبار.",
       ),
       tone,
-      imageUrl: `${TEST_IMAGE_BASE_PATH}?frame=front`,
+      imageUrl: TEST_FRAME_PATHS[0],
       altText: getLocalizedTestingValue(
         locale,
-        "Sample product testing frame",
-        "إطار تجريبي لصورة المنتج",
+        "Testing gallery front frame",
+        "إطار تجريبي أمامي للمعرض",
       ),
-      objectPosition: "50% 38%",
+      objectPosition: "50% 30%",
     },
     {
-      id: `${slug}-testing-detail`,
-      label: getLocalizedTestingValue(locale, "Detail frame", "إطار تفصيلي"),
-      angle: getLocalizedTestingValue(locale, "Close study", "لقطة قريبة"),
+      id: `${slug}-testing-second`,
+      label: getLocalizedTestingValue(locale, "Secondary frame", "إطار ثانوي"),
+      angle: getLocalizedTestingValue(locale, "Draped silhouette", "انسياب القماش"),
       note: getLocalizedTestingValue(
         locale,
-        "Used to test gallery switching before dedicated product photography is uploaded.",
-        "يستخدم لاختبار تبديل المعرض قبل رفع تصوير المنتج المخصص.",
+        "A second testing still for gallery switching.",
+        "صورة ثانية تجريبية لاختبار تبديل المعرض.",
       ),
       tone,
-      imageUrl: `${TEST_IMAGE_BASE_PATH}?frame=detail`,
+      imageUrl: TEST_FRAME_PATHS[1],
       altText: getLocalizedTestingValue(
         locale,
-        "Sample close product frame",
-        "إطار تجريبي قريب للمنتج",
+        "Testing gallery drape frame",
+        "إطار تجريبي لانسياب القماش",
       ),
-      objectPosition: "46% 30%",
+      objectPosition: "50% 24%",
     },
     {
-      id: `${slug}-testing-story`,
-      label: getLocalizedTestingValue(locale, "Showroom frame", "إطار المعرض"),
-      angle: getLocalizedTestingValue(
-        locale,
-        "Presentation view",
-        "عرض تقديمي",
-      ),
+      id: `${slug}-testing-third`,
+      label: getLocalizedTestingValue(locale, "Editorial frame", "إطار تحريري"),
+      angle: getLocalizedTestingValue(locale, "Showroom angle", "زاوية المعرض"),
       note: getLocalizedTestingValue(
         locale,
-        "Keeps the product page visual for testing while preserving the current gallery structure.",
-        "يبقي صفحة المنتج مرئية أثناء الاختبار مع الحفاظ على بنية المعرض الحالية.",
+        "Keeps the product page visual until custom photography is ready.",
+        "يبقي صفحة المنتج مرئية حتى تصبح الصور المخصصة جاهزة.",
       ),
       tone,
-      imageUrl: `${TEST_IMAGE_BASE_PATH}?frame=showroom`,
+      imageUrl: TEST_FRAME_PATHS[2],
       altText: getLocalizedTestingValue(
         locale,
-        "Sample showroom product frame",
+        "Testing showroom product frame",
         "إطار تجريبي لعرض المنتج",
       ),
-      objectPosition: "54% 42%",
+      objectPosition: "50% 28%",
     },
   ];
 }
@@ -80,9 +80,7 @@ export function createTestingViewer360Frames(
   locale: Locale,
   tone: ProductTone = "obsidian",
 ): ProductMedia[] {
-  const positions = ["40% 38%", "44% 38%", "48% 38%", "52% 38%", "56% 38%", "60% 38%", "56% 38%", "48% 38%"];
-
-  return positions.map((objectPosition, index) => ({
+  return TEST_FRAME_PATHS.map((imageUrl, index) => ({
     id: `${slug}-viewer360-${index + 1}`,
     label: getLocalizedTestingValue(locale, "360 sequence", "تسلسل 360"),
     angle: getLocalizedTestingValue(
@@ -92,16 +90,16 @@ export function createTestingViewer360Frames(
     ),
     note: getLocalizedTestingValue(
       locale,
-      "Testing rotation frame generated from the sample studio image.",
-      "إطار تدوير تجريبي مولد من صورة الاستوديو النموذجية.",
+      "Testing viewer frame from the bundled sample sequence.",
+      "إطار تجريبي للعارض من تسلسل الصور المرفق.",
     ),
     tone,
-    imageUrl: `${TEST_IMAGE_BASE_PATH}?viewer=${index + 1}`,
+    imageUrl,
     altText: getLocalizedTestingValue(
       locale,
       `Testing 360 frame ${index + 1}`,
       `إطار 360 تجريبي ${index + 1}`,
     ),
-    objectPosition,
+    objectPosition: "50% 28%",
   }));
 }
