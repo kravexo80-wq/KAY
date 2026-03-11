@@ -9,6 +9,7 @@ export interface ProductMedia {
   imageUrl?: string | null;
   storagePath?: string | null;
   altText?: string | null;
+  objectPosition?: string;
 }
 
 export interface ProductSpec {
@@ -21,6 +22,7 @@ export interface ProductViewer360 {
   label: string;
   description: string;
   note: string;
+  frames?: ProductMedia[];
 }
 
 export interface ProductShippingInfo {

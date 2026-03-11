@@ -13,7 +13,10 @@ import {
 } from "@/lib/i18n/catalog";
 import { getRequestLocale } from "@/lib/i18n/request";
 import type { Locale } from "@/lib/i18n/config";
-import { createTestingMediaGallery } from "@/lib/testing/product-media-fallbacks";
+import {
+  createTestingMediaGallery,
+  createTestingViewer360Frames,
+} from "@/lib/testing/product-media-fallbacks";
 
 import { hasSupabaseEnv } from "./config";
 import { createReadOnlySupabaseClient } from "./server";
@@ -404,6 +407,13 @@ function mapProductRecordToProduct(
         "viewer_360_note",
         locale,
       ),
+      frames: record.viewer_360_enabled
+        ? createTestingViewer360Frames(
+            record.slug,
+            locale,
+            record.collection?.tone ?? "obsidian",
+          )
+        : [],
     },
     shipping: {
       leadTime: getLocalizedCatalogField(

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Expand, Rotate3D, Sparkles, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Expand, Pause, Play, Rotate3D, Sparkles, X } from "lucide-react";
 
 import { ProductMediaFrame } from "@/components/storefront/product-media-frame";
 import { Button } from "@/components/ui/button";
@@ -24,12 +24,126 @@ function Viewer360Stage({
   locale,
   productName,
   viewer360,
+  activeFrameIndex,
+  onFrameChange,
+  isPlaying,
+  onTogglePlayback,
 }: {
   locale: Locale;
   productName: string;
   viewer360: ProductViewer360;
+  activeFrameIndex: number;
+  onFrameChange: (index: number) => void;
+  isPlaying: boolean;
+  onTogglePlayback: () => void;
 }) {
   const copy = getExtendedUiCopy(locale).productGallery;
+  const frames = viewer360.frames ?? [];
+  const activeFrame = frames[activeFrameIndex] ?? frames[0];
+  const hasFrames = frames.length > 0;
+  const dragLabel = locale === "ar" ? "اسحب للتدوير" : "Drag to rotate";
+  const frameLabel = locale === "ar" ? "إطار" : "Frame";
+  const autoplayLabel =
+    locale === "ar"
+      ? isPlaying
+        ? "إيقاف"
+        : "تشغيل تلقائي"
+      : isPlaying
+        ? "Pause"
+        : "Autoplay";
+
+  if (hasFrames && activeFrame) {
+    return (
+      <div className="relative aspect-[4/5] overflow-hidden rounded-[2.4rem] border border-white/10 bg-[linear-gradient(180deg,#090909_0%,#040404_100%)] shadow-[0_40px_120px_rgba(0,0,0,0.58)] md:aspect-[5/6]">
+        <ProductMediaFrame
+          media={activeFrame}
+          className="h-full w-full rounded-[2.4rem]"
+          emphasis="hero"
+        />
+
+        <div className="absolute inset-x-4 bottom-4 rounded-[1.6rem] border border-white/10 bg-black/48 p-4 backdrop-blur-xl">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="text-left">
+              <p className="text-[0.68rem] uppercase tracking-[0.28em] text-white/38">
+                {copy.futureFrameSlot}
+              </p>
+              <p className="mt-2 text-sm text-white/72">
+                {frameLabel} {activeFrameIndex + 1} / {frames.length}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                className="h-10 w-10"
+                onClick={() =>
+                  onFrameChange(
+                    activeFrameIndex === 0
+                      ? frames.length - 1
+                      : activeFrameIndex - 1,
+                  )
+                }
+                aria-label={locale === "ar" ? "الإطار السابق" : "Previous frame"}
+              >
+                {locale === "ar" ? (
+                  <ChevronRight className="h-4 w-4" />
+                ) : (
+                  <ChevronLeft className="h-4 w-4" />
+                )}
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                className="h-10 rounded-full px-4 text-[0.68rem] uppercase tracking-[0.22em]"
+                onClick={onTogglePlayback}
+              >
+                {isPlaying ? (
+                  <Pause className="h-4 w-4" />
+                ) : (
+                  <Play className="h-4 w-4" />
+                )}
+                {autoplayLabel}
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                className="h-10 w-10"
+                onClick={() =>
+                  onFrameChange((activeFrameIndex + 1) % frames.length)
+                }
+                aria-label={locale === "ar" ? "الإطار التالي" : "Next frame"}
+              >
+                {locale === "ar" ? (
+                  <ChevronLeft className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+
+          <input
+            type="range"
+            min={0}
+            max={frames.length - 1}
+            step={1}
+            value={activeFrameIndex}
+            onChange={(event) => onFrameChange(Number(event.target.value))}
+            aria-label={dragLabel}
+            className="w-full accent-[#b79d67]"
+          />
+
+          <div className="mt-3 flex items-center justify-between gap-4 text-[0.72rem] text-white/48">
+            <span>{dragLabel}</span>
+            <span>{activeFrame.angle}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative aspect-[4/5] overflow-hidden rounded-[2.4rem] border border-white/10 bg-[linear-gradient(180deg,#090909_0%,#040404_100%)] shadow-[0_40px_120px_rgba(0,0,0,0.58)] md:aspect-[5/6]">
@@ -70,11 +184,32 @@ export function ProductGallery({
 }: ProductGalleryProps) {
   const copy = getExtendedUiCopy(locale).productGallery;
   const fallbackMedia = media[0];
+  const viewerFrames = viewer360.frames ?? [];
+  const hasViewerFrames = viewerFrames.length > 0;
   const [activeSurface, setActiveSurface] = useState<ActiveSurface>({
     kind: "media",
     mediaId: fallbackMedia?.id ?? "",
   });
   const [zoomed, setZoomed] = useState(false);
+  const [activeViewerFrameIndex, setActiveViewerFrameIndex] = useState(0);
+  const [viewerPlaying, setViewerPlaying] = useState(true);
+  const isViewerMode = activeSurface.kind === "viewer360";
+
+  useEffect(() => {
+    if (!isViewerMode || !hasViewerFrames || !viewerPlaying) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setActiveViewerFrameIndex((currentIndex) =>
+        (currentIndex + 1) % viewerFrames.length,
+      );
+    }, 900);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [hasViewerFrames, isViewerMode, viewerFrames.length, viewerPlaying]);
 
   if (!fallbackMedia) {
     return (
@@ -89,8 +224,6 @@ export function ProductGallery({
       ? fallbackMedia
       : media.find((item) => item.id === activeSurface.mediaId) ?? fallbackMedia;
 
-  const isViewerMode = activeSurface.kind === "viewer360";
-
   return (
     <>
       <div className="space-y-5">
@@ -101,6 +234,10 @@ export function ProductGallery({
                 locale={locale}
                 productName={productName}
                 viewer360={viewer360}
+                activeFrameIndex={activeViewerFrameIndex}
+                onFrameChange={setActiveViewerFrameIndex}
+                isPlaying={viewerPlaying}
+                onTogglePlayback={() => setViewerPlaying((current) => !current)}
               />
             ) : (
               <ProductMediaFrame
@@ -142,14 +279,16 @@ export function ProductGallery({
               </div>
             </div>
 
-            <div className="absolute inset-x-4 bottom-4 flex flex-wrap items-end justify-between gap-3">
-              <div className="rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/60">
-                {isViewerMode ? copy.interactiveSlot : activeMedia.angle}
+            {!hasViewerFrames || !isViewerMode ? (
+              <div className="absolute inset-x-4 bottom-4 flex flex-wrap items-end justify-between gap-3">
+                <div className="rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/60">
+                  {isViewerMode ? copy.interactiveSlot : activeMedia.angle}
+                </div>
+                <div className="rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/48">
+                  {isViewerMode ? viewer360.note : activeMedia.note}
+                </div>
               </div>
-              <div className="rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[0.65rem] uppercase tracking-[0.24em] text-white/48">
-                {isViewerMode ? viewer360.note : activeMedia.note}
-              </div>
-            </div>
+            ) : null}
           </div>
         </div>
 
@@ -215,7 +354,9 @@ export function ProductGallery({
               <div className="hairline" />
               <div className="flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.26em] text-white/40">
                 <Sparkles className="h-4 w-4 text-white/38" />
-                {copy.futureFrameSlot}
+                {hasViewerFrames
+                  ? `${copy.futureFrameSlot} · ${viewerFrames.length}`
+                  : copy.futureFrameSlot}
               </div>
             </div>
           </button>

@@ -88,9 +88,12 @@ export function ProductMediaFrame({
               src={media.imageUrl ?? undefined}
               alt={media.altText ?? media.label}
               className={cn(
-                "h-full w-full object-cover object-center transition duration-700 group-hover:scale-[1.03]",
+                "h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]",
                 emphasis === "hero" && "scale-[1.02] group-hover:scale-[1.05]",
               )}
+              style={{
+                objectPosition: media.objectPosition ?? "50% 50%",
+              }}
               loading={emphasis === "hero" ? "eager" : "lazy"}
               decoding="async"
             />

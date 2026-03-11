@@ -16,7 +16,7 @@ export function createTestingMediaGallery(
   return [
     {
       id: `${slug}-testing-front`,
-      label: getLocalizedTestingValue(locale, "Studio frame", "إطار استوديو"),
+      label: getLocalizedTestingValue(locale, "Studio frame", "إطار الاستوديو"),
       angle: getLocalizedTestingValue(locale, "Front view", "عرض أمامي"),
       note: getLocalizedTestingValue(
         locale,
@@ -30,6 +30,7 @@ export function createTestingMediaGallery(
         "Sample product testing frame",
         "إطار تجريبي لصورة المنتج",
       ),
+      objectPosition: "50% 38%",
     },
     {
       id: `${slug}-testing-detail`,
@@ -38,7 +39,7 @@ export function createTestingMediaGallery(
       note: getLocalizedTestingValue(
         locale,
         "Used to test gallery switching before dedicated product photography is uploaded.",
-        "يُستخدم لاختبار تبديل المعرض قبل رفع تصوير المنتج المخصص.",
+        "يستخدم لاختبار تبديل المعرض قبل رفع تصوير المنتج المخصص.",
       ),
       tone,
       imageUrl: `${TEST_IMAGE_BASE_PATH}?frame=detail`,
@@ -47,11 +48,16 @@ export function createTestingMediaGallery(
         "Sample close product frame",
         "إطار تجريبي قريب للمنتج",
       ),
+      objectPosition: "46% 30%",
     },
     {
       id: `${slug}-testing-story`,
       label: getLocalizedTestingValue(locale, "Showroom frame", "إطار المعرض"),
-      angle: getLocalizedTestingValue(locale, "Presentation view", "عرض تقديمي"),
+      angle: getLocalizedTestingValue(
+        locale,
+        "Presentation view",
+        "عرض تقديمي",
+      ),
       note: getLocalizedTestingValue(
         locale,
         "Keeps the product page visual for testing while preserving the current gallery structure.",
@@ -64,6 +70,38 @@ export function createTestingMediaGallery(
         "Sample showroom product frame",
         "إطار تجريبي لعرض المنتج",
       ),
+      objectPosition: "54% 42%",
     },
   ];
+}
+
+export function createTestingViewer360Frames(
+  slug: string,
+  locale: Locale,
+  tone: ProductTone = "obsidian",
+): ProductMedia[] {
+  const positions = ["40% 38%", "44% 38%", "48% 38%", "52% 38%", "56% 38%", "60% 38%", "56% 38%", "48% 38%"];
+
+  return positions.map((objectPosition, index) => ({
+    id: `${slug}-viewer360-${index + 1}`,
+    label: getLocalizedTestingValue(locale, "360 sequence", "تسلسل 360"),
+    angle: getLocalizedTestingValue(
+      locale,
+      `Frame ${index + 1}`,
+      `الإطار ${index + 1}`,
+    ),
+    note: getLocalizedTestingValue(
+      locale,
+      "Testing rotation frame generated from the sample studio image.",
+      "إطار تدوير تجريبي مولد من صورة الاستوديو النموذجية.",
+    ),
+    tone,
+    imageUrl: `${TEST_IMAGE_BASE_PATH}?viewer=${index + 1}`,
+    altText: getLocalizedTestingValue(
+      locale,
+      `Testing 360 frame ${index + 1}`,
+      `إطار 360 تجريبي ${index + 1}`,
+    ),
+    objectPosition,
+  }));
 }
