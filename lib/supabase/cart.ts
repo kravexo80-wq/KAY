@@ -249,30 +249,31 @@ function mapCartItemRecord(
   const gallery = [...(product.images ?? [])].sort(
     (left, right) => left.sort_order - right.sort_order,
   );
+  const primaryImage = gallery.find((item) => Boolean(item.image_url)) ?? null;
   const media: ProductMedia =
-    gallery[0]
+    primaryImage
       ? {
-          id: gallery[0].id,
+          id: primaryImage.id,
           label: getLocalizedCatalogField(
-            gallery[0] as Record<string, unknown>,
+            primaryImage as Record<string, unknown>,
             "label",
             locale,
           ),
           angle: getLocalizedCatalogField(
-            gallery[0] as Record<string, unknown>,
+            primaryImage as Record<string, unknown>,
             "angle",
             locale,
           ),
           note: getLocalizedCatalogField(
-            gallery[0] as Record<string, unknown>,
+            primaryImage as Record<string, unknown>,
             "note",
             locale,
           ),
-          tone: gallery[0].tone,
-          imageUrl: gallery[0].image_url,
-          storagePath: gallery[0].storage_path,
+          tone: primaryImage.tone,
+          imageUrl: primaryImage.image_url,
+          storagePath: primaryImage.storage_path,
           altText: getLocalizedCatalogField(
-            gallery[0] as Record<string, unknown>,
+            primaryImage as Record<string, unknown>,
             "alt_text",
             locale,
           ),

@@ -327,6 +327,12 @@ function mapProductRecordToProduct(
   const gallery = [...(record.images ?? [])]
     .sort((left, right) => left.sort_order - right.sort_order)
     .map((image) => mapProductImageToMedia(image, locale));
+  const hasRealGalleryImage = gallery.some((item) => Boolean(item.imageUrl));
+  const fallbackGallery = createTestingMediaGallery(
+    record.slug,
+    locale,
+    record.collection?.tone ?? "obsidian",
+  );
 
   return {
     slug: record.slug,
@@ -378,17 +384,9 @@ function mapProductRecordToProduct(
       locale,
     ),
     sizes: getAvailableSizes(record.variants),
-    gallery:
-      gallery.length > 0
-        ? gallery
-        : [
-            createFallbackMedia(record, locale),
-            ...createTestingMediaGallery(
-              record.slug,
-              locale,
-              record.collection?.tone ?? "obsidian",
-            ).slice(1),
-          ],
+    gallery: hasRealGalleryImage
+      ? gallery
+      : [createFallbackMedia(record, locale), ...fallbackGallery.slice(1)],
     viewer360: {
       enabled: record.viewer_360_enabled,
       label: getLocalizedCatalogField(

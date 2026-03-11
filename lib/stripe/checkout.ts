@@ -212,7 +212,17 @@ function resolveImage(
 
     return left.is_primary ? -1 : 1;
   });
-  const image = sortedImages[0];
+  const image = sortedImages.find((item) => Boolean(item.image_url));
+
+  if (!image) {
+    const fallbackMedia = createTestingMediaGallery(productSlug, locale)[0];
+
+    return {
+      imageUrl: fallbackMedia.imageUrl ?? null,
+      mediaAngle: fallbackMedia.angle,
+      mediaLabel: fallbackMedia.label,
+    };
+  }
 
   return {
     imageUrl: image.image_url,
