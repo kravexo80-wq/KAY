@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Expand, Pause, Play, Rotate3D, Sparkles, X } from "lucide-react";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight, Expand, Rotate3D, Sparkles, X } from "lucide-react";
 
 import { ProductMediaFrame } from "@/components/storefront/product-media-frame";
 import { Button } from "@/components/ui/button";
@@ -26,16 +26,12 @@ function Viewer360Stage({
   viewer360,
   activeFrameIndex,
   onFrameChange,
-  isPlaying,
-  onTogglePlayback,
 }: {
   locale: Locale;
   productName: string;
   viewer360: ProductViewer360;
   activeFrameIndex: number;
   onFrameChange: (index: number) => void;
-  isPlaying: boolean;
-  onTogglePlayback: () => void;
 }) {
   const copy = getExtendedUiCopy(locale).productGallery;
   const frames = viewer360.frames ?? [];
@@ -43,18 +39,47 @@ function Viewer360Stage({
   const hasFrames = frames.length > 0;
   const dragLabel = locale === "ar" ? "اسحب للتدوير" : "Drag to rotate";
   const frameLabel = locale === "ar" ? "إطار" : "Frame";
-  const autoplayLabel =
-    locale === "ar"
-      ? isPlaying
-        ? "إيقاف"
-        : "تشغيل تلقائي"
-      : isPlaying
-        ? "Pause"
-        : "Autoplay";
+  const [dragStartX, setDragStartX] = useState<number | null>(null);
+
+  function moveToPreviousFrame() {
+    onFrameChange(
+      activeFrameIndex === 0 ? frames.length - 1 : activeFrameIndex - 1,
+    );
+  }
+
+  function moveToNextFrame() {
+    onFrameChange((activeFrameIndex + 1) % frames.length);
+  }
+
+  function handleDragMove(clientX: number) {
+    if (dragStartX === null || frames.length < 2) {
+      return;
+    }
+
+    const delta = clientX - dragStartX;
+
+    if (Math.abs(delta) < 24) {
+      return;
+    }
+
+    if (delta > 0) {
+      moveToPreviousFrame();
+    } else {
+      moveToNextFrame();
+    }
+
+    setDragStartX(clientX);
+  }
 
   if (hasFrames && activeFrame) {
     return (
-      <div className="relative aspect-[4/5] overflow-hidden rounded-[2.4rem] border border-white/10 bg-[linear-gradient(180deg,#090909_0%,#040404_100%)] shadow-[0_40px_120px_rgba(0,0,0,0.58)] md:aspect-[5/6]">
+      <div
+        className="relative aspect-[4/5] overflow-hidden rounded-[2.4rem] border border-white/10 bg-[linear-gradient(180deg,#090909_0%,#040404_100%)] shadow-[0_40px_120px_rgba(0,0,0,0.58)] md:aspect-[5/6]"
+        onPointerDown={(event) => setDragStartX(event.clientX)}
+        onPointerMove={(event) => handleDragMove(event.clientX)}
+        onPointerUp={() => setDragStartX(null)}
+        onPointerLeave={() => setDragStartX(null)}
+      >
         <ProductMediaFrame
           media={activeFrame}
           className="h-full w-full rounded-[2.4rem]"
@@ -78,13 +103,7 @@ function Viewer360Stage({
                 variant="secondary"
                 size="icon"
                 className="h-10 w-10"
-                onClick={() =>
-                  onFrameChange(
-                    activeFrameIndex === 0
-                      ? frames.length - 1
-                      : activeFrameIndex - 1,
-                  )
-                }
+                onClick={moveToPreviousFrame}
                 aria-label={locale === "ar" ? "الإطار السابق" : "Previous frame"}
               >
                 {locale === "ar" ? (
@@ -96,24 +115,9 @@ function Viewer360Stage({
               <Button
                 type="button"
                 variant="secondary"
-                className="h-10 rounded-full px-4 text-[0.68rem] uppercase tracking-[0.22em]"
-                onClick={onTogglePlayback}
-              >
-                {isPlaying ? (
-                  <Pause className="h-4 w-4" />
-                ) : (
-                  <Play className="h-4 w-4" />
-                )}
-                {autoplayLabel}
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
                 size="icon"
                 className="h-10 w-10"
-                onClick={() =>
-                  onFrameChange((activeFrameIndex + 1) % frames.length)
-                }
+                onClick={moveToNextFrame}
                 aria-label={locale === "ar" ? "الإطار التالي" : "Next frame"}
               >
                 {locale === "ar" ? (
@@ -192,24 +196,7 @@ export function ProductGallery({
   });
   const [zoomed, setZoomed] = useState(false);
   const [activeViewerFrameIndex, setActiveViewerFrameIndex] = useState(0);
-  const [viewerPlaying, setViewerPlaying] = useState(true);
   const isViewerMode = activeSurface.kind === "viewer360";
-
-  useEffect(() => {
-    if (!isViewerMode || !hasViewerFrames || !viewerPlaying) {
-      return;
-    }
-
-    const interval = window.setInterval(() => {
-      setActiveViewerFrameIndex((currentIndex) =>
-        (currentIndex + 1) % viewerFrames.length,
-      );
-    }, 900);
-
-    return () => {
-      window.clearInterval(interval);
-    };
-  }, [hasViewerFrames, isViewerMode, viewerFrames.length, viewerPlaying]);
 
   if (!fallbackMedia) {
     return (
@@ -236,8 +223,6 @@ export function ProductGallery({
                 viewer360={viewer360}
                 activeFrameIndex={activeViewerFrameIndex}
                 onFrameChange={setActiveViewerFrameIndex}
-                isPlaying={viewerPlaying}
-                onTogglePlayback={() => setViewerPlaying((current) => !current)}
               />
             ) : (
               <ProductMediaFrame
