@@ -17,14 +17,6 @@ export interface ProductSpec {
   value: string;
 }
 
-export interface ProductViewer360 {
-  enabled: boolean;
-  label: string;
-  description: string;
-  note: string;
-  frames?: ProductMedia[];
-}
-
 export interface ProductShippingInfo {
   leadTime: string;
   delivery: string;
@@ -51,7 +43,6 @@ export interface Product {
   fitNotes: string[];
   sizes: string[];
   gallery: ProductMedia[];
-  viewer360: ProductViewer360;
   shipping: ProductShippingInfo;
   specs: ProductSpec[];
 }

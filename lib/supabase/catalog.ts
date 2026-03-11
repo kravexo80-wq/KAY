@@ -13,10 +13,7 @@ import {
 } from "@/lib/i18n/catalog";
 import { getRequestLocale } from "@/lib/i18n/request";
 import type { Locale } from "@/lib/i18n/config";
-import {
-  createTestingMediaGallery,
-  createTestingViewer360Frames,
-} from "@/lib/testing/product-media-fallbacks";
+import { createTestingMediaGallery } from "@/lib/testing/product-media-fallbacks";
 
 import { hasSupabaseEnv } from "./config";
 import { createReadOnlySupabaseClient } from "./server";
@@ -118,13 +115,6 @@ export const productCatalogSelect = `
   limited_edition,
   is_active,
   is_featured,
-  viewer_360_enabled,
-  viewer_360_label,
-  viewer_360_label_ar,
-  viewer_360_description,
-  viewer_360_description_ar,
-  viewer_360_note,
-  viewer_360_note_ar,
   shipping_lead_time,
   shipping_lead_time_ar,
   shipping_delivery,
@@ -390,31 +380,6 @@ function mapProductRecordToProduct(
     gallery: hasRealGalleryImage
       ? gallery
       : [createFallbackMedia(record, locale), ...fallbackGallery.slice(1)],
-    viewer360: {
-      enabled: record.viewer_360_enabled,
-      label: getLocalizedCatalogField(
-        record as Record<string, unknown>,
-        "viewer_360_label",
-        locale,
-      ),
-      description: getLocalizedCatalogField(
-        record as Record<string, unknown>,
-        "viewer_360_description",
-        locale,
-      ),
-      note: getLocalizedCatalogField(
-        record as Record<string, unknown>,
-        "viewer_360_note",
-        locale,
-      ),
-      frames: record.viewer_360_enabled
-        ? createTestingViewer360Frames(
-            record.slug,
-            locale,
-            record.collection?.tone ?? "obsidian",
-          )
-        : [],
-    },
     shipping: {
       leadTime: getLocalizedCatalogField(
         record as Record<string, unknown>,

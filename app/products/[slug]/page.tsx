@@ -145,7 +145,6 @@ export default async function ProductDetailPage({
             locale={locale}
             productName={product.name}
             media={product.gallery}
-            viewer360={product.viewer360}
           />
           <ProductPurchasePanel
             locale={locale}

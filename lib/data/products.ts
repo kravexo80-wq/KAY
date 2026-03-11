@@ -52,13 +52,6 @@ export const products: Product[] = [
         tone: "bronze",
       },
     ],
-    viewer360: {
-      enabled: true,
-      label: "360 showroom view",
-      description:
-        "Reserved for a future interactive spin built from controlled studio frames.",
-      note: "Still angles are active for now while the layout remains ready for frame-sequence integration.",
-    },
     shipping: {
       leadTime: "Dispatches in 2-4 business days.",
       delivery: "Complimentary insured delivery on launch orders.",
@@ -123,13 +116,6 @@ export const products: Product[] = [
         tone: "bronze",
       },
     ],
-    viewer360: {
-      enabled: true,
-      label: "360 drape study",
-      description:
-        "Prepared for a future 360 layer view showing trim, volume, and movement in a single module.",
-      note: "The current build uses stills but reserves the same footprint for richer drape presentation later.",
-    },
     shipping: {
       leadTime: "Dispatches in 3-5 business days.",
       delivery: "Insured global delivery with signature confirmation.",
@@ -194,13 +180,6 @@ export const products: Product[] = [
         tone: "pearl",
       },
     ],
-    viewer360: {
-      enabled: true,
-      label: "360 silhouette view",
-      description:
-        "Planned for a full silhouette rotation focused on movement, fall, and cuff finishing.",
-      note: "The gallery already reserves a dedicated module for future frame-based viewing.",
-    },
     shipping: {
       leadTime: "Dispatches in 2-4 business days.",
       delivery: "Complimentary insured shipping for launch-region orders.",
@@ -265,13 +244,6 @@ export const products: Product[] = [
         tone: "bronze",
       },
     ],
-    viewer360: {
-      enabled: true,
-      label: "360 structure view",
-      description:
-        "Designed for a future viewer focused on collar architecture, sleeve line, and panel transitions.",
-      note: "This product is already staged for richer 360 storytelling once real imagery is added.",
-    },
     shipping: {
       leadTime: "Dispatches in 3-5 business days.",
       delivery: "Global insured delivery with signature confirmation.",
@@ -336,13 +308,6 @@ export const products: Product[] = [
         tone: "stone",
       },
     ],
-    viewer360: {
-      enabled: true,
-      label: "360 daily edit view",
-      description:
-        "Prepared for an everyday fit rotation that highlights movement and fabric texture.",
-      note: "The placeholder module keeps the media rail future-ready for richer catalog tools.",
-    },
     shipping: {
       leadTime: "Dispatches in 2-3 business days.",
       delivery: "Tracked delivery with launch-period complimentary shipping.",
@@ -407,13 +372,6 @@ export const products: Product[] = [
         tone: "bronze",
       },
     ],
-    viewer360: {
-      enabled: true,
-      label: "360 layered view",
-      description:
-        "Reserved for a future module that shows how the overlayer and underdress move together.",
-      note: "Still photography is active now while preserving the same premium viewer slot.",
-    },
     shipping: {
       leadTime: "Dispatches in 2-4 business days.",
       delivery: "Tracked insured delivery with signature confirmation available.",
