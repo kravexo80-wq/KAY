@@ -369,6 +369,43 @@ const workspaceCopy = {
   },
 } as const;
 
+const imageSectionCopy = {
+  en: {
+    title: "Images",
+    hint: "Upload or add a direct image URL in the same gallery.",
+    upload: "Upload file",
+    imageUrl: "Image URL",
+    displayOrder: "Display order",
+    tone: "Tone",
+    primaryImage: "Primary image",
+    removeImage: "Remove image",
+    label: "Label",
+    angle: "Angle",
+    altText: "Alt text",
+    imageNote: "Image note",
+    storedUpload: "Uploaded file",
+    galleryReady: "Ready for gallery",
+    newImageHint: "Blank rows are ignored.",
+  },
+  ar: {
+    title: "الصور",
+    hint: "ارفع الصورة أو أضف رابطًا مباشرًا داخل نفس المعرض.",
+    upload: "رفع ملف",
+    imageUrl: "رابط الصورة",
+    displayOrder: "ترتيب العرض",
+    tone: "الطابع",
+    primaryImage: "الصورة الرئيسية",
+    removeImage: "حذف الصورة",
+    label: "التسمية",
+    angle: "الزاوية",
+    altText: "النص البديل",
+    imageNote: "ملاحظة الصورة",
+    storedUpload: "ملف مرفوع",
+    galleryReady: "جاهزة للعرض",
+    newImageHint: "يتم تجاهل الصفوف الفارغة.",
+  },
+} as const;
+
 export function AdminProductForm({
   locale,
   mode,
@@ -384,6 +421,7 @@ export function AdminProductForm({
   const englishText = editorPlaceholders.en;
   const arabicText = editorPlaceholders.ar;
   const ui = workspaceCopy[locale];
+  const imageUi = imageSectionCopy[locale];
   const localizedToneLabels = toneLabels[locale];
   const categoryOptions = options.categories;
   const collectionOptions = options.collections;
@@ -784,8 +822,8 @@ export function AdminProductForm({
             <div className="mt-8 rounded-[1.7rem] border border-white/8 bg-white/[0.03] p-5 md:p-6">
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div className={cn("space-y-2", isRtl ? "text-right" : "text-left")}>
-                  <h3 className="text-lg text-white">{copy.images}</h3>
-                  <p className="text-sm text-white/42">{ui.imagesHint}</p>
+                  <h3 className="text-lg text-white">{imageUi.title}</h3>
+                  <p className="text-sm text-white/42">{imageUi.hint}</p>
                 </div>
                 <p className="text-[0.68rem] uppercase tracking-[0.24em] text-white/34">
                   {ui.blankRows}
@@ -824,13 +862,13 @@ export function AdminProductForm({
                           </span>
                           <div className="flex flex-wrap gap-2">
                             {image.storagePath ? (
-                              <AdminProductStateBadge label={copy.storedUpload} active tone="accent" />
+                              <AdminProductStateBadge label={imageUi.storedUpload} active tone="accent" />
                             ) : null}
                             {image.imageUrl ? (
-                              <AdminProductStateBadge label={copy.galleryReady} active tone="success" />
+                              <AdminProductStateBadge label={imageUi.galleryReady} active tone="success" />
                             ) : null}
                             {image.isPrimary ? (
-                              <AdminProductStateBadge label={copy.primaryImage} active tone="accent" />
+                              <AdminProductStateBadge label={imageUi.primaryImage} active tone="accent" />
                             ) : null}
                           </div>
                         </div>
@@ -838,7 +876,7 @@ export function AdminProductForm({
                         <div className={cn("space-y-2", isRtl ? "text-right" : "text-left")}>
                           <p className="eyebrow">{ui.imagePreview}</p>
                           <p className="text-sm text-white/62">
-                            {image.imageUrl ? image.label || copy.galleryReady : ui.imagePlaceholder}
+                            {image.imageUrl ? image.label || imageUi.galleryReady : ui.imagePlaceholder}
                           </p>
                         </div>
                       </div>
@@ -846,7 +884,7 @@ export function AdminProductForm({
 
                     <div className="space-y-5 p-5">
                       <div className="grid gap-3 lg:grid-cols-2">
-                        <CompactField label={copy.upload} isRtl={isRtl}>
+                        <CompactField label={imageUi.upload} isRtl={isRtl}>
                           <input
                             type="file"
                             name={`image_${index}_file`}
@@ -854,14 +892,14 @@ export function AdminProductForm({
                             className="block w-full rounded-[1.2rem] border border-dashed border-white/12 bg-white/[0.02] px-4 py-3 text-sm text-white/72 file:mr-4 file:rounded-full file:border file:border-white/10 file:bg-white/[0.06] file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-[0.2em] file:text-white/72"
                           />
                         </CompactField>
-                        <CompactField label={copy.imageUrl} isRtl={isRtl}>
+                        <CompactField label={imageUi.imageUrl} isRtl={isRtl}>
                           <Input
                             name={`image_${index}_image_url`}
                             defaultValue={image.imageUrl}
                             placeholder={text.imageUrl}
                           />
                         </CompactField>
-                        <CompactField label={copy.displayOrder} isRtl={isRtl}>
+                        <CompactField label={imageUi.displayOrder} isRtl={isRtl}>
                           <Input
                             type="number"
                             min="0"
@@ -870,7 +908,7 @@ export function AdminProductForm({
                             defaultValue={image.sortOrder}
                           />
                         </CompactField>
-                        <CompactField label={copy.tone} isRtl={isRtl}>
+                        <CompactField label={imageUi.tone} isRtl={isRtl}>
                           <select
                             name={`image_${index}_tone`}
                             defaultValue={image.tone}
@@ -896,7 +934,7 @@ export function AdminProductForm({
                       <div className="grid gap-3 md:grid-cols-2">
                         <InlineToggle
                           name={`image_${index}_is_primary`}
-                          label={copy.primaryImage}
+                          label={imageUi.primaryImage}
                           defaultChecked={image.isPrimary}
                           isRtl={isRtl}
                           accent
@@ -904,13 +942,13 @@ export function AdminProductForm({
                         {image.id ? (
                           <InlineToggle
                             name={`image_${index}_remove`}
-                            label={copy.removeImage}
+                            label={imageUi.removeImage}
                             defaultChecked={false}
                             isRtl={isRtl}
                           />
                         ) : (
                           <div className="rounded-[1.2rem] border border-dashed border-white/10 px-4 py-3 text-sm text-white/42">
-                            {copy.newImageHint}
+                            {imageUi.newImageHint}
                           </div>
                         )}
                       </div>
@@ -921,7 +959,7 @@ export function AdminProductForm({
                             {ui.english}
                           </span>
                           <div className="mt-4 space-y-3">
-                            <CompactField label={copy.label}>
+                            <CompactField label={imageUi.label}>
                               <Input
                                 name={`image_${index}_label`}
                                 defaultValue={image.label}
@@ -929,7 +967,7 @@ export function AdminProductForm({
                                 dir="ltr"
                               />
                             </CompactField>
-                            <CompactField label={copy.angle}>
+                            <CompactField label={imageUi.angle}>
                               <Input
                                 name={`image_${index}_angle`}
                                 defaultValue={image.angle}
@@ -937,7 +975,7 @@ export function AdminProductForm({
                                 dir="ltr"
                               />
                             </CompactField>
-                            <CompactField label={copy.altText}>
+                            <CompactField label={imageUi.altText}>
                               <Input
                                 name={`image_${index}_alt_text`}
                                 defaultValue={image.altText}
@@ -945,7 +983,7 @@ export function AdminProductForm({
                                 dir="ltr"
                               />
                             </CompactField>
-                            <CompactField label={copy.imageNote}>
+                            <CompactField label={imageUi.imageNote}>
                               <Textarea
                                 name={`image_${index}_note`}
                                 defaultValue={image.note}
@@ -968,7 +1006,7 @@ export function AdminProductForm({
                             {ui.arabic}
                           </span>
                           <div className="mt-4 space-y-3">
-                            <CompactField label={copy.label} isRtl>
+                            <CompactField label={imageUi.label} isRtl>
                               <Input
                                 name={`image_${index}_label_ar`}
                                 defaultValue={image.labelAr}
@@ -976,7 +1014,7 @@ export function AdminProductForm({
                                 dir="rtl"
                               />
                             </CompactField>
-                            <CompactField label={copy.angle} isRtl>
+                            <CompactField label={imageUi.angle} isRtl>
                               <Input
                                 name={`image_${index}_angle_ar`}
                                 defaultValue={image.angleAr}
@@ -984,7 +1022,7 @@ export function AdminProductForm({
                                 dir="rtl"
                               />
                             </CompactField>
-                            <CompactField label={copy.altText} isRtl>
+                            <CompactField label={imageUi.altText} isRtl>
                               <Input
                                 name={`image_${index}_alt_text_ar`}
                                 defaultValue={image.altTextAr}
@@ -992,7 +1030,7 @@ export function AdminProductForm({
                                 dir="rtl"
                               />
                             </CompactField>
-                            <CompactField label={copy.imageNote} isRtl>
+                            <CompactField label={imageUi.imageNote} isRtl>
                               <Textarea
                                 name={`image_${index}_note_ar`}
                                 defaultValue={image.noteAr}
