@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 import type {
   Database,
@@ -673,6 +674,9 @@ export async function addCartItem({
       message: "Added to your cart.",
     };
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
     console.error("Failed to add cart item.", error);
     return {
       ok: false,
@@ -736,6 +740,9 @@ export async function updateCartItemQuantity({
       message: "Cart quantity updated.",
     };
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
     console.error("Failed to update cart item quantity.", error);
     return {
       ok: false,
@@ -783,6 +790,9 @@ export async function removeCartItem({
       message: "Item removed from your cart.",
     };
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
     console.error("Failed to remove cart item.", error);
     return {
       ok: false,
