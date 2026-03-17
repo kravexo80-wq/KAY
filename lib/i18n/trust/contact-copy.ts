@@ -31,7 +31,7 @@ export const contactCopy: Record<"en" | "ar", ContactCopy> = {
     response: {
       title: "Response window",
       description:
-        "Reply within 1-8 days for customer enquiries and order support.",
+        "Reply within 24 hours for customer enquiries and order support.",
     },
     social: {
       title: "Social and editorial channels",
@@ -76,7 +76,7 @@ export const contactCopy: Record<"en" | "ar", ContactCopy> = {
     },
     response: {
       title: "مدة الرد",
-      description: "نرد خلال 1-8 أيام لاستفسارات العملاء ودعم الطلبات.",
+      description: "نرد خلال 24 ساعة لاستفسارات العملاء ودعم الطلبات.",
     },
     social: {
       title: "Ø§Ù„Ù‚Ù†ÙˆØ§Øª Ø§Ù„Ø§Ø¬ØªÙ…Ø§Ø¹ÙŠØ© ÙˆØ§Ù„ØªØ­Ø±ÙŠØ±ÙŠØ©",

@@ -119,7 +119,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           <div className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}>
             <p className="eyebrow">{copy.response.title}</p>
             <p className="mt-3 text-lg text-white">
-              {locale === "ar" ? "1-8 أيام" : "1-8 days"}
+              {locale === "ar" ? "24 ساعة" : "24 hours"}
             </p>
             <p className="mt-2 text-sm leading-7 text-white/56">{copy.response.description}</p>
           </div>
