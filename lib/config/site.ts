@@ -6,7 +6,7 @@ export const siteConfig = {
   tagline: "Modest silhouettes, lit like centerpieces.",
   supportEmail: "support@kravexo.co.uk",
   supportPhone: "+447471985196",
-  location: "London, United Kingdom",
+  location: "Manchester, United Kingdom",
 } as const;
 
 export function getSiteUrl() {
