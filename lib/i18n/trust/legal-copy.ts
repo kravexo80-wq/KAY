@@ -35,7 +35,7 @@ export const legalCopy: Record<
         {
           title: "Who this policy applies to",
           paragraphs: [
-            "This policy explains how [insert legal business name] collects, uses, stores, and shares personal information when customers visit the Kravexo storefront, create an account, place an order, or contact support.",
+            "This policy explains how Kravexo collects, uses, stores, and shares personal information when customers visit the Kravexo storefront, create an account, place an order, or contact support.",
           ],
         },
         {
@@ -75,7 +75,7 @@ export const legalCopy: Record<
         {
           title: "Contact for privacy matters",
           paragraphs: [
-            "Privacy requests and policy questions should be directed to [insert privacy contact email] and, if required, [insert registered address or responsible entity details].",
+            "Privacy requests and policy questions should be directed to support@kravexo.co.uk and, if required, Kravexo, Manchester, United Kingdom.",
           ],
         },
       ],
@@ -92,7 +92,7 @@ export const legalCopy: Record<
         {
           title: "About these terms",
           paragraphs: [
-            "These terms apply to the use of the Kravexo website and any orders placed through it. Kravexo is a trading name of [insert legal business name and registered address].",
+            "These terms apply to the use of the Kravexo website and any orders placed through it. Kravexo is a trading name of Kravexo, Manchester, United Kingdom.",
             "By using the storefront, you agree to these terms and to the policies referenced on this site.",
           ],
         },
@@ -228,7 +228,7 @@ export const legalCopy: Record<
         {
           title: "نبذة عن هذه الشروط",
           paragraphs: [
-            "تنطبق هذه الشروط على استخدام موقع كرافكسو وأي طلبات يتم تقديمها عبره. كرافكسو هو الاسم التجاري لـ [أدخل الاسم القانوني والعنوان المسجل].",
+            "تنطبق هذه الشروط على استخدام موقع كرافكسو وأي طلبات يتم تقديمها عبره. كرافكسو هو الاسم التجاري لـ كرافكسو، مانشستر، المملكة المتحدة.",
             "باستخدام المتجر، أنت توافق على هذه الشروط والسياسات المشار إليها على الموقع.",
           ],
         },
