@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     locale,
     pathname: "/contact",
-    title: locale === "ar" ? "التواصل" : "Contact",
+    title: locale === "ar" ? "???????" : "Contact",
     description: copy.description,
   });
 }
@@ -63,18 +63,18 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         title={copy.title}
         description={copy.description}
         note={copy.note}
-        noteLabel={locale === "ar" ? "ملاحظة الدعم" : "Support note"}
+        noteLabel={locale === "ar" ? "?????? ?????" : "Support note"}
         isRtl={isRtl}
         actions={
           <>
             <Button asChild>
               <Link href={localizeHref(locale, "/faq")}>
-                {locale === "ar" ? "الأسئلة الشائعة" : "Read the FAQ"}
+                {locale === "ar" ? "??????? ???????" : "Read the FAQ"}
               </Link>
             </Button>
             <Button asChild variant="secondary">
               <Link href={localizeHref(locale, "/shipping-returns")}>
-                {locale === "ar" ? "الشحن والاسترجاع" : "Shipping & returns"}
+                {locale === "ar" ? "????? ??????????" : "Shipping & returns"}
               </Link>
             </Button>
           </>
@@ -119,7 +119,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           <div className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}>
             <p className="eyebrow">{copy.response.title}</p>
             <p className="mt-3 text-lg text-white">
-              {locale === "ar" ? "يُحدَّد قبل الإطلاق" : "Set before launch"}
+              {locale === "ar" ? "1-8 أيام" : "1-8 days"}
             </p>
             <p className="mt-2 text-sm leading-7 text-white/56">{copy.response.description}</p>
           </div>
