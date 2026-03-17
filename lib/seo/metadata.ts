@@ -13,6 +13,10 @@ const ogLocaleMap: Record<Locale, string> = {
   ar: "ar_SA",
 };
 
+const googleVerification =
+  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ??
+  process.env.GOOGLE_SITE_VERIFICATION;
+
 function toAbsoluteUrl(path: string) {
   return new URL(path, getSiteUrl()).toString();
 }
@@ -62,6 +66,7 @@ export function buildPageMetadata({
 }): Metadata {
   const alternates = buildAlternates(locale, pathname);
   const images = buildImageEntry(title, imagePath);
+  const verification = googleVerification ? { google: googleVerification } : undefined;
 
   return {
     metadataBase: new URL(getSiteUrl()),
@@ -87,6 +92,7 @@ export function buildPageMetadata({
       description,
       images: images.map((image) => image.url),
     },
+    verification,
     robots: noIndex
       ? {
           index: false,
