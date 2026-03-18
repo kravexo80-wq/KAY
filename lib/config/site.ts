@@ -5,7 +5,7 @@ export const siteConfig = {
     "Luxury modest wear presented like a cinematic showroom: dark, precise, and product-led.",
   tagline: "Modest silhouettes, lit like centerpieces.",
   supportEmail: "support@kravexo.co.uk",
-  supportPhone: "+447471985196",
+  supportPhone: "+44 7347 135266",
   location: "Manchester, United Kingdom",
 } as const;
 
