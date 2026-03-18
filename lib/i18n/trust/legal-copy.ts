@@ -1,4 +1,4 @@
-﻿import type { TrustCopy } from "../trust-copy";
+import type { TrustCopy } from "../trust-copy";
 
 type FooterCopy = TrustCopy["footer"];
 type PolicyCopy = TrustCopy["privacyPolicy"];
@@ -24,13 +24,12 @@ export const legalCopy: Record<
     },
     privacyPolicy: {
       eyebrow: "Privacy Policy",
-      title: "A clear privacy policy foundation for the Kravexo storefront.",
+      title: "Privacy policy for the Kravexo storefront.",
       description:
-        "This is a practical foundation for launch preparation. It should be reviewed and completed with your real business identity, legal basis, and regional compliance requirements before publishing as final.",
-      note:
-        "Replace each bracketed placeholder with your actual legal or operating detail. If you sell across multiple regions, have the final text reviewed for the jurisdictions that apply to your business.",
+        "This policy explains how we collect, use, and protect personal information when you browse, purchase, or contact support.",
+      note: "We update this policy if our practices or legal requirements change.",
       lastUpdatedLabel: "Last updated",
-      lastUpdatedValue: "[Insert launch date]",
+      lastUpdatedValue: "17 March 2026",
       sections: [
         {
           title: "Who this policy applies to",
@@ -55,21 +54,21 @@ export const legalCopy: Record<
           title: "How information is used",
           paragraphs: [
             "Personal information is used to operate the storefront, process orders, provide customer support, reduce fraud risk, and improve the customer experience.",
-            "If marketing messages are used, explain the consent process and unsubscribe method here before launch.",
+            "If marketing messages are used, we will provide a clear consent and unsubscribe method.",
           ],
         },
         {
           title: "Sharing and service providers",
           paragraphs: [
             "Information may be shared with service providers that help operate the storefront, process payments, support delivery, host infrastructure, or provide customer-service tools.",
-            "List or describe the categories of providers you actually use at launch, and update this section if that stack changes materially.",
+            "We update this section if those providers change materially.",
           ],
         },
         {
           title: "Data retention and customer rights",
           paragraphs: [
-            "Explain how long order, account, and support data are retained, and how customers can request access, correction, or deletion where applicable.",
-            "If regional privacy rights apply, identify the correct contact route for those requests.",
+            "We retain data for as long as needed to fulfill orders, meet legal obligations, and provide support.",
+            "You may request access, correction, or deletion of your data where applicable.",
           ],
         },
         {
@@ -150,68 +149,68 @@ export const legalCopy: Record<
   },
   ar: {
     footer: {
-      groupLabel: "Ø®Ø¯Ù…Ø© Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡",
+      groupLabel: "خدمة العملاء",
       links: [
-        { label: "Ø§Ù„Ø£Ø³Ø¦Ù„Ø© Ø§Ù„Ø´Ø§Ø¦Ø¹Ø©", href: "/faq" },
-        { label: "Ø§Ù„Ø´Ø­Ù† ÙˆØ§Ù„Ø§Ø³ØªØ±Ø¬Ø§Ø¹", href: "/shipping-returns" },
-        { label: "Ø³ÙŠØ§Ø³Ø© Ø§Ù„Ø®ØµÙˆØµÙŠØ©", href: "/privacy-policy" },
-        { label: "Ø§Ù„Ø´Ø±ÙˆØ· ÙˆØ§Ù„Ø£Ø­ÙƒØ§Ù…", href: "/terms" },
+        { label: "الأسئلة الشائعة", href: "/faq" },
+        { label: "الشحن والاسترجاع", href: "/shipping-returns" },
+        { label: "سياسة الخصوصية", href: "/privacy-policy" },
+        { label: "الشروط والأحكام", href: "/terms" },
       ],
     },
     privacyPolicy: {
-      eyebrow: "Ø³ÙŠØ§Ø³Ø© Ø§Ù„Ø®ØµÙˆØµÙŠØ©",
-      title: "ØµÙŠØ§ØºØ© ØªØ£Ø³ÙŠØ³ÙŠØ© ÙˆØ§Ø¶Ø­Ø© Ù„Ø³ÙŠØ§Ø³Ø© Ø®ØµÙˆØµÙŠØ© Ù…ØªØ¬Ø± ÙƒØ±Ø§ÙÙƒØ³Ùˆ.",
+      eyebrow: "سياسة الخصوصية",
+      title: "سياسة الخصوصية لمتجر كرافكسو.",
       description:
-        "Ù‡Ø°Ø§ Ø£Ø³Ø§Ø³ Ø¹Ù…Ù„ÙŠ Ù„Ù„ØªØ­Ø¶ÙŠØ± Ù„Ù„Ø¥Ø·Ù„Ø§Ù‚. ÙŠØ¬Ø¨ Ù…Ø±Ø§Ø¬Ø¹ØªÙ‡ ÙˆØ§Ø³ØªÙƒÙ…Ø§Ù„Ù‡ Ø¨Ø§Ø³Ù… Ø§Ù„Ø¬Ù‡Ø© Ø§Ù„Ù‚Ø§Ù†ÙˆÙ†ÙŠØ© Ø§Ù„ÙØ¹Ù„ÙŠ ÙˆØ§Ù„Ø£Ø³Ø§Ø³ Ø§Ù„Ù†Ø¸Ø§Ù…ÙŠ ÙˆÙ…ØªØ·Ù„Ø¨Ø§Øª Ø§Ù„Ø§Ù…ØªØ«Ø§Ù„ Ø°Ø§Øª Ø§Ù„ØµÙ„Ø© Ù‚Ø¨Ù„ Ù†Ø´Ø±Ù‡ Ø¨ØµÙŠØºØªÙ‡ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠØ©.",
+        "توضح هذه السياسة كيفية جمع معلوماتك واستخدامها وحمايتها عند استخدام متجر كرافكسو.",
       note:
-        "Ø§Ø³ØªØ¨Ø¯Ù„ ÙƒÙ„ Ø¹Ù†ØµØ± Ø¨ÙŠÙ† Ø£Ù‚ÙˆØ§Ø³ Ù…Ø±Ø¨Ø¹Ø© Ø¨ØªÙØµÙŠÙ„Ùƒ Ø§Ù„Ù‚Ø§Ù†ÙˆÙ†ÙŠ Ø£Ùˆ Ø§Ù„ØªØ´ØºÙŠÙ„ÙŠ Ø§Ù„Ø­Ù‚ÙŠÙ‚ÙŠ. ÙˆØ¥Ø°Ø§ ÙƒÙ†Øª ØªØ¨ÙŠØ¹ ÙÙŠ Ø£ÙƒØ«Ø± Ù…Ù† Ù…Ù†Ø·Ù‚Ø©ØŒ ÙÙ…Ù† Ø§Ù„Ø£ÙØ¶Ù„ Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ù†Øµ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ ÙˆÙÙ‚ Ø§Ù„Ø¬Ù‡Ø§Øª Ø§Ù„Ù†Ø¸Ø§Ù…ÙŠØ© Ø§Ù„Ù…Ø·Ø¨Ù‚Ø© Ø¹Ù„Ù‰ Ù†Ø´Ø§Ø·Ùƒ.",
-      lastUpdatedLabel: "Ø¢Ø®Ø± ØªØ­Ø¯ÙŠØ«",
-      lastUpdatedValue: "[Ø£Ø¯Ø®Ù„ ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¥Ø·Ù„Ø§Ù‚]",
+        "إذا تغيرت ممارساتنا أو متطلبات الامتثال، سنحدّث هذه السياسة بما يناسب ذلك.",
+      lastUpdatedLabel: "آخر تحديث",
+      lastUpdatedValue: "17 مارس 2026",
       sections: [
         {
-          title: "Ø¹Ù„Ù‰ Ù…Ù† ØªÙ†Ø·Ø¨Ù‚ Ù‡Ø°Ù‡ Ø§Ù„Ø³ÙŠØ§Ø³Ø©",
+          title: "على من تنطبق هذه السياسة",
           paragraphs: [
-            "ØªØ´Ø±Ø­ Ù‡Ø°Ù‡ Ø§Ù„Ø³ÙŠØ§Ø³Ø© ÙƒÙŠÙ ØªÙ‚ÙˆÙ… [Ø£Ø¯Ø®Ù„ Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ù‚Ø§Ù†ÙˆÙ†ÙŠ Ù„Ù„Ù…Ù†Ø´Ø£Ø©] Ø¨Ø¬Ù…Ø¹ Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø´Ø®ØµÙŠØ© ÙˆØ§Ø³ØªØ®Ø¯Ø§Ù…Ù‡Ø§ ÙˆØªØ®Ø²ÙŠÙ†Ù‡Ø§ ÙˆÙ…Ø´Ø§Ø±ÙƒØªÙ‡Ø§ Ø¹Ù†Ø¯ Ø²ÙŠØ§Ø±Ø© Ù…ØªØ¬Ø± ÙƒØ±Ø§ÙÙƒØ³Ùˆ Ø£Ùˆ Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ø£Ùˆ Ø¥ØªÙ…Ø§Ù… Ø·Ù„Ø¨ Ø£Ùˆ Ø§Ù„ØªÙˆØ§ØµÙ„ Ù…Ø¹ Ø§Ù„Ø¯Ø¹Ù….",
+            "توضح هذه السياسة كيف تجمع كرافكسو المعلومات الشخصية وتستخدمها وتخزنها عندما تزور المتجر أو تنشئ حسابًا أو تُجري طلبًا أو تتواصل مع الدعم.",
           ],
         },
         {
-          title: "Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„ØªÙŠ Ù‚Ø¯ ØªÙØ¬Ù…Ø¹",
+          title: "المعلومات التي نجمعها",
           paragraphs: [
-            "Ù‚Ø¯ ÙŠØ¬Ù…Ø¹ Ø§Ù„Ù…ØªØ¬Ø± Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ù…Ø«Ù„ Ø§Ù„Ø§Ø³Ù… ÙˆØ§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ ÙˆØ¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø´Ø­Ù† ÙˆØ§Ù„ÙÙˆØªØ±Ø© ÙˆØ³Ø¬Ù„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª ÙˆÙ…Ø±Ø§Ø³Ù„Ø§Øª Ø®Ø¯Ù…Ø© Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡.",
-            "ÙˆÙ‚Ø¯ ØªÙØ¬Ù…Ø¹ Ø£ÙŠØ¶Ù‹Ø§ Ù…Ø¹Ù„ÙˆÙ…Ø§Øª ØªÙ‚Ù†ÙŠØ© Ù…Ø«Ù„ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø¬Ù‡Ø§Ø² ÙˆØ§Ù„Ù…ØªØµÙØ­ ÙˆØ£Ø­Ø¯Ø§Ø« Ø§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù„ØªØ´ØºÙŠÙ„ Ø§Ù„Ù…ÙˆÙ‚Ø¹ ÙˆØ­Ù…Ø§ÙŠØªÙ‡.",
+            "قد نجمع معلومات مثل الاسم والبريد الإلكتروني وعناوين الشحن والفوترة وسجل الطلبات ومراسلات خدمة العملاء.",
+            "وقد نجمع أيضًا بيانات تقنية مثل نوع الجهاز والمتصفح وسجلات الاستخدام لتشغيل الموقع وحمايته.",
           ],
           items: [
-            "Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø­Ø³Ø§Ø¨",
-            "Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø¯ÙØ¹ ÙˆØ§Ù„Ø´Ø­Ù†",
-            "Ø±Ø³Ø§Ø¦Ù„ Ø¯Ø¹Ù… Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡",
-            "Ø¨ÙŠØ§Ù†Ø§Øª Ø£Ø³Ø§Ø³ÙŠØ© Ù„Ù„ØªØ­Ù„ÙŠÙ„Ø§Øª ÙˆØ§Ù„Ø£Ù…Ø§Ù†",
+            "معلومات الحساب",
+            "بيانات الدفع والشحن",
+            "رسائل دعم العملاء",
+            "بيانات تقنية وتحليلات أساسية",
           ],
         },
         {
-          title: "ÙƒÙŠÙÙŠØ© Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§Øª",
+          title: "كيف نستخدم المعلومات",
           paragraphs: [
-            "ØªÙØ³ØªØ®Ø¯Ù… Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø´Ø®ØµÙŠØ© Ù„ØªØ´ØºÙŠÙ„ Ø§Ù„Ù…ØªØ¬Ø±ØŒ ÙˆÙ…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ø·Ù„Ø¨Ø§ØªØŒ ÙˆØªÙ‚Ø¯ÙŠÙ… Ø§Ù„Ø¯Ø¹Ù…ØŒ ÙˆØªÙ‚Ù„ÙŠÙ„ Ù…Ø®Ø§Ø·Ø± Ø§Ù„Ø§Ø­ØªÙŠØ§Ù„ØŒ ÙˆØªØ­Ø³ÙŠÙ† ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ø¹Ù…ÙŠÙ„.",
-            "Ø¥Ø°Ø§ Ø§Ø³ØªÙØ®Ø¯Ù…Øª Ø§Ù„Ø±Ø³Ø§Ø¦Ù„ Ø§Ù„ØªØ³ÙˆÙŠÙ‚ÙŠØ©ØŒ ÙÙŠØ¬Ø¨ Ø´Ø±Ø­ Ø¢Ù„ÙŠØ© Ø§Ù„Ù…ÙˆØ§ÙÙ‚Ø© ÙˆØ¥Ù„ØºØ§Ø¡ Ø§Ù„Ø§Ø´ØªØ±Ø§Ùƒ Ù‡Ù†Ø§ Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ø·Ù„Ø§Ù‚.",
+            "نستخدم المعلومات لتشغيل المتجر ومعالجة الطلبات وتقديم الدعم وتقليل مخاطر الاحتيال وتحسين تجربة العميل.",
+            "إذا قمنا بإرسال رسائل تسويقية، سنوفر وسيلة واضحة لإلغاء الاشتراك.",
           ],
         },
         {
-          title: "Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ© ÙˆÙ…Ù‚Ø¯Ù…Ùˆ Ø§Ù„Ø®Ø¯Ù…Ø©",
+          title: "المشاركة ومقدمو الخدمات",
           paragraphs: [
-            "Ù‚Ø¯ ØªÙØ´Ø§Ø±Ùƒ Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ù…Ø¹ Ù…Ø²ÙˆØ¯ÙŠ Ø®Ø¯Ù…Ø§Øª ÙŠØ³Ø§Ø¹Ø¯ÙˆÙ† ÙÙŠ ØªØ´ØºÙŠÙ„ Ø§Ù„Ù…ØªØ¬Ø± Ø£Ùˆ Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„Ù…Ø¯ÙÙˆØ¹Ø§Øª Ø£Ùˆ Ø¯Ø¹Ù… Ø§Ù„Ø´Ø­Ù† Ø£Ùˆ Ø§Ø³ØªØ¶Ø§ÙØ© Ø§Ù„Ø¨Ù†ÙŠØ© Ø£Ùˆ ØªÙˆÙÙŠØ± Ø£Ø¯ÙˆØ§Øª Ø®Ø¯Ù…Ø© Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡.",
-            "Ø§Ø°ÙƒØ± Ø£Ùˆ ØµÙ ÙØ¦Ø§Øª Ø§Ù„Ø¬Ù‡Ø§Øª Ø§Ù„ØªÙŠ ØªØ³ØªØ®Ø¯Ù…Ù‡Ø§ ÙØ¹Ù„ÙŠÙ‹Ø§ Ø¹Ù†Ø¯ Ø§Ù„Ø¥Ø·Ù„Ø§Ù‚ØŒ ÙˆØ­Ø¯Ù‘Ø« Ù‡Ø°Ø§ Ø§Ù„Ù‚Ø³Ù… Ø¥Ø°Ø§ ØªØºÙŠÙ‘Ø±Øª Ø§Ù„Ø¨Ù†ÙŠØ© Ø¨Ø´ÙƒÙ„ Ø¬ÙˆÙ‡Ø±ÙŠ.",
+            "قد نشارك بعض المعلومات مع مزودي الخدمات الذين يساعدون في تشغيل المتجر ومعالجة المدفوعات وتوصيل الطلبات واستضافة البنية التحتية.",
+            "نحدّث هذه الفقرة إذا تغيّر مزودو الخدمة أو نطاق مشاركتهم بشكل جوهري.",
           ],
         },
         {
-          title: "Ø§Ù„Ø§Ø­ØªÙØ§Ø¸ Ø¨Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª ÙˆØ­Ù‚ÙˆÙ‚ Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡",
+          title: "الاحتفاظ بالبيانات وحقوق العميل",
           paragraphs: [
-            "Ø§Ø´Ø±Ø­ Ø§Ù„Ù…Ø¯Ø© Ø§Ù„ØªÙŠ ØªØ­ØªÙØ¸ Ø®Ù„Ø§Ù„Ù‡Ø§ Ø¨Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø·Ù„Ø¨Ø§Øª ÙˆØ§Ù„Ø­Ø³Ø§Ø¨Ø§Øª ÙˆØ§Ù„Ø¯Ø¹Ù…ØŒ ÙˆÙƒÙŠÙ ÙŠÙ…ÙƒÙ† Ù„Ù„Ø¹Ù…ÙŠÙ„ Ø·Ù„Ø¨ Ø§Ù„ÙˆØµÙˆÙ„ Ø£Ùˆ Ø§Ù„ØªØµØ­ÙŠØ­ Ø£Ùˆ Ø§Ù„Ø­Ø°Ù Ø¹Ù†Ø¯Ù…Ø§ ÙŠÙƒÙˆÙ† Ø°Ù„Ùƒ Ù…Ø·Ø¨Ù‚Ù‹Ø§.",
-            "Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ù‡Ù†Ø§Ùƒ Ø­Ù‚ÙˆÙ‚ Ø®ØµÙˆØµÙŠØ© Ù…Ù†Ø§Ø·Ù‚ÙŠØ©ØŒ ÙØ§Ø°ÙƒØ± Ù…Ø³Ø§Ø± Ø§Ù„ØªÙˆØ§ØµÙ„ Ø§Ù„ØµØ­ÙŠØ­ Ù„Ù‡Ø°Ù‡ Ø§Ù„Ø·Ù„Ø¨Ø§Øª.",
+            "نحتفظ بالبيانات للمدة اللازمة لتشغيل الطلبات والامتثال للمتطلبات النظامية وتقديم الدعم.",
+            "يمكنك طلب الوصول إلى بياناتك أو تصحيحها أو حذفها عندما يكون ذلك مناسبًا.",
           ],
         },
         {
-          title: "Ø§Ù„ØªÙˆØ§ØµÙ„ Ø¨Ø´Ø£Ù† Ø§Ù„Ø®ØµÙˆØµÙŠØ©",
+          title: "التواصل بخصوص الخصوصية",
           paragraphs: [
-            "ÙŠØ¬Ø¨ ØªÙˆØ¬ÙŠÙ‡ Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø®ØµÙˆØµÙŠØ© ÙˆØ§Ù„Ø§Ø³ØªÙØ³Ø§Ø±Ø§Øª Ø§Ù„Ù…ØªØ¹Ù„Ù‚Ø© Ø¨Ù‡Ø°Ù‡ Ø§Ù„Ø³ÙŠØ§Ø³Ø© Ø¥Ù„Ù‰ [Ø£Ø¯Ø®Ù„ Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø®ØµÙˆØµÙŠØ©] ÙˆØŒ Ø¥Ø°Ø§ Ù„Ø²Ù…ØŒ [Ø£Ø¯Ø®Ù„ Ø§Ù„Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ù…Ø³Ø¬Ù„ Ø£Ùˆ ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø¬Ù‡Ø© Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„Ø©].",
+            "تُوجَّه طلبات الخصوصية والاستفسارات إلى support@kravexo.co.uk، وعند الحاجة: كرافكسو، مانشستر، المملكة المتحدة.",
           ],
         },
       ],
@@ -285,4 +284,3 @@ export const legalCopy: Record<
     },
   },
 };
-
