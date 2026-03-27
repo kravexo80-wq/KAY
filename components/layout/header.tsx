@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag, UserRound } from "lucide-react";
 
@@ -54,15 +55,31 @@ export function Header({
           >
             <Link
               href={localizeHref(locale, "/")}
-              className={cn("shrink-0 space-y-1", isRtl ? "text-right" : "text-left")}
+              className={cn(
+                "shrink-0 flex items-center gap-3",
+                isRtl && "flex-row-reverse",
+                isRtl ? "text-right" : "text-left",
+              )}
               aria-label="Kravexo home"
             >
-              <p className="text-xs uppercase tracking-[0.42em] text-white/45">
-                {copy.tagline}
-              </p>
-              <p className="text-2xl uppercase tracking-[0.32em] text-white md:text-3xl">
-                Kravexo
-              </p>
+              <div className="relative h-12 w-12 overflow-hidden rounded-full border border-white/10 bg-[#e8dccd] shadow-[0_0_24px_rgba(232,220,205,0.12)]">
+                <Image
+                  src="/brand/kravexo-lockup.jpeg"
+                  alt="Kravexo logo"
+                  fill
+                  priority
+                  sizes="48px"
+                  className="object-cover"
+                />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[0.68rem] uppercase tracking-[0.42em] text-white/45">
+                  {copy.tagline}
+                </p>
+                <p className="text-2xl uppercase tracking-[0.32em] text-white md:text-3xl">
+                  Kravexo
+                </p>
+              </div>
             </Link>
 
             <nav className="hidden items-center gap-1 md:flex">

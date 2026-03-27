@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { footerNavigation } from "@/lib/config/navigation";
@@ -64,7 +65,22 @@ export function Footer({
     <footer className="mt-24 border-t border-white/8 bg-black/40">
       <div className="section-frame section-space grid gap-12 md:grid-cols-2 xl:grid-cols-[1.2fr_repeat(4,minmax(0,1fr))]">
         <div className={`space-y-5 ${isRtl ? "text-right" : "text-left"}`}>
-          <p className="eyebrow">Kravexo</p>
+          <div
+            className={`flex items-center gap-3 ${
+              isRtl ? "flex-row-reverse justify-end" : "justify-start"
+            }`}
+          >
+            <div className="relative h-12 w-12 overflow-hidden rounded-full border border-white/10 bg-[#e8dccd] shadow-[0_0_24px_rgba(232,220,205,0.12)]">
+              <Image
+                src="/brand/kravexo-lockup.jpeg"
+                alt="Kravexo logo"
+                fill
+                sizes="48px"
+                className="object-cover"
+              />
+            </div>
+            <p className="eyebrow">Kravexo</p>
+          </div>
           <div className="space-y-3">
             <h2 className="max-w-md text-2xl leading-[1.12] text-white md:text-4xl">
               {copy.description}
