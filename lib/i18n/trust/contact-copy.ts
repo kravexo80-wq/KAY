@@ -1,4 +1,4 @@
-﻿import type { TrustCopy } from "../trust-copy";
+import type { TrustCopy } from "../trust-copy";
 
 type ContactCopy = TrustCopy["contact"];
 
@@ -9,11 +9,11 @@ export const contactCopy: Record<"en" | "ar", ContactCopy> = {
     description:
       "Use this page for order support, sizing clarification, collection questions, or press and wholesale enquiries once those channels are ready.",
     note:
-      "Replace the remaining placeholders here with your final response window, contact details, and official channels before launch.",
+      "Reach us directly for customer care, order support, and pre-purchase guidance.",
     form: {
       successTitle: "Message received",
       successMessage:
-        "Your message has been received successfully. Connect this form to your final support workflow before launch.",
+        "Your message has been received successfully. We will review it and reply through the support channel as soon as possible.",
       errorTitle: "Message incomplete",
       errorMessage:
         "Please complete all required fields with a valid email address before sending.",
@@ -26,17 +26,17 @@ export const contactCopy: Record<"en" | "ar", ContactCopy> = {
     direct: {
       title: "Direct contact",
       description:
-        "Use your customer-care inbox here. If this address changes, update the site configuration and policy pages together.",
+        "Use the main support inbox for customer care, order questions, and general assistance.",
     },
     response: {
       title: "Response window",
       description:
-        "Reply within 24 hours for customer enquiries and order support.",
+        "We aim to reply within 24 hours for customer enquiries and order support.",
     },
     social: {
-      title: "Social and editorial channels",
+      title: "Social and messaging",
       description:
-        "Placeholder: add your official Instagram, TikTok, or editorial contact channels here once they are ready.",
+        "You can also reach Kravexo through Instagram and WhatsApp for quick brand and product enquiries.",
     },
     guidance: {
       eyebrow: "Customer guidance",
@@ -50,50 +50,47 @@ export const contactCopy: Record<"en" | "ar", ContactCopy> = {
     },
   },
   ar: {
-    eyebrow: "Ø§Ù„ØªÙˆØ§ØµÙ„",
-    title: "Ø¯Ø¹Ù… Ù…Ø¨Ø§Ø´Ø± Ù„Ø£Ø³Ø¦Ù„Ø© Ø§Ù„Ù…Ù‚Ø§Ø³ ÙˆØ§Ù„Ø·Ù„Ø¨Ø§Øª ÙˆØ§Ù„Ø§Ø³ØªÙØ³Ø§Ø±Ø§Øª Ù‚Ø¨Ù„ Ø§Ù„Ø´Ø±Ø§Ø¡.",
+    eyebrow: "تواصل معنا",
+    title: "دعم مباشر لأسئلة المقاسات والطلبات والاستفسارات قبل الشراء.",
     description:
-      "Ø§Ø³ØªØ®Ø¯Ù… Ù‡Ø°Ù‡ Ø§Ù„ØµÙØ­Ø© Ù„Ø¯Ø¹Ù… Ø§Ù„Ø·Ù„Ø¨Ø§ØªØŒ ÙˆØªÙˆØ¶ÙŠØ­ Ø§Ù„Ù…Ù‚Ø§Ø³Ø§ØªØŒ ÙˆØ§Ù„Ø§Ø³ØªÙØ³Ø§Ø± Ø¹Ù† Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§ØªØŒ Ø£Ùˆ Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„ØµØ­Ø§ÙØ© ÙˆØ§Ù„Ø¬Ù…Ù„Ø© Ø¹Ù†Ø¯Ù…Ø§ ØªØµØ¨Ø­ ØªÙ„Ùƒ Ø§Ù„Ù‚Ù†ÙˆØ§Øª Ø¬Ø§Ù‡Ø²Ø©.",
-    note:
-      "Ø§Ø³ØªØ¨Ø¯Ù„ Ø§Ù„Ø¹Ù†Ø§ØµØ± Ø§Ù„Ù…Ø¤Ù‚ØªØ© Ù‡Ù†Ø§ Ø¨Ù…Ø¯Ø© Ø§Ù„Ø±Ø¯ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠØ© ÙˆØªÙØ§ØµÙŠÙ„ Ø§Ù„ØªÙˆØ§ØµÙ„ ÙˆØ§Ù„Ù‚Ù†ÙˆØ§Øª Ø§Ù„Ø±Ø³Ù…ÙŠØ© Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ø·Ù„Ø§Ù‚.",
+      "استخدم هذه الصفحة لدعم الطلبات، وتوضيح المقاسات، والاستفسار عن المجموعات، أو لطلبات الصحافة والجملة عندما تصبح هذه القنوات متاحة.",
+    note: "راسلنا مباشرة لخدمة العملاء، ودعم الطلبات، والاستفسارات قبل الشراء.",
     form: {
-      successTitle: "ØªÙ… Ø§Ø³ØªÙ„Ø§Ù… Ø§Ù„Ø±Ø³Ø§Ù„Ø©",
+      successTitle: "تم استلام الرسالة",
       successMessage:
-        "ØªÙ… Ø§Ø³ØªÙ„Ø§Ù… Ø±Ø³Ø§Ù„ØªÙƒ Ø¨Ù†Ø¬Ø§Ø­. Ø§Ø±Ø¨Ø· Ù‡Ø°Ø§ Ø§Ù„Ù†Ù…ÙˆØ°Ø¬ Ø¨Ù…Ø³Ø§Ø± Ø§Ù„Ø¯Ø¹Ù… Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ø·Ù„Ø§Ù‚.",
-      errorTitle: "Ø§Ù„Ø±Ø³Ø§Ù„Ø© ØºÙŠØ± Ù…ÙƒØªÙ…Ù„Ø©",
+        "تم استلام رسالتك بنجاح. سنراجعها ونرد عليك عبر قناة الدعم في أقرب وقت ممكن.",
+      errorTitle: "الرسالة غير مكتملة",
       errorMessage:
-        "ÙŠØ±Ø¬Ù‰ ØªØ¹Ø¨Ø¦Ø© Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© Ø¨Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø¨Ø±ÙŠØ¯ Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ ØµØ­ÙŠØ­ Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ø±Ø³Ø§Ù„.",
-      fullName: "Ø§Ù„Ø§Ø³Ù… Ø§Ù„ÙƒØ§Ù…Ù„",
-      email: "Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ",
-      subject: "Ø§Ù„Ù…ÙˆØ¶ÙˆØ¹",
-      message: "ÙƒÙŠÙ ÙŠÙ…ÙƒÙ†Ù†Ø§ Ù…Ø³Ø§Ø¹Ø¯ØªÙƒØŸ",
-      submit: "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ø³Ø§Ù„Ø©",
+        "يرجى تعبئة جميع الحقول المطلوبة باستخدام بريد إلكتروني صحيح قبل الإرسال.",
+      fullName: "الاسم الكامل",
+      email: "البريد الإلكتروني",
+      subject: "الموضوع",
+      message: "كيف يمكننا مساعدتك؟",
+      submit: "إرسال الرسالة",
     },
     direct: {
-      title: "Ø§Ù„ØªÙˆØ§ØµÙ„ Ø§Ù„Ù…Ø¨Ø§Ø´Ø±",
+      title: "التواصل المباشر",
       description:
-        "Ø¶Ø¹ Ù‡Ù†Ø§ Ø¨Ø±ÙŠØ¯ Ø®Ø¯Ù…Ø© Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡ Ø§Ù„ÙØ¹Ù„ÙŠ. ÙˆØ¥Ø°Ø§ ØªØºÙŠÙ‘Ø± Ù„Ø§Ø­Ù‚Ù‹Ø§ØŒ ÙØ­Ø¯Ù‘Ø«Ù‡ ÙÙŠ Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„Ù…ÙˆÙ‚Ø¹ ÙˆØµÙØ­Ø§Øª Ø§Ù„Ø³ÙŠØ§Ø³Ø§Øª Ù…Ø¹Ù‹Ø§.",
+        "استخدم بريد الدعم الرئيسي لخدمة العملاء، وأسئلة الطلبات، والمساعدة العامة.",
     },
     response: {
       title: "مدة الرد",
-      description: "نرد خلال 24 ساعة لاستفسارات العملاء ودعم الطلبات.",
+      description: "نهدف إلى الرد خلال 24 ساعة على استفسارات العملاء ودعم الطلبات.",
     },
     social: {
-      title: "Ø§Ù„Ù‚Ù†ÙˆØ§Øª Ø§Ù„Ø§Ø¬ØªÙ…Ø§Ø¹ÙŠØ© ÙˆØ§Ù„ØªØ­Ø±ÙŠØ±ÙŠØ©",
+      title: "القنوات الاجتماعية والمراسلة",
       description:
-        "Ø¹Ù†ØµØ± Ù†Ø§Ø¦Ø¨: Ø£Ø¶Ù Ø±ÙˆØ§Ø¨Ø· Ø¥Ù†Ø³ØªØºØ±Ø§Ù… Ø£Ùˆ ØªÙŠÙƒ ØªÙˆÙƒ Ø£Ùˆ Ù‚Ù†ÙˆØ§Øª Ø§Ù„ØªÙˆØ§ØµÙ„ Ø§Ù„ØªØ­Ø±ÙŠØ±ÙŠØ© Ø§Ù„Ø±Ø³Ù…ÙŠØ© Ø¹Ù†Ø¯Ù…Ø§ ØªØµØ¨Ø­ Ø¬Ø§Ù‡Ø²Ø©.",
+        "يمكنك أيضًا التواصل مع كرافكسو عبر إنستغرام وواتساب للاستفسارات السريعة حول العلامة والمنتجات.",
     },
     guidance: {
-      eyebrow: "Ø¥Ø±Ø´Ø§Ø¯ Ø§Ù„Ø¹Ù…ÙŠÙ„",
-      title: "Ù…Ø§ Ø§Ù„Ø°ÙŠ ÙŠÙ…ÙƒÙ† Ø§Ù„ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†Ø§ Ø¨Ø´Ø£Ù†Ù‡",
+      eyebrow: "إرشاد العميل",
+      title: "ما الذي يمكن التواصل معنا بشأنه",
       items: [
-        "Ø§Ù„Ø§Ø³ØªÙØ³Ø§Ø± Ø¹Ù† Ø§Ù„Ù…Ù‚Ø§Ø³ Ø£Ùˆ Ø´ÙƒÙ„ Ø§Ù„ÙˆÙ‚ÙØ© Ù‚Ø¨Ù„ Ø§Ù„Ø´Ø±Ø§Ø¡.",
-        "Ø£Ø³Ø¦Ù„Ø© Ø­Ø§Ù„Ø© Ø§Ù„Ø·Ù„Ø¨ Ø¨Ø¹Ø¯ Ø¥ØªÙ…Ø§Ù…Ù‡.",
-        "Ø§Ø³ØªÙŠØ¶Ø§Ø­ Ø§Ù„Ø´Ø­Ù† Ø£Ùˆ Ø§Ù„Ø§Ø³ØªØ±Ø¬Ø§Ø¹ Ù‚Ø¨Ù„ Ø§Ù„Ø¯ÙØ¹.",
-        "Ø·Ù„Ø¨Ø§Øª Ø§Ù„ØµØ­Ø§ÙØ© Ø£Ùˆ Ø§Ù„ØªØ¹Ø§ÙˆÙ† Ø£Ùˆ Ø§Ù„Ø¬Ù…Ù„Ø© Ø¹Ù†Ø¯ ØªÙØ¹ÙŠÙ„ Ù‡Ø°Ù‡ Ø§Ù„Ù‚Ù†ÙˆØ§Øª.",
+        "الاستفسار عن المقاس أو شكل الوقفة قبل الشراء.",
+        "أسئلة حالة الطلب بعد إتمامه.",
+        "استيضاح الشحن أو الاسترجاع قبل الدفع.",
+        "طلبات الصحافة أو التعاون أو الجملة عند تفعيل هذه القنوات.",
       ],
     },
   },
 };
-
-

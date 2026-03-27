@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     locale,
     pathname: "/contact",
-    title: locale === "ar" ? "???????" : "Contact",
+    title: locale === "ar" ? "تواصل معنا" : "Contact",
     description: copy.description,
   });
 }
@@ -63,18 +63,18 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         title={copy.title}
         description={copy.description}
         note={copy.note}
-        noteLabel={locale === "ar" ? "?????? ?????" : "Support note"}
+        noteLabel={locale === "ar" ? "ملاحظة الدعم" : "Support note"}
         isRtl={isRtl}
         actions={
           <>
             <Button asChild>
               <Link href={localizeHref(locale, "/faq")}>
-                {locale === "ar" ? "??????? ???????" : "Read the FAQ"}
+                {locale === "ar" ? "اقرأ الأسئلة الشائعة" : "Read the FAQ"}
               </Link>
             </Button>
             <Button asChild variant="secondary">
               <Link href={localizeHref(locale, "/shipping-returns")}>
-                {locale === "ar" ? "????? ??????????" : "Shipping & returns"}
+                {locale === "ar" ? "الشحن والاسترجاع" : "Shipping & returns"}
               </Link>
             </Button>
           </>
@@ -87,19 +87,35 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           className={`luxury-panel space-y-4 p-6 md:p-8 ${isRtl ? "text-right" : "text-left"}`}
         >
           {notice ? (
-            <div className={notice.tone === "error" ? "luxury-muted-panel p-4" : "showroom-subpanel p-4"}>
+            <div
+              className={
+                notice.tone === "error"
+                  ? "luxury-muted-panel p-4"
+                  : "showroom-subpanel p-4"
+              }
+            >
               <p className="eyebrow">{notice.title}</p>
-              <p className="mt-3 text-sm leading-7 text-white/60">{notice.message}</p>
+              <p className="mt-3 text-sm leading-7 text-white/60">
+                {notice.message}
+              </p>
             </div>
           ) : null}
-          <Input name="full_name" placeholder={copy.form.fullName} className="text-start" />
+          <Input
+            name="full_name"
+            placeholder={copy.form.fullName}
+            className="text-start"
+          />
           <Input
             type="email"
             name="email"
             placeholder={copy.form.email}
             className="text-start"
           />
-          <Input name="subject" placeholder={copy.form.subject} className="text-start" />
+          <Input
+            name="subject"
+            placeholder={copy.form.subject}
+            className="text-start"
+          />
           <Textarea
             name="message"
             className="min-h-40 text-start"
@@ -111,22 +127,34 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         </form>
 
         <div className="grid gap-4">
-          <div className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}>
+          <div
+            className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}
+          >
             <p className="eyebrow">{copy.direct.title}</p>
             <p className="mt-3 text-lg text-white">{siteConfig.supportEmail}</p>
-            <p className="mt-2 text-sm leading-7 text-white/56">{copy.direct.description}</p>
+            <p className="mt-2 text-sm leading-7 text-white/56">
+              {copy.direct.description}
+            </p>
           </div>
-          <div className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}>
+          <div
+            className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}
+          >
             <p className="eyebrow">{copy.response.title}</p>
             <p className="mt-3 text-lg text-white">
               {locale === "ar" ? "24 ساعة" : "24 hours"}
             </p>
-            <p className="mt-2 text-sm leading-7 text-white/56">{copy.response.description}</p>
+            <p className="mt-2 text-sm leading-7 text-white/56">
+              {copy.response.description}
+            </p>
           </div>
-          <div className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}>
+          <div
+            className={`luxury-muted-panel p-5 ${isRtl ? "text-right" : "text-left"}`}
+          >
             <p className="eyebrow">{copy.social.title}</p>
             <p className="mt-3 text-lg text-white">{siteConfig.location}</p>
-            <p className="mt-2 text-sm leading-7 text-white/56">{copy.social.description}</p>
+            <p className="mt-2 text-sm leading-7 text-white/56">
+              {copy.social.description}
+            </p>
           </div>
         </div>
       </section>
